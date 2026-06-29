@@ -127,6 +127,32 @@
       "verified": true
     },
     {
+      "id": "niara-trader",
+      "name": "Niara Trader",
+      "initials": "NT",
+      "color": "#138a45",
+      "rating": 4.0,
+      "reviews": 120,
+      "fee": 49,
+      "target": "8%",
+      "daily": "5%",
+      "drawdown": "10%",
+      "payout": "Varies",
+      "split": "90%",
+      "best": "African and global traders",
+      "founded": 2024,
+      "platforms": "MT5",
+      "website": "https://niaratrader.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=niaratrader.com",
+      "affiliateUrl": "https://example.com/affiliate/niara-trader",
+      "verified": false,
+      "aliases": [
+        "Naira Trader",
+        "Naija Trader",
+        "Niara"
+      ]
+    },
+    {
       "id": "alpha-capital-group",
       "name": "Alpha Capital Group",
       "initials": "AC",
@@ -1493,6 +1519,88 @@
       "current": "$2,050"
     }
   ],
+  "ruleChanges": [
+    {
+      "id": "rule-ftmo-2026-06-10",
+      "firmId": "ftmo",
+      "date": "2026-06-10",
+      "category": "Payout",
+      "summary": "Payout schedule reviewed and marked as current.",
+      "before": "Manual review pending",
+      "after": "14 day payout cycle listed",
+      "severity": "low"
+    },
+    {
+      "id": "rule-apex-2026-06-18",
+      "firmId": "apex",
+      "date": "2026-06-18",
+      "category": "Drawdown",
+      "summary": "Trailing drawdown language flagged for review.",
+      "before": "Static drawdown display",
+      "after": "Review required before publishing advanced scoring",
+      "severity": "medium"
+    },
+    {
+      "id": "rule-niara-2026-06-29",
+      "firmId": "niara-trader",
+      "date": "2026-06-29",
+      "category": "Listing",
+      "summary": "Niara Trader added to the global directory.",
+      "before": "Not listed",
+      "after": "Listed with verification pending",
+      "severity": "low"
+    }
+  ],
+  "alerts": [
+    {
+      "id": "alert-1",
+      "firmId": "apex",
+      "title": "Apex drawdown rules need review",
+      "message": "Confirm current trailing/static drawdown wording before scoring.",
+      "type": "rule-change",
+      "createdAt": "2026-06-29T12:00:00.000Z",
+      "read": false
+    },
+    {
+      "id": "alert-2",
+      "firmId": "niara-trader",
+      "title": "Niara Trader added",
+      "message": "New listing added. Add verified pricing, rules, and affiliate details.",
+      "type": "new-firm",
+      "createdAt": "2026-06-29T12:15:00.000Z",
+      "read": false
+    }
+  ],
+  "users": [
+    {
+      "id": "user-demo",
+      "name": "Demo Trader",
+      "email": "demo@fundscope.local",
+      "password": "demo123",
+      "createdAt": "2026-06-29T12:00:00.000Z"
+    }
+  ],
+  "profiles": [
+    {
+      "userId": "user-demo",
+      "experience": "Intermediate",
+      "market": "Forex",
+      "budget": 150,
+      "riskStyle": "Balanced",
+      "preferredPayout": "Fast",
+      "savedFirmIds": [
+        "ftmo",
+        "fundingpips",
+        "niara-trader"
+      ],
+      "alertFirmIds": [
+        "ftmo",
+        "apex",
+        "niara-trader"
+      ]
+    }
+  ],
+  "feedback": [],
   "giveawayEntries": [],
   "affiliateClicks": []
 }
