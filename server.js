@@ -71,6 +71,7 @@ function publicBootstrap(db) {
     dashboardAccounts: db.dashboardAccounts,
     ruleChanges: withFirmNames(db, db.ruleChanges || []),
     alerts: withFirmNames(db, db.alerts || []),
+    news: withFirmNames(db, db.news || []),
     profiles: db.profiles || []
   };
 }
@@ -143,6 +144,8 @@ function firmSeoHtml(firm) {
   return readFile(appShell, 'utf8').then((html) => html
     .replace('<title>FundScope  Prop firm intelligence</title>', `<title>${title}</title>`)
     .replace('content="FundScope helps traders compare prop firms, calculate risk, and track funded accounts."', `content="${description}"`)
+    .replace('href="styles.css"', 'href="/styles.css"')
+    .replace('src="app.js"', 'src="/app.js"')
     .replace('<div id="app"></div>', `<div id="app"></div><script>window.__INITIAL_ROUTE__={route:"profile",firmId:"${firm.id}"};</script>`));
 }
 
@@ -177,6 +180,10 @@ async function handleApi(req, res, url) {
 
   if (method === 'GET' && url.pathname === '/api/alerts') {
     return sendJson(res, 200, withFirmNames(db, db.alerts || []));
+  }
+
+  if (method === 'GET' && url.pathname === '/api/news') {
+    return sendJson(res, 200, withFirmNames(db, db.news || []));
   }
 
   if (method === 'POST' && url.pathname === '/api/recommendations') {
@@ -335,6 +342,11 @@ const server = createServer(async (req, res) => {
     if (req.method === 'GET' && url.pathname.startsWith('/firms/')) {
       const db = await readDb();
       const firmId = decodeURIComponent(url.pathname.split('/').filter(Boolean)[1] || '');
+      if (firmId === 'niara-trader') {
+        res.writeHead(301, { Location: '/firms/naira-trader' });
+        res.end();
+        return;
+      }
       const firm = db.firms.find((item) => item.id === firmId);
       if (firm) {
         const html = await firmSeoHtml(firm);

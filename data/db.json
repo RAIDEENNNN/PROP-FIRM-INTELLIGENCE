@@ -127,8 +127,8 @@
       "verified": true
     },
     {
-      "id": "niara-trader",
-      "name": "Niara Trader",
+      "id": "naira-trader",
+      "name": "Naira Trader",
       "initials": "NT",
       "color": "#138a45",
       "rating": 4.0,
@@ -142,14 +142,14 @@
       "best": "African and global traders",
       "founded": 2024,
       "platforms": "MT5",
-      "website": "https://niaratrader.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=niaratrader.com",
-      "affiliateUrl": "https://example.com/affiliate/niara-trader",
+      "website": "https://nairatrader.com",
+      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=nairatrader.com",
+      "affiliateUrl": "https://example.com/affiliate/naira-trader",
       "verified": false,
       "aliases": [
-        "Naira Trader",
+        "Niara Trader",
         "Naija Trader",
-        "Niara"
+        "Naira"
       ]
     },
     {
@@ -1457,6 +1457,8 @@
       "name": "Marcus T.",
       "date": "2 days ago",
       "rating": 5,
+      "verified": true,
+      "proofType": "Payout screenshot reviewed",
       "text": "The rules were clear and my first payout arrived exactly when expected. The dashboard could be better, but the overall experience was solid."
     },
     {
@@ -1465,6 +1467,8 @@
       "name": "Aisha K.",
       "date": "1 week ago",
       "rating": 4,
+      "verified": true,
+      "proofType": "Account email checked",
       "text": "Support responded within a few hours and resolved my account issue. Good conditions for disciplined traders."
     },
     {
@@ -1473,6 +1477,8 @@
       "name": "Daniel R.",
       "date": "3 weeks ago",
       "rating": 5,
+      "verified": true,
+      "proofType": "Payout screenshot reviewed",
       "text": "I have tried three firms and this has been the most straightforward. No surprises at payout time."
     }
   ],
@@ -1541,11 +1547,11 @@
       "severity": "medium"
     },
     {
-      "id": "rule-niara-2026-06-29",
-      "firmId": "niara-trader",
+      "id": "rule-naira-2026-06-29",
+      "firmId": "naira-trader",
       "date": "2026-06-29",
       "category": "Listing",
-      "summary": "Niara Trader added to the global directory.",
+      "summary": "Naira Trader added to the global directory.",
       "before": "Not listed",
       "after": "Listed with verification pending",
       "severity": "low"
@@ -1563,12 +1569,44 @@
     },
     {
       "id": "alert-2",
-      "firmId": "niara-trader",
-      "title": "Niara Trader added",
+      "firmId": "naira-trader",
+      "title": "Naira Trader added",
       "message": "New listing added. Add verified pricing, rules, and affiliate details.",
       "type": "new-firm",
       "createdAt": "2026-06-29T12:15:00.000Z",
       "read": false
+    }
+  ],
+  "news": [
+    {
+      "id": "news-naira-added",
+      "firmId": "naira-trader",
+      "source": "FundScope Desk",
+      "title": "Naira Trader added to the global prop firm watchlist",
+      "summary": "Naira Trader is now listed with verification pending, plus aliases for common trader searches.",
+      "url": "/firms/naira-trader",
+      "publishedAt": "2026-06-29T12:30:00.000Z",
+      "type": "listing"
+    },
+    {
+      "id": "news-rule-watch",
+      "firmId": "apex",
+      "source": "Rule Watch",
+      "title": "Drawdown wording flagged for manual review",
+      "summary": "The rule tracker is monitoring Apex-style trailing drawdown language so traders can verify before purchasing.",
+      "url": "/firms/apex",
+      "publishedAt": "2026-06-29T12:05:00.000Z",
+      "type": "rule-change"
+    },
+    {
+      "id": "news-product-feedback",
+      "firmId": "ftmo",
+      "source": "Product Update",
+      "title": "Verified reviews and SEO firm pages are now available",
+      "summary": "Firm pages now support review proof, rule history, alerts, payouts, discounts, and search-friendly page routes.",
+      "url": "/firms/ftmo",
+      "publishedAt": "2026-06-29T11:45:00.000Z",
+      "type": "platform"
     }
   ],
   "users": [
@@ -1591,12 +1629,12 @@
       "savedFirmIds": [
         "ftmo",
         "fundingpips",
-        "niara-trader"
+        "naira-trader"
       ],
       "alertFirmIds": [
         "ftmo",
         "apex",
-        "niara-trader"
+        "naira-trader"
       ]
     }
   ],

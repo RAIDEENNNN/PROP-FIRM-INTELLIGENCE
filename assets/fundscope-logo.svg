@@ -1,0 +1,19 @@
+<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">FundScope logo</title>
+  <desc id="desc">A compass mark beside the FundScope wordmark.</desc>
+  <rect width="640" height="180" rx="36" fill="#171B35"/>
+  <g transform="translate(42 34)">
+    <rect width="112" height="112" rx="30" fill="url(#markGradient)"/>
+    <circle cx="56" cy="56" r="34" stroke="white" stroke-opacity=".58" stroke-width="7"/>
+    <path d="M75.5 36.5 64.8 64.8 36.5 75.5 47.2 47.2 75.5 36.5Z" fill="#FFCA5C" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M56 17v12M56 83v12M17 56h12M83 56h12" stroke="white" stroke-width="7" stroke-linecap="round"/>
+  </g>
+  <text x="182" y="83" fill="white" font-family="Manrope, Arial, sans-serif" font-size="48" font-weight="800" letter-spacing="-2.4">FundScope</text>
+  <text x="184" y="121" fill="#ADB2C8" font-family="DM Sans, Arial, sans-serif" font-size="20" font-weight="600">Prop firm intelligence for serious traders</text>
+  <defs>
+    <linearGradient id="markGradient" x1="0" y1="0" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6D63F1"/>
+      <stop offset="1" stop-color="#3931B7"/>
+    </linearGradient>
+  </defs>
+</svg>
