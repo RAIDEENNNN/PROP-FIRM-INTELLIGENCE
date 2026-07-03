@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Traddoo logo">
+  <defs>
+    <linearGradient id="traddoo-bg" x1="15" y1="14" x2="116" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#1e3a8a"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#traddoo-bg)"/>
+  <path d="M31 37h66v16H72v43H56V53H31V37Z" fill="#ffffff"/>
+  <path d="M35 90h58" stroke="#93c5fd" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="93" cy="90" r="8" fill="#bfdbfe"/>
+</svg>

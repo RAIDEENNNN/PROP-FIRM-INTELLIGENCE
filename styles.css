@@ -54,10 +54,12 @@ h1 span { color: var(--lime); }
 .hero-meta b { color:white; }
 .insight-card { background:white; color:var(--ink); border-radius:22px; padding:23px; box-shadow:0 28px 80px rgba(0,0,0,.22); transform:rotate(2deg); }
 .insight-card .top { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; }
-.mini-logo, .firm-logo { display:grid; place-items:center; font:800 15px Manrope; border-radius:12px; flex:none; }
+.mini-logo, .firm-logo { display:grid; place-items:center; font:800 15px Manrope; border-radius:12px; flex:none; position:relative; overflow:hidden; isolation:isolate; }
 .mini-logo { width:40px; height:40px; color:white; }
 .firm-logo { width:48px; height:48px; color:white; }
-.mini-logo img, .firm-logo img { width:70%; height:70%; object-fit:contain; border-radius:8px; }
+.logo-initials { position:absolute; inset:0; display:grid; place-items:center; color:white; z-index:0; text-shadow:0 1px 2px rgba(0,0,0,.18); }
+.mini-logo img, .firm-logo img { width:74%; height:74%; object-fit:contain; border-radius:8px; position:relative; z-index:1; filter:drop-shadow(0 1px 2px rgba(0,0,0,.12)); }
+.mini-logo img[hidden], .firm-logo img[hidden] { display:none; }
 .score-ring { width:70px; height:70px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--green-2) 92%, #e7ecea 0); position:relative; }
 .score-ring:after { content:""; width:53px; height:53px; background:white; border-radius:50%; position:absolute; }
 .score-ring b { position:relative; z-index:1; font:800 17px Manrope; }
@@ -223,6 +225,15 @@ h1 span { color: var(--lime); }
 .close { border:0; background:transparent; font-size:22px; cursor:pointer; }
 .modal .form-grid { margin:18px 0; }
 
+.admin-kpis { grid-template-columns:repeat(6,1fr); }
+.admin-grid { align-items:start; }
+.admin-form textarea { min-height:94px; resize:vertical; font:inherit; }
+.admin-form h2, .admin-panel h2, .admin-lists h2 { font-size:19px; margin-bottom:16px; }
+.check-field { display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:10px; padding:11px 13px; color:var(--muted); font-weight:800; font-size:13px; }
+.admin-row { display:flex; justify-content:space-between; align-items:center; gap:14px; border:1px solid var(--line); border-radius:12px; padding:12px; margin:10px 0; }
+.admin-row small { display:block; color:var(--muted); margin-top:4px; line-height:1.4; }
+.admin-row .btn { flex:none; }
+
 .footer { background:#11142a; color:#adb2c8; padding:48px 0 25px; }
 .footer-grid { display:grid; grid-template-columns:1.5fr repeat(3,1fr); gap:40px; }
 .footer h4 { color:white; margin-top:0; }
@@ -232,11 +243,19 @@ h1 span { color: var(--lime); }
 .toast.show { transform:none; opacity:1; }
 
 @media(max-width:900px) {
-  .nav-links { display:none; }
-  .mobile-menu { display:block; border:0; background:transparent; font-size:22px; }
+  .nav { position:sticky; }
+  .nav-inner { height:68px; gap:12px; position:relative; }
+  .brand { font-size:18px; }
+  .nav-links, .nav-actions { display:none; }
+  .mobile-menu { display:grid; place-items:center; border:1px solid var(--line); background:white; width:42px; height:42px; border-radius:12px; font-size:24px; cursor:pointer; }
+  .nav.open .nav-links { display:grid; position:absolute; left:0; right:0; top:68px; background:white; border:1px solid var(--line); border-radius:0 0 18px 18px; padding:12px; box-shadow:var(--shadow); gap:4px; }
+  .nav.open .nav-link { display:block; padding:13px 14px; color:var(--ink); }
+  .nav.open .nav-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; position:absolute; left:12px; right:12px; top:486px; background:white; padding:0 0 12px; z-index:2; }
+  .nav.open .nav-actions .btn { width:100%; }
   .hero-inner { grid-template-columns:1fr; padding:60px 0; }
   .insight-card { display:none; }
   .grid-2, .grid-3, .grid-4, .grid-5, .summary-grid { grid-template-columns:repeat(2,1fr); }
+  .admin-kpis { grid-template-columns:repeat(3,1fr); }
   .search-results { grid-template-columns:1fr; }
   .profile-grid { grid-template-columns:1fr; }
   .creator-grid { grid-template-columns:1fr; }
@@ -248,21 +267,45 @@ h1 span { color: var(--lime); }
 }
 @media(max-width:600px) {
   .container { width:min(100% - 26px, 1180px); }
-  .nav-actions .btn-light { display:none; }
+  .nav-inner { height:64px; }
+  .nav.open .nav-links { top:64px; }
+  .nav.open .nav-actions { grid-template-columns:1fr; top:482px; }
+  .brand-mark { width:32px; height:32px; border-radius:10px; }
+  .brand-mark svg { width:20px; height:20px; }
   .hero-inner { padding:48px 0; }
-  h1 { font-size:40px; }
+  h1 { font-size:38px; }
+  .hero-copy { font-size:16px; }
+  .search-box { margin-top:22px; border-radius:13px; }
+  .search-box input { padding:10px 11px; }
   .hero-meta { gap:12px; flex-wrap:wrap; }
   .search-box .btn { padding:11px; }
   .search-box .btn span { display:none; }
+  .feature-pills span, .quick-filters button { font-size:11px; }
+  .search-result { align-items:flex-start; }
+  .firm-stats { grid-template-columns:1fr; }
   .section { padding:52px 0; }
   .section-head { align-items:start; flex-direction:column; gap:9px; }
   .grid-2, .grid-3, .grid-4, .grid-5, .summary-grid, .form-grid, .rule-grid, .profile-prefs { grid-template-columns:1fr; }
+  .admin-kpis { grid-template-columns:1fr 1fr; }
+  .admin-row { align-items:flex-start; }
   .trust-inner { display:grid; grid-template-columns:1fr 1fr; gap:22px; }
   .page-head h1 { font-size:35px; }
   .toolbar { flex-direction:column; }
+  .compare-summary { flex-direction:column; }
+  .compare-chip { border-radius:12px; justify-content:space-between; }
+  .compare { min-width:720px; }
+  .compare th, .compare td { padding:13px; }
   .profile-main { flex-wrap:wrap; }
   .profile-actions { width:100%; margin-left:0; }
+  .profile-actions .btn { flex:1; }
+  .profile-main h1 { font-size:31px; }
+  .tabs { overflow:auto; }
+  .tab { white-space:nowrap; }
   .account-row { grid-template-columns:1fr 1fr; }
   .account-row > :nth-child(4) { grid-column:1/-1; }
+  .result-box { padding:18px; }
+  .result-value { font-size:28px; }
+  .modal { max-height:92vh; overflow:auto; }
+  .brand-kit img { max-width:280px; }
   .footer-grid { grid-template-columns:1fr; }
 }

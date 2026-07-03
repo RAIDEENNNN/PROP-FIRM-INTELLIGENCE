@@ -526,9 +526,13 @@
       "founded": 2023,
       "platforms": "MT4, MT5, Tradovate",
       "website": "https://traddoo.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=traddoo.com",
+      "logoUrl": "/assets/logos/traddoo.svg",
       "affiliateUrl": "https://example.com/affiliate/traddoo",
-      "verified": false
+      "verified": false,
+      "aliases": [
+        "traddo",
+        "traddoo prop firm"
+      ]
     },
     {
       "id": "skilled-funded-traders",
@@ -547,9 +551,14 @@
       "founded": 2022,
       "platforms": "MT4, MT5",
       "website": "https://skilledfundedtraders.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=skilledfundedtraders.com",
+      "logoUrl": "/assets/logos/skilled-funded-traders.svg",
       "affiliateUrl": "https://example.com/affiliate/skilled-funded-traders",
-      "verified": false
+      "verified": false,
+      "aliases": [
+        "skill funded trader",
+        "skilled funded trader",
+        "sft"
+      ]
     },
     {
       "id": "bespoke-funding-program",
@@ -1266,10 +1275,14 @@
       "founded": 2022,
       "platforms": "MT4, MT5",
       "website": "https://fundedengineer.com",
-      "logoUrl": "https://www.google.com/s2/favicons?sz=128&domain=fundedengineer.com",
+      "logoUrl": "/assets/logos/funded-engineer.svg",
       "affiliateUrl": "https://example.com/affiliate/funded-engineer",
       "verified": false,
-      "status": "verify"
+      "status": "verify",
+      "aliases": [
+        "funded engineer",
+        "the funded engineer"
+      ]
     },
     {
       "id": "we-master-trade",
@@ -1508,6 +1521,7 @@
   "dashboardAccounts": [
     {
       "id": 1,
+      "userId": "user-demo",
       "firm": "FTMO",
       "account": "$100,000 Challenge",
       "type": "Challenge",
@@ -1517,6 +1531,7 @@
     },
     {
       "id": 2,
+      "userId": "user-demo",
       "firm": "Topstep",
       "account": "$50,000 Express",
       "type": "Funded",
@@ -1614,10 +1629,11 @@
       "id": "user-demo",
       "name": "Demo Trader",
       "email": "demo@fundscope.local",
-      "password": "demo123",
+      "passwordHash": "scrypt:81687620785ddffbe1b69df5bfcf5c49:41101fcb88ff76a23c6e25e36642449e4bcf45efb50ea5be7183f0ab96a60fea045868ffb70a0cf9b516b25deaa433dbc5820cc4a720eacec55ca9a8f1262db1",
       "createdAt": "2026-06-29T12:00:00.000Z"
     }
   ],
+  "sessions": [],
   "profiles": [
     {
       "userId": "user-demo",
