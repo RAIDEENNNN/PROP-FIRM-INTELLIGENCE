@@ -1,19 +1,32 @@
-<svg width="640" height="180" viewBox="0 0 640 180" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<svg width="720" height="220" viewBox="0 0 720 220" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">FundScope logo</title>
-  <desc id="desc">A compass mark beside the FundScope wordmark.</desc>
-  <rect width="640" height="180" rx="36" fill="#171B35"/>
-  <g transform="translate(42 34)">
-    <rect width="112" height="112" rx="30" fill="url(#markGradient)"/>
-    <circle cx="56" cy="56" r="34" stroke="white" stroke-opacity=".58" stroke-width="7"/>
-    <path d="M75.5 36.5 64.8 64.8 36.5 75.5 47.2 47.2 75.5 36.5Z" fill="#FFCA5C" stroke="white" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M56 17v12M56 83v12M17 56h12M83 56h12" stroke="white" stroke-width="7" stroke-linecap="round"/>
+  <desc id="desc">A shield-shaped scope mark with a golden trading signal beside the FundScope wordmark.</desc>
+  <rect width="720" height="220" rx="42" fill="#0B1024"/>
+  <circle cx="618" cy="40" r="156" fill="#4F46E5" opacity=".18"/>
+  <circle cx="94" cy="180" r="120" fill="#FFCA5C" opacity=".1"/>
+  <g transform="translate(50 44)">
+    <rect width="132" height="132" rx="36" fill="url(#tileGradient)"/>
+    <path d="M66 17 105 33.2v32.4c0 25-16 44.7-39 53.4-23-8.7-39-28.4-39-53.4V33.2L66 17Z" fill="#11142A" fill-opacity=".42" stroke="white" stroke-opacity=".18" stroke-width="2"/>
+    <circle cx="66" cy="67" r="36" stroke="white" stroke-opacity=".62" stroke-width="7"/>
+    <circle cx="66" cy="67" r="18" stroke="white" stroke-opacity=".22" stroke-width="5"/>
+    <path d="M86.2 46.8 73.1 73.1 46.8 86.2 59.9 59.9 86.2 46.8Z" fill="#FFCA5C" stroke="white" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M66 24v15M66 95v15M24 67h15M93 67h15" stroke="white" stroke-width="7" stroke-linecap="round"/>
   </g>
-  <text x="182" y="83" fill="white" font-family="Manrope, Arial, sans-serif" font-size="48" font-weight="800" letter-spacing="-2.4">FundScope</text>
-  <text x="184" y="121" fill="#ADB2C8" font-family="DM Sans, Arial, sans-serif" font-size="20" font-weight="600">Prop firm intelligence for serious traders</text>
+  <text x="216" y="101" fill="white" font-family="Manrope, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="-3">FundScope</text>
+  <text x="219" y="141" fill="#ADB2C8" font-family="DM Sans, Arial, sans-serif" font-size="21" font-weight="700">Prop firm intelligence for serious traders</text>
+  <g transform="translate(220 160)">
+    <rect width="102" height="28" rx="14" fill="#171B35" stroke="#303552"/>
+    <text x="18" y="19" fill="#FFCA5C" font-family="DM Sans, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing=".9">COMPARE</text>
+    <rect x="114" width="86" height="28" rx="14" fill="#171B35" stroke="#303552"/>
+    <text x="132" y="19" fill="#B9B5FF" font-family="DM Sans, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing=".9">TRACK</text>
+    <rect x="212" width="76" height="28" rx="14" fill="#171B35" stroke="#303552"/>
+    <text x="230" y="19" fill="#D9E0FF" font-family="DM Sans, Arial, sans-serif" font-size="12" font-weight="800" letter-spacing=".9">RATE</text>
+  </g>
   <defs>
-    <linearGradient id="markGradient" x1="0" y1="0" x2="112" y2="112" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#6D63F1"/>
-      <stop offset="1" stop-color="#3931B7"/>
+    <linearGradient id="tileGradient" x1="0" y1="0" x2="132" y2="132" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C72FF"/>
+      <stop offset=".52" stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#171B35"/>
     </linearGradient>
   </defs>
 </svg>
