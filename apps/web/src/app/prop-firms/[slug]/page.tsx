@@ -11,15 +11,15 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
   if (!firm) return null;
 
   return (
-    <main className="mx-auto max-w-7xl px-5 py-12">
+    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
       <div className="grid gap-6 lg:grid-cols-[0.7fr_0.3fr]">
         <GlassCard className="glow-border">
-          <p className="text-sm uppercase tracking-[0.28em] text-electric">Firm profile</p>
+          <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Firm profile</p>
           <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
             <FirmLogo firm={firm} size="lg" />
             <div>
-              <h1 className="text-5xl font-black text-white">{firm.name}</h1>
-              <p className="mt-2 text-slate-400">
+              <h1 className="text-3xl font-black text-white sm:text-5xl">{firm.name}</h1>
+              <p className="mt-2 text-sm leading-6 text-slate-400 sm:text-base">
                 {firm.country} · {firm.rating.toFixed(1)} ★ · {firm.reviewCount.toLocaleString()} tracked reviews · {firm.verified ? "Verified profile" : "Needs editorial verification"}
               </p>
             </div>
@@ -87,7 +87,26 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           <h2 className="text-xl font-black text-white">Spread sample for {firm.name}</h2>
           <p className="mt-2 text-sm text-slate-400">First rows from the firm × instrument spread matrix. Full searchable matrix lives under Spreads.</p>
         </div>
-        <div className="overflow-x-auto">
+        <div className="grid gap-3 p-4 md:hidden">
+          {firmSpreads.map((record) => (
+            <article key={`${record.symbol}-mobile`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-black text-white">{record.symbol}</p>
+                  <p className="mt-1 text-xs text-slate-500">{record.instrumentName}</p>
+                </div>
+                <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{record.category}</span>
+              </div>
+              <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 p-3">
+                <span className="text-xs text-slate-500">Spread</span>
+                <span className="font-black text-electric">
+                  {record.spread} {record.quoteUnit}
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead className="text-slate-400">
               <tr>

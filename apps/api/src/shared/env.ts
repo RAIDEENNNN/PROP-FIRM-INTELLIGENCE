@@ -12,7 +12,7 @@ const envSchema = z.object({
   FRONTEND_URL: z.string().url().default("http://localhost:3000"),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
-  EMAIL_FROM: z.string().email().optional()
+  EMAIL_FROM: z.string().optional()
 });
 
 export const env = envSchema.parse(process.env);

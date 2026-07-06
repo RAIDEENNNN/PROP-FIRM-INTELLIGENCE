@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { ZodError } from "zod";
 import { env } from "./shared/env";
 import { HttpError } from "./shared/http";
 import { authRouter } from "./modules/auth/auth.routes";
@@ -61,6 +62,14 @@ app.use((_req, _res, next) => {
 });
 
 app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  if (error instanceof ZodError) {
+    return res.status(400).json({
+      ok: false,
+      error: "Validation error",
+      details: error.flatten()
+    });
+  }
+
   if (error instanceof HttpError) {
     return res.status(error.statusCode).json({
       ok: false,

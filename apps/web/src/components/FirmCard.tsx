@@ -6,21 +6,21 @@ import { RiskMeter } from "./RiskMeter";
 export function FirmCard({ firm }: { firm: PropFirm }) {
   return (
     <Link href={`/prop-firms/${firm.slug}`} className="glass glow-border group block rounded-3xl p-5 transition duration-300 hover:-translate-y-1 hover:shadow-glow">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <FirmLogo firm={firm} />
           <div className="min-w-0">
-          <p className="text-xl font-bold text-white">{firm.name}</p>
+            <p className="text-xl font-bold text-white">{firm.name}</p>
             <p className="truncate text-sm text-slate-400">{firm.country} · {firm.rating.toFixed(1)} ★ · {firm.reviewCount.toLocaleString()} reviews</p>
           </div>
         </div>
-        <span className="rounded-2xl bg-white/10 px-3 py-2 text-sm font-bold text-electric">{firm.challengeFee}</span>
+        <span className="w-fit rounded-2xl bg-white/10 px-3 py-2 text-sm font-bold text-electric">{firm.challengeFee}</span>
       </div>
       <p className="mt-5 line-clamp-2 min-h-12 text-sm leading-6 text-slate-300">{firm.summary}</p>
       <div className="mt-5">
         <RiskMeter score={firm.score} />
       </div>
-      <div className="mt-5 grid grid-cols-3 gap-2 text-xs">
+      <div className="mt-5 grid grid-cols-1 gap-2 text-xs min-[420px]:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
           <p className="text-slate-500">Target</p>
           <p className="mt-1 font-bold text-white">{firm.profitTarget}</p>

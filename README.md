@@ -74,7 +74,10 @@ The restart foundation is in place:
 - Full-stack workspace at the root
 - Prisma schema covering the core product data model
 - API route modules for auth, users, trader profiles, firms, compare, spreads, news, alerts, reviews, billing, tools and admin
+- Database-backed auth, user profile, firm search, comparison, watchlist, alerts, reviews, news and spread routes
+- Stripe-ready checkout and billing portal routes
+- Prisma seed for prop firms, rules, accounts, spreads, news and optional admin user
 - Working calculator endpoint logic for lot size, drawdown and profit target
 - Next.js dark-mode UI shell with landing, dashboard, prop firm directory/profile, compare, spreads, news, tools, pricing, auth, legal and admin pages
 
-The next engineering pass should connect the placeholder API contracts to Prisma, add real authentication, seed prop firm data and wire the frontend to backend endpoints.
+See [docs/production-launch.md](/docs/production-launch.md) for the deployment/key setup checklist.

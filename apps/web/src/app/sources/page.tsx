@@ -5,10 +5,10 @@ export default function SourcesPage() {
   const readiness = getSourceReadiness();
 
   return (
-    <main className="mx-auto max-w-7xl px-5 py-12">
-      <p className="text-sm uppercase tracking-[0.28em] text-electric">Live source plugins</p>
-      <h1 className="mt-3 max-w-5xl text-4xl font-black text-white md:text-6xl">Built to plug into real market, news, review and payment sources.</h1>
-      <p className="mt-5 max-w-4xl text-lg leading-8 text-slate-300">
+    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Live source plugins</p>
+      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-4xl md:text-6xl">Built to plug into real market, news, review and payment sources.</h1>
+      <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
         FundedScope launches with a source registry: public crypto market data can attach immediately, while premium FX, synthetic, news, Stripe and moderation feeds activate as soon as keys/accounts are added.
       </p>
 
@@ -34,7 +34,7 @@ export default function SourcesPage() {
       <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {liveSources.map((source) => (
           <GlassCard key={source.name}>
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.24em] text-slate-500">{source.category}</p>
                 <h2 className="mt-2 text-xl font-black text-white">{source.name}</h2>

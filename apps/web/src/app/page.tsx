@@ -5,14 +5,20 @@ import { featuredFirms } from "../lib/data";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto max-w-7xl px-5 py-16">
+    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-16">
       <section className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.32em] text-electric">Prop firm intelligence platform</p>
-          <h1 className="mt-5 text-5xl font-black leading-tight text-white md:text-7xl">
+          <div className="mb-6 flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] p-2 pr-5 w-fit">
+            <span className="grid h-10 w-10 overflow-hidden rounded-full bg-black">
+              <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" className="h-full w-full object-cover" />
+            </span>
+            <span className="text-xs font-bold uppercase tracking-[0.22em] text-slate-300">Compare · Choose · Fund</span>
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.32em]">Prop firm intelligence platform</p>
+          <h1 className="mt-5 text-4xl font-black leading-tight text-white sm:text-5xl md:text-7xl">
             The trader command center for funded accounts.
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+          <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
             Compare firms, monitor rule changes, track spreads, save alerts, calculate risk and build a funded account strategy with data instead of noise.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -26,13 +32,13 @@ export default function HomePage() {
         </div>
         <CommandPreview />
       </section>
-      <section className="mt-20">
-        <div className="flex items-end justify-between gap-6">
+      <section className="mt-14 sm:mt-20">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
           <div>
             <p className="text-sm uppercase tracking-[0.28em] text-violet">Featured firms</p>
-            <h2 className="mt-2 text-3xl font-black text-white">Searchable, scoreable, watchable.</h2>
+            <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Searchable, scoreable, watchable.</h2>
           </div>
-          <Link href="/prop-firms" className="hidden text-sm font-bold text-electric sm:block">
+          <Link href="/prop-firms" className="text-sm font-bold text-electric">
             View directory →
           </Link>
         </div>

@@ -81,7 +81,50 @@ export function SpreadMatrix() {
             </p>
           </div>
         </div>
-        <div className="max-h-[760px] overflow-auto">
+        <div className="grid max-h-[760px] gap-3 overflow-auto p-4 md:hidden">
+          {filteredRecords.slice(0, 80).map((record) => {
+            const firm = propFirms.find((item) => item.slug === record.firmSlug) ?? propFirms[0];
+            return (
+              <article key={`${record.firmSlug}-${record.symbol}-mobile`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    {firm ? <FirmLogo firm={firm} size="sm" /> : null}
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-white">{record.firmName}</p>
+                      <p className="text-xs text-slate-500">{record.category}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`shrink-0 rounded-full px-3 py-1 text-xs ${
+                      record.status === "Normal"
+                        ? "bg-success/15 text-success"
+                        : record.status === "Watch"
+                          ? "bg-warning/15 text-warning"
+                          : "bg-danger/15 text-danger"
+                    }`}
+                  >
+                    {record.status}
+                  </span>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl border border-white/10 p-3">
+                    <p className="text-xs text-slate-500">Pair</p>
+                    <p className="mt-1 font-black text-white">{record.symbol}</p>
+                    <p className="mt-1 text-xs text-slate-500">{record.instrumentName}</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 p-3">
+                    <p className="text-xs text-slate-500">Spread</p>
+                    <p className="mt-1 font-black text-electric">
+                      {record.spread} {record.quoteUnit}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">{record.source}</p>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+        <div className="hidden max-h-[760px] overflow-auto md:block">
           <table className="w-full min-w-[940px] text-left text-sm">
             <thead className="sticky top-0 z-10 bg-midnight text-slate-400">
               <tr>
