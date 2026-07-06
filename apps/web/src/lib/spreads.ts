@@ -1,12 +1,12 @@
 import { propFirms, type PropFirm } from "./data";
 
-export type InstrumentCategory = "Forex" | "Crypto" | "Synthetic";
+export type InstrumentCategory = "Forex" | "Commodities" | "Indices" | "Crypto" | "Synthetic";
 
 export type Instrument = {
   symbol: string;
   name: string;
   category: InstrumentCategory;
-  quoteUnit: "pips" | "points" | "bps";
+  quoteUnit: "pips";
   baseline: number;
   sessionRisk: "Low" | "Medium" | "High";
 };
@@ -20,7 +20,7 @@ export type SpreadRecord = {
   spread: number;
   quoteUnit: Instrument["quoteUnit"];
   source: "Indicative baseline" | "Live feed ready";
-  status: "Normal" | "Watch" | "Wide";
+  status: "Normal" | "Medium" | "Wide";
   updatedAt: string;
 };
 
@@ -92,6 +92,54 @@ const forexExotics: Instrument[] = [
   sessionRisk: "High" as const
 }));
 
+const commodityPairs: Instrument[] = [
+  ["XAUUSD", "Gold / US Dollar", 28, "High"],
+  ["XAGUSD", "Silver / US Dollar", 2.8, "High"],
+  ["XPTUSD", "Platinum / US Dollar", 34, "High"],
+  ["XPDUSD", "Palladium / US Dollar", 62, "High"],
+  ["USOIL", "WTI Crude Oil", 0.045, "High"],
+  ["UKOIL", "Brent Crude Oil", 0.05, "High"],
+  ["NATGAS", "Natural Gas", 0.014, "High"],
+  ["COPPER", "Copper", 0.004, "Medium"],
+  ["COCOA", "Cocoa CFD", 5.8, "High"],
+  ["COFFEE", "Coffee CFD", 0.45, "High"],
+  ["SUGAR", "Sugar CFD", 0.04, "Medium"],
+  ["WHEAT", "Wheat CFD", 0.75, "Medium"]
+].map(([symbol, name, baseline, sessionRisk]) => ({
+  symbol: String(symbol),
+  name: String(name),
+  category: "Commodities" as const,
+  quoteUnit: "pips" as const,
+  baseline: Number(baseline),
+  sessionRisk: sessionRisk as Instrument["sessionRisk"]
+}));
+
+const indexPairs: Instrument[] = [
+  ["NAS100", "US Tech 100", 1.5, "High"],
+  ["US30", "Wall Street 30", 3.2, "High"],
+  ["SPX500", "US 500", 0.6, "Medium"],
+  ["US500", "US 500 CFD", 0.6, "Medium"],
+  ["US2000", "US Russell 2000", 0.8, "Medium"],
+  ["GER40", "Germany 40", 1.2, "High"],
+  ["UK100", "UK 100", 1.1, "Medium"],
+  ["FRA40", "France 40", 1.0, "Medium"],
+  ["EU50", "Euro Stoxx 50", 1.0, "Medium"],
+  ["JPN225", "Japan 225", 8.5, "High"],
+  ["AUS200", "Australia 200", 1.3, "Medium"],
+  ["HK50", "Hong Kong 50", 6.0, "High"],
+  ["CHINA50", "China A50", 7.5, "High"],
+  ["ES35", "Spain 35", 5.0, "Medium"],
+  ["IT40", "Italy 40", 7.0, "Medium"],
+  ["NETH25", "Netherlands 25", 0.35, "Medium"]
+].map(([symbol, name, baseline, sessionRisk]) => ({
+  symbol: String(symbol),
+  name: String(name),
+  category: "Indices" as const,
+  quoteUnit: "pips" as const,
+  baseline: Number(baseline),
+  sessionRisk: sessionRisk as Instrument["sessionRisk"]
+}));
+
 const cryptoPairs: Instrument[] = [
   ["BTCUSD", "Bitcoin / US Dollar", 18],
   ["ETHUSD", "Ethereum / US Dollar", 2.2],
@@ -109,7 +157,7 @@ const cryptoPairs: Instrument[] = [
   symbol: String(symbol),
   name: String(name),
   category: "Crypto" as const,
-  quoteUnit: "points" as const,
+  quoteUnit: "pips" as const,
   baseline: Number(baseline),
   sessionRisk: "High" as const
 }));
@@ -133,12 +181,20 @@ const syntheticPairs: Instrument[] = [
   symbol: String(symbol),
   name: String(name),
   category: "Synthetic" as const,
-  quoteUnit: "points" as const,
+  quoteUnit: "pips" as const,
   baseline: Number(baseline),
   sessionRisk: "High" as const
 }));
 
-export const instruments = [...forexMajors, ...forexMinors, ...forexExotics, ...cryptoPairs, ...syntheticPairs];
+export const instruments = [
+  ...forexMajors,
+  ...forexMinors,
+  ...forexExotics,
+  ...commodityPairs,
+  ...indexPairs,
+  ...cryptoPairs,
+  ...syntheticPairs
+];
 
 function firmSpreadFactor(firm: PropFirm) {
   const scoreFactor = 1 + (90 - firm.score) / 140;
@@ -155,7 +211,7 @@ function deterministicNudge(seed: string) {
 
 function statusFor(spread: number, baseline: number): SpreadRecord["status"] {
   if (spread > baseline * 1.45) return "Wide";
-  if (spread > baseline * 1.2) return "Watch";
+  if (spread > baseline * 1.2) return "Medium";
   return "Normal";
 }
 
@@ -165,7 +221,17 @@ export function buildSpreadRecords() {
   return propFirms.flatMap((firm) =>
     instruments.map((instrument) => {
       const categoryPenalty =
-        instrument.category === "Synthetic" ? 1.35 : instrument.category === "Crypto" ? 1.2 : instrument.sessionRisk === "High" ? 1.18 : 1;
+        instrument.category === "Synthetic"
+          ? 1.35
+          : instrument.category === "Commodities"
+            ? 1.28
+            : instrument.category === "Crypto"
+              ? 1.2
+              : instrument.category === "Indices"
+                ? 1.12
+                : instrument.sessionRisk === "High"
+                  ? 1.18
+                  : 1;
       const spread = Number((instrument.baseline * firmSpreadFactor(firm) * categoryPenalty * deterministicNudge(`${firm.slug}-${instrument.symbol}`)).toFixed(instrument.baseline < 1 ? 3 : 2));
 
       return {
@@ -191,6 +257,8 @@ export const spreadStats = {
   instruments: instruments.length,
   records: spreadRecords.length,
   forexPairs: instruments.filter((item) => item.category === "Forex").length,
+  commodityPairs: instruments.filter((item) => item.category === "Commodities").length,
+  indexPairs: instruments.filter((item) => item.category === "Indices").length,
   cryptoPairs: instruments.filter((item) => item.category === "Crypto").length,
   syntheticPairs: instruments.filter((item) => item.category === "Synthetic").length
 };

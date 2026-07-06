@@ -81,3 +81,16 @@ The restart foundation is in place:
 - Next.js dark-mode UI shell with landing, dashboard, prop firm directory/profile, compare, spreads, news, tools, pricing, auth, legal and admin pages
 
 See [docs/production-launch.md](/docs/production-launch.md) for the deployment/key setup checklist.
+
+## Product specification pack
+
+- [UI wireframes](/docs/ui-wireframes.md)
+- [Database ERD](/docs/database-erd.md)
+- [API contract and examples](/docs/api-contract.md)
+- [Scoring formulas](/docs/scoring-formulas.md)
+- [Role permissions](/docs/permissions.md)
+- [Precise MVP timeline](/docs/mvp-timeline.md)
+- [Sample data guide](/docs/sample-data.md)
+- [Testing checklist](/docs/testing-checklist.md)
+- [Professional legal copy drafts](/docs/legal-copy.md)
+- [Investor and business model](/docs/investor-business-model.md)

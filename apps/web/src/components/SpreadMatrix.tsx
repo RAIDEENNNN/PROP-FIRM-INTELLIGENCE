@@ -6,7 +6,7 @@ import { spreadRecords, spreadStats, type InstrumentCategory } from "../lib/spre
 import { FirmLogo } from "./FirmLogo";
 import { GlassCard } from "./GlassCard";
 
-const categories: Array<"All" | InstrumentCategory> = ["All", "Forex", "Crypto", "Synthetic"];
+const categories: Array<"All" | InstrumentCategory> = ["All", "Forex", "Commodities", "Indices", "Crypto", "Synthetic"];
 
 export function SpreadMatrix() {
   const [query, setQuery] = useState("");
@@ -43,7 +43,7 @@ export function SpreadMatrix() {
         </GlassCard>
         <GlassCard>
           <p className="text-sm text-slate-400">Categories</p>
-          <p className="mt-2 text-3xl font-black text-white">FX · Crypto · Synthetic</p>
+          <p className="mt-2 text-3xl font-black text-white">FX · Metals · Indices · Crypto · Synthetic</p>
         </GlassCard>
       </div>
 
@@ -52,7 +52,7 @@ export function SpreadMatrix() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white outline-none ring-electric/30 placeholder:text-slate-500 focus:ring-4"
-          placeholder="Search EURUSD, BTCUSD, VIX75, FTMO, Naira Trader..."
+          placeholder="Search XAUUSD, XAGUSD, NAS100, US30, Maven Trading..."
         />
         <select value={firmSlug} onChange={(event) => setFirmSlug(event.target.value)} className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
           <option value="all">Every prop firm</option>
@@ -74,7 +74,7 @@ export function SpreadMatrix() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm uppercase tracking-[0.28em] text-electric">Firm × Pair Matrix</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Every tracked prop firm across forex, crypto and synthetic pairs</h2>
+              <h2 className="mt-2 text-2xl font-black text-white">Every tracked prop firm across forex, metals, indices, crypto and synthetic pairs</h2>
             </div>
             <p className="text-sm text-slate-400">
               Showing {filteredRecords.length.toLocaleString()} rows · indicative until live feed is connected
@@ -98,7 +98,7 @@ export function SpreadMatrix() {
                     className={`shrink-0 rounded-full px-3 py-1 text-xs ${
                       record.status === "Normal"
                         ? "bg-success/15 text-success"
-                        : record.status === "Watch"
+                        : record.status === "Medium"
                           ? "bg-warning/15 text-warning"
                           : "bg-danger/15 text-danger"
                     }`}
@@ -162,7 +162,7 @@ export function SpreadMatrix() {
                         className={`rounded-full px-3 py-1 text-xs ${
                           record.status === "Normal"
                             ? "bg-success/15 text-success"
-                            : record.status === "Watch"
+                            : record.status === "Medium"
                               ? "bg-warning/15 text-warning"
                               : "bg-danger/15 text-danger"
                         }`}

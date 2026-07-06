@@ -56,7 +56,7 @@ const plans = [
 const comparisonRows: Array<[string, string, string, string]> = [
   ["Prop firm directory", "Yes", "Yes", "Yes"],
   ["Every firm profile page", "Yes", "Yes", "Yes"],
-  ["Forex, crypto and synthetic spread matrix", "Preview", "Full", "Full + export"],
+  ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview", "Full", "Full + export"],
   ["Saved firms/watchlist", "No", "Yes", "Team"],
   ["Rule-change alerts", "No", "Yes", "Yes"],
   ["Payout and drawdown dashboard", "No", "Yes", "Team"],
@@ -77,7 +77,7 @@ const reasons = [
   },
   {
     title: "Spreads decide whether a setup is tradable.",
-    copy: "Forex, crypto and synthetic instruments live in one spread intelligence layer instead of scattered screenshots."
+    copy: "Forex, metals, indices, crypto and synthetic instruments live in one spread intelligence layer instead of scattered screenshots."
   },
   {
     title: "Affiliates need data, not just links.",

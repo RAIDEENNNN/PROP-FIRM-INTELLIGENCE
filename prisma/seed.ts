@@ -18,6 +18,8 @@ const challengeTypeMap = {
 
 const categoryMap = {
   Forex: "FOREX",
+  Commodities: "COMMODITIES",
+  Indices: "INDICES",
   Crypto: "CRYPTO",
   Synthetic: "INDICES"
 } as const;
@@ -159,7 +161,7 @@ async function seedSpreads() {
   });
   const idBySymbol = new Map(instrumentIds.map((instrument) => [instrument.symbol, instrument.id]));
 
-  for (const record of spreadRecords.slice(0, 1500)) {
+  for (const record of spreadRecords) {
     const instrumentId = idBySymbol.get(record.symbol);
     if (!instrumentId) continue;
 
@@ -186,11 +188,11 @@ async function seedNews() {
       publishedAt: new Date()
     },
     {
-      title: "Spread matrix baseline added for forex, crypto and synthetic instruments",
-      summary: "Every seeded prop firm now has an indicative spread record across the tracked instrument universe.",
+      title: "Spread matrix baseline added for forex, metals, indices, crypto and synthetic instruments",
+      summary: "Every seeded prop firm now has an indicative spread record across the tracked instrument universe, including XAUUSD, XAGUSD, NAS100 and US30.",
       sourceName: "FundedScope Data",
       affectedFirms: ["all"],
-      affectedSymbols: ["EURUSD", "BTCUSD", "VIX75"],
+      affectedSymbols: ["EURUSD", "XAUUSD", "XAGUSD", "NAS100", "BTCUSD", "VIX75"],
       impactLevel: "MEDIUM" as const,
       publishedAt: new Date()
     }

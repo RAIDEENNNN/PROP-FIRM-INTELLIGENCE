@@ -1,5 +1,7 @@
 # FundedScope Implementation Roadmap
 
+For a more precise day-by-day launch plan, see [mvp-timeline.md](/docs/mvp-timeline.md).
+
 ## Phase 1 — Production foundation
 
 - Install dependencies and verify both workspaces build.
