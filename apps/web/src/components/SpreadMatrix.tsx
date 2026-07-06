@@ -1,0 +1,140 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { propFirms } from "../lib/data";
+import { spreadRecords, spreadStats, type InstrumentCategory } from "../lib/spreads";
+import { FirmLogo } from "./FirmLogo";
+import { GlassCard } from "./GlassCard";
+
+const categories: Array<"All" | InstrumentCategory> = ["All", "Forex", "Crypto", "Synthetic"];
+
+export function SpreadMatrix() {
+  const [query, setQuery] = useState("");
+  const [firmSlug, setFirmSlug] = useState("all");
+  const [category, setCategory] = useState<"All" | InstrumentCategory>("All");
+
+  const filteredRecords = useMemo(() => {
+    const normalized = query.trim().toLowerCase();
+    return spreadRecords
+      .filter((record) => (firmSlug === "all" ? true : record.firmSlug === firmSlug))
+      .filter((record) => (category === "All" ? true : record.category === category))
+      .filter((record) =>
+        normalized
+          ? `${record.firmName} ${record.symbol} ${record.instrumentName} ${record.category}`.toLowerCase().includes(normalized)
+          : true
+      )
+      .slice(0, 350);
+  }, [category, firmSlug, query]);
+
+  return (
+    <div className="mt-8 space-y-6">
+      <div className="grid gap-4 md:grid-cols-4">
+        <GlassCard>
+          <p className="text-sm text-slate-400">Prop firms covered</p>
+          <p className="mt-2 text-3xl font-black text-white">{spreadStats.firms}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm text-slate-400">Instrument universe</p>
+          <p className="mt-2 text-3xl font-black text-white">{spreadStats.instruments}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm text-slate-400">Spread records</p>
+          <p className="mt-2 text-3xl font-black text-white">{spreadStats.records.toLocaleString()}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm text-slate-400">Categories</p>
+          <p className="mt-2 text-3xl font-black text-white">FX · Crypto · Synthetic</p>
+        </GlassCard>
+      </div>
+
+      <div className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4 lg:grid-cols-[1fr_220px_180px]">
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white outline-none ring-electric/30 placeholder:text-slate-500 focus:ring-4"
+          placeholder="Search EURUSD, BTCUSD, VIX75, FTMO, Naira Trader..."
+        />
+        <select value={firmSlug} onChange={(event) => setFirmSlug(event.target.value)} className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
+          <option value="all">Every prop firm</option>
+          {propFirms.map((firm) => (
+            <option key={firm.slug} value={firm.slug}>
+              {firm.name}
+            </option>
+          ))}
+        </select>
+        <select value={category} onChange={(event) => setCategory(event.target.value as "All" | InstrumentCategory)} className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
+          {categories.map((item) => (
+            <option key={item}>{item}</option>
+          ))}
+        </select>
+      </div>
+
+      <GlassCard className="overflow-hidden p-0">
+        <div className="border-b border-white/10 p-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.28em] text-electric">Firm × Pair Matrix</p>
+              <h2 className="mt-2 text-2xl font-black text-white">Every tracked prop firm across forex, crypto and synthetic pairs</h2>
+            </div>
+            <p className="text-sm text-slate-400">
+              Showing {filteredRecords.length.toLocaleString()} rows · indicative until live feed is connected
+            </p>
+          </div>
+        </div>
+        <div className="max-h-[760px] overflow-auto">
+          <table className="w-full min-w-[940px] text-left text-sm">
+            <thead className="sticky top-0 z-10 bg-midnight text-slate-400">
+              <tr>
+                <th className="p-4">Prop firm</th>
+                <th className="p-4">Pair / Instrument</th>
+                <th className="p-4">Category</th>
+                <th className="p-4">Spread</th>
+                <th className="p-4">Status</th>
+                <th className="p-4">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRecords.map((record) => {
+                const firm = propFirms.find((item) => item.slug === record.firmSlug) ?? propFirms[0];
+                return (
+                  <tr key={`${record.firmSlug}-${record.symbol}`} className="border-t border-white/10 transition hover:bg-white/[0.04]">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        {firm ? <FirmLogo firm={firm} size="sm" /> : null}
+                        <span className="font-bold text-white">{record.firmName}</span>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <p className="font-black text-white">{record.symbol}</p>
+                      <p className="text-xs text-slate-500">{record.instrumentName}</p>
+                    </td>
+                    <td className="p-4">
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{record.category}</span>
+                    </td>
+                    <td className="p-4 font-black text-electric">
+                      {record.spread} {record.quoteUnit}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs ${
+                          record.status === "Normal"
+                            ? "bg-success/15 text-success"
+                            : record.status === "Watch"
+                              ? "bg-warning/15 text-warning"
+                              : "bg-danger/15 text-danger"
+                        }`}
+                      >
+                        {record.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-slate-400">{record.source}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </GlassCard>
+    </div>
+  );
+}

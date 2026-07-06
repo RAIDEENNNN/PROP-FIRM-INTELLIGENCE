@@ -1,16 +1,31 @@
 {
-  "name": "fundscope-prop-firm-platform",
+  "name": "fundedscope-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Prop Firm Intelligence Platform with comparison, coupons, giveaways, dashboard tracking and API foundation.",
-  "type": "module",
+  "description": "FundedScope premium trader intelligence platform.",
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "check": "node --check server.js && node --check app.js && node --check storage.js && node --check scripts/migrate-json-to-postgres.js",
-    "db:migrate": "node scripts/migrate-json-to-postgres.js"
+    "dev": "npm run dev --workspace @fundedscope/web",
+    "dev:web": "npm run dev --workspace @fundedscope/web",
+    "dev:api": "npm run dev --workspace @fundedscope/api",
+    "build:web": "npm run build --workspace @fundedscope/web",
+    "build:api": "npm run build --workspace @fundedscope/api",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "npm run lint --workspaces",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
   },
   "dependencies": {
-    "pg": "^8.13.1"
+    "@prisma/client": "^5.20.0",
+    "prisma": "^5.20.0"
+  },
+  "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.8.1",
+    "typescript": "^5.6.3"
   }
 }

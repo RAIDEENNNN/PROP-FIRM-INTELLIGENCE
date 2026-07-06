@@ -1,148 +1,80 @@
-# FundScope — Prop Firm Intelligence Platform
+# FundedScope
 
-FundScope is a prop firm comparison, discount-code, giveaway, and trader dashboard platform.
+FundedScope is being rebuilt as a premium trader intelligence platform: a dark-mode command center for comparing prop firms, monitoring rule changes, tracking spreads/news, saving alerts, calculating risk and managing funded-account progress.
 
-## Run locally
+This repo is now the clean full-stack restart. The old static MVP has been removed from the root.
 
-```bash
-npm start
+## Stack
+
+- Frontend: Next.js, React, TypeScript, Tailwind CSS
+- Backend: Node.js, Express, TypeScript
+- Database: PostgreSQL with Prisma
+- Payments: Stripe-ready billing module
+- Auth target: JWT access/refresh tokens with email verification and password reset
+
+## Project structure
+
+```txt
+apps/
+  web/       Next.js app, dark UI, routes and component system
+  api/       Express API, modular route contracts and calculator logic
+prisma/      PostgreSQL schema for users, firms, rules, spreads, alerts, reviews and billing
+docs/        Product and implementation planning
 ```
 
-Open:
+## Local setup
 
-```text
-http://localhost:48732
-```
+1. Install dependencies:
 
-## Backend API
+   ```bash
+   npm install
+   ```
 
-- `GET /api/health`
-- `GET /api/bootstrap`
-- `GET /api/auth/me`
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `POST /api/auth/logout`
-- `GET /api/admin/setup-status`
-- `POST /api/admin/setup`
-- `GET /api/admin`
-- `POST /api/admin/firms`
-- `PUT /api/admin/firms/:id`
-- `DELETE /api/admin/firms/:id`
-- `POST /api/admin/discount-codes`
-- `POST /api/admin/news`
-- `POST /api/admin/rule-changes`
-- `POST /api/admin/alerts`
-- `GET /api/profiles/me`
-- `PUT /api/profiles/me`
-- `GET /api/firms`
-- `GET /api/firms/:id`
-- `GET /api/discount-codes`
-- `GET /api/giveaways`
-- `POST /api/giveaway-entries`
-- `GET /api/dashboard/accounts`
-- `POST /api/dashboard/accounts`
-- `DELETE /api/dashboard/accounts/:id`
-- `POST /api/affiliate-clicks`
+2. Create environment file:
 
-## Data storage
+   ```bash
+   cp .env.example .env
+   ```
 
-For this backend pass, data is stored server-side in:
+3. Add a PostgreSQL connection string to `.env`.
 
-```text
-data/db.json
-```
+4. Generate Prisma client and run migrations:
 
-New users are stored in `users`, secure session records are stored in `sessions`, user preferences are stored in `profiles`, and dashboard accounts are stored in `dashboardAccounts` with a `userId`.
+   ```bash
+   npm run prisma:generate
+   npm run prisma:migrate
+   ```
 
-Passwords are hashed with Node crypto `scrypt`. Browsers are remembered with an `HttpOnly` `fundscope_session` cookie, not by trusting localStorage. Dashboard accounts and profiles are filtered by the signed-in user, so concurrent users do not see each other’s data.
+5. Run the frontend:
 
-`data/db.json` is blocked from public HTTP access by the Node server. Use the API routes instead.
+   ```bash
+   npm run dev
+   ```
 
-By default, local development uses `data/db.json`.
+6. Run the API in a second terminal:
 
-For production, set `DATABASE_URL` and the app automatically switches to Postgres/Supabase.
+   ```bash
+   npm run dev:api
+   ```
 
-## Supabase/Postgres setup
+## Deploying the frontend
 
-1. Create a Supabase project.
-2. Open Supabase SQL Editor.
-3. Run [database/schema.sql](/database/schema.sql).
-4. Copy your Postgres connection string.
-5. Install dependencies:
+Netlify should use the included [netlify.toml](/netlify.toml):
 
-```bash
-npm install
-```
+- Build command: `npm run build:web`
+- Publish directory: `apps/web/.next`
+- Plugin: `@netlify/plugin-nextjs`
 
-6. Add environment variables:
+For Vercel, set the project root directory to `apps/web`.
 
-```text
-DATABASE_URL=postgresql://postgres.xxx:YOUR_PASSWORD@aws-0-region.pooler.supabase.com:6543/postgres
-ADMIN_EMAILS=you@yourdomain.com
-```
+## Current status
 
-7. Migrate the current JSON data into Postgres:
+The restart foundation is in place:
 
-```bash
-npm run db:migrate
-```
+- Full-stack workspace at the root
+- Prisma schema covering the core product data model
+- API route modules for auth, users, trader profiles, firms, compare, spreads, news, alerts, reviews, billing, tools and admin
+- Working calculator endpoint logic for lot size, drawdown and profit target
+- Next.js dark-mode UI shell with landing, dashboard, prop firm directory/profile, compare, spreads, news, tools, pricing, auth, legal and admin pages
 
-8. Start the app:
-
-```bash
-npm start
-```
-
-Check storage mode:
-
-```text
-/api/health
-```
-
-It should return:
-
-```json
-{ "storage": "postgres" }
-```
-
-If `DATABASE_URL` is missing, it returns `storage: "json"` and keeps using the local JSON file.
-
-## Admin setup
-
-The admin dashboard is available at the in-app `Admin` route after sign-in.
-
-Admin access works in two ways:
-
-1. Set an environment variable before launch:
-
-```text
-ADMIN_EMAILS=you@yourdomain.com,partner@yourdomain.com
-```
-
-Then register/sign in with one of those emails.
-
-2. First-owner setup:
-
-If no admin exists yet and `ADMIN_EMAILS` is empty, sign in with the owner account and open `Admin`. The app will show a “Claim admin access” button. Use this only during initial setup, before public traffic.
-
-Admin can manage:
-
-- Prop firm listings
-- Discount codes
-- News posts
-- Rule-change logs
-- Alerts
-- Feedback visibility and operating stats
-
-## Production roadmap
-
-1. Move `data/db.json` to a managed database before scaling beyond one server.
-2. Expand admin CRUD to reviews, payout proofs, giveaways, and media uploads.
-3. Add upload storage for payout proof screenshots.
-4. Add affiliate redirect links with analytics.
-5. Deploy API and static app to AWS/App Runner/Render/Fly.io with HTTPS.
-6. Add email verification and password reset.
-# PROP-FIRM-INTELLIGENCE
-# PROP-FIRM-INTELLIGENCE
-# PROP-FIRM-INTELLIGENCE
-# PROP-FIRM-INTELLIGENCE
+The next engineering pass should connect the placeholder API contracts to Prisma, add real authentication, seed prop firm data and wire the frontend to backend endpoints.
