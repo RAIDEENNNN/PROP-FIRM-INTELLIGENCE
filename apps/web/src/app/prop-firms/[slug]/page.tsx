@@ -3,12 +3,19 @@ import { GlassCard } from "../../../components/GlassCard";
 import { RiskMeter } from "../../../components/RiskMeter";
 import { propFirms } from "../../../lib/data";
 import { spreadRecords } from "../../../lib/spreads";
+import { getFirmTrust } from "../../../lib/trust";
 
 export default function FirmProfilePage({ params }: { params: { slug: string } }) {
   const firm = propFirms.find((item) => item.slug === params.slug) ?? propFirms[0];
-  const firmSpreads = spreadRecords.filter((record) => record.firmSlug === firm?.slug).slice(0, 8);
+  const trust = firm ? getFirmTrust(firm) : null;
+  const prioritySymbols = ["XAUUSD", "XAGUSD", "NAS100", "US30", "EURUSD", "GBPUSD", "BTCUSD", "ETHUSD"];
+  const firmSpreads = spreadRecords
+    .filter((record) => record.firmSlug === firm?.slug)
+    .sort((a, b) => prioritySymbols.indexOf(a.symbol) - prioritySymbols.indexOf(b.symbol))
+    .filter((record) => prioritySymbols.includes(record.symbol))
+    .slice(0, 8);
 
-  if (!firm) return null;
+  if (!firm || !trust) return null;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
@@ -25,6 +32,17 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             </div>
           </div>
           <p className="mt-4 max-w-3xl text-slate-300">{firm.summary}</p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-bold ${
+                trust.confidenceTone === "success" ? "bg-success/15 text-success" : "bg-warning/15 text-warning"
+              }`}
+            >
+              {trust.confidence}
+            </span>
+            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Last checked {trust.lastChecked}</span>
+            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Source: {trust.sourceLabel}</span>
+          </div>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 p-4">
               <p className="text-sm text-slate-400">Challenge fee</p>
@@ -57,8 +75,65 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
               Last rule check: <span className="font-bold text-white">{firm.lastRuleUpdate}</span>
             </p>
           </div>
-          <button className="mt-8 w-full rounded-2xl bg-white px-5 py-3 font-bold text-void">Visit firm</button>
+          <a
+            href={`https://${firm.domain}`}
+            target="_blank"
+            rel="noreferrer sponsored"
+            className="mt-8 block w-full rounded-2xl bg-white px-5 py-3 text-center font-bold text-void"
+          >
+            Visit firm / get code
+          </a>
           <button className="mt-3 w-full rounded-2xl border border-white/10 px-5 py-3 font-bold text-white">Save alert</button>
+          <p className="mt-3 text-xs leading-5 text-slate-500">This outbound link may be an affiliate link. FundedScope scoring stays editorial and comparison-led.</p>
+        </GlassCard>
+      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+        <GlassCard className="lg:col-span-2">
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">FundedScope verdict</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Who {firm.name} is best for</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            {trust.bestFor.map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm font-bold text-white">
+                {item}
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-sm leading-7 text-slate-300">{trust.methodology}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-warning">Before buying</p>
+          <h2 className="mt-2 text-2xl font-black text-white">What to check</h2>
+          <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-300">
+            {trust.cautions.map((item) => (
+              <li key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </GlassCard>
+      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <GlassCard>
+          <h2 className="text-xl font-black text-white">Pros</h2>
+          <ul className="mt-4 space-y-3 text-sm text-slate-300">
+            {trust.pros.map((item) => (
+              <li key={item} className="flex gap-3">
+                <span className="text-success">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </GlassCard>
+        <GlassCard>
+          <h2 className="text-xl font-black text-white">Cons / risk notes</h2>
+          <ul className="mt-4 space-y-3 text-sm text-slate-300">
+            {trust.cons.map((item) => (
+              <li key={item} className="flex gap-3">
+                <span className="text-warning">!</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
         </GlassCard>
       </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-3">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CommandPreview } from "../components/CommandPreview";
 import { FirmCard } from "../components/FirmCard";
 import { featuredFirms } from "../lib/data";
+import { trustPrinciples } from "../lib/trust";
 
 export default function HomePage() {
   return (
@@ -31,6 +32,27 @@ export default function HomePage() {
           </div>
         </div>
         <CommandPreview />
+      </section>
+      <section className="mt-14 sm:mt-20">
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.28em] text-electric">Why traders trust it</p>
+              <h2 className="mt-2 max-w-3xl text-2xl font-black text-white sm:text-3xl">Comparison data with sources, cautions and clear commercial disclosure.</h2>
+            </div>
+            <Link href="/legal/how-we-score" className="w-fit rounded-full border border-white/10 px-5 py-3 text-sm font-bold text-white hover:text-electric">
+              Read scoring method →
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {trustPrinciples.map((item) => (
+              <div key={item.title} className="rounded-3xl border border-white/10 bg-void/60 p-5">
+                <h3 className="text-lg font-black text-white">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-400">{item.copy}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
       <section className="mt-14 sm:mt-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">

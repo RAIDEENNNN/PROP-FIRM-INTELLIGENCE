@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { propFirms } from "../lib/data";
+import { trustPrinciples } from "../lib/trust";
 import { FirmCard } from "./FirmCard";
 
 const markets = ["All markets", "Forex", "Crypto", "Synthetic", "Futures", "Indices", "Commodities"];
@@ -48,6 +49,15 @@ export function PropFirmDirectory() {
           <option>Monthly</option>
         </select>
         <div className="rounded-2xl bg-electric px-5 py-3 text-center font-bold text-void">{firms.length} firms</div>
+      </div>
+
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        {trustPrinciples.map((item) => (
+          <div key={item.title} className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
+            <p className="text-sm font-black text-white">{item.title}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-400">{item.copy}</p>
+          </div>
+        ))}
       </div>
 
       <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
