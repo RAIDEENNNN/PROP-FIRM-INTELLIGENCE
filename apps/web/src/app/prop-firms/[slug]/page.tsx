@@ -1,6 +1,7 @@
 import { FirmLogo } from "../../../components/FirmLogo";
 import { GlassCard } from "../../../components/GlassCard";
 import { RiskMeter } from "../../../components/RiskMeter";
+import { ScoreBreakdown } from "../../../components/ScoreBreakdown";
 import { propFirms } from "../../../lib/data";
 import { spreadRecords } from "../../../lib/spreads";
 import { getFirmTrust } from "../../../lib/trust";
@@ -100,6 +101,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           </div>
           <p className="mt-5 text-sm leading-7 text-slate-300">{trust.methodology}</p>
         </GlassCard>
+        <ScoreBreakdown firm={firm} />
+      </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <GlassCard>
           <p className="text-sm uppercase tracking-[0.28em] text-warning">Before buying</p>
           <h2 className="mt-2 text-2xl font-black text-white">What to check</h2>

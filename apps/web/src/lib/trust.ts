@@ -12,10 +12,107 @@ function feeNumber(fee: string) {
   return match ? Number(match[0]) : null;
 }
 
+function percentNumber(value: string) {
+  const match = value.match(/\d+(\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
+
 function checkedDate(firm: PropFirm) {
   const date = new Date(`${firm.lastRuleUpdate}T00:00:00.000Z`);
   if (Number.isNaN(date.getTime())) return firm.lastRuleUpdate;
   return dateFormatter.format(date);
+}
+
+function daysSinceChecked(firm: PropFirm) {
+  const checked = new Date(`${firm.lastRuleUpdate}T00:00:00.000Z`).getTime();
+  if (Number.isNaN(checked)) return 90;
+  const now = new Date("2026-07-07T00:00:00.000Z").getTime();
+  return Math.max(0, Math.round((now - checked) / 86_400_000));
+}
+
+export const scoreWeights = [
+  { key: "rules", label: "Rule fairness", max: 20, explanation: "Drawdown style, challenge structure, trading restrictions and how forgiving the rules are." },
+  { key: "payouts", label: "Payout quality", max: 20, explanation: "Payout speed, payout clarity and whether the payout structure looks trader-friendly." },
+  { key: "trust", label: "Trust & reviews", max: 25, explanation: "Review volume, public reputation, verification state and broad market confidence signals." },
+  { key: "pricing", label: "Pricing/value", max: 15, explanation: "Challenge fee versus account size, refund positioning, scaling and accessibility." },
+  { key: "markets", label: "Markets & spreads", max: 10, explanation: "Forex, metals, indices, crypto/futures coverage and spread intelligence availability." },
+  { key: "freshness", label: "Transparency/freshness", max: 10, explanation: "How recently rules were checked and how clearly the profile can be sourced." }
+] as const;
+
+type ScoreKey = (typeof scoreWeights)[number]["key"];
+
+function scoreWeaknesses(firm: PropFirm): Record<ScoreKey, number> {
+  const fee = feeNumber(firm.challengeFee);
+  const dailyDd = percentNumber(firm.dailyDrawdown);
+  const maxDd = percentNumber(firm.maxDrawdown);
+  const feeWeakness = fee === null ? 0.45 : fee <= 60 ? 0.12 : fee <= 100 ? 0.24 : fee <= 160 ? 0.38 : 0.55;
+  const marketCount = firm.markets.length;
+  const checkedAge = daysSinceChecked(firm);
+
+  return {
+    rules:
+      0.18 +
+      (/Strict/i.test(firm.tags.join(" ")) ? 0.2 : 0) +
+      (/Trailing/i.test(firm.maxDrawdown) ? 0.22 : 0) +
+      (/Plan based|specific/i.test(`${firm.dailyDrawdown} ${firm.maxDrawdown}`) ? 0.12 : 0) +
+      (dailyDd !== null && dailyDd < 4 ? 0.14 : 0) +
+      (maxDd !== null && maxDd < 8 ? 0.1 : 0),
+    payouts: /on demand|weekly|fast|5 days/i.test(`${firm.payoutFrequency} ${firm.payout}`)
+      ? 0.1
+      : /bi-weekly|14 days|8 days/i.test(`${firm.payoutFrequency} ${firm.payout}`)
+        ? 0.22
+        : 0.42,
+    trust:
+      (firm.verified ? 0.08 : 0.5) +
+      (firm.rating >= 4.6 ? 0.04 : firm.rating >= 4.2 ? 0.16 : 0.3) +
+      (firm.reviewCount >= 9000 ? 0.04 : firm.reviewCount >= 3500 ? 0.12 : 0.24),
+    pricing: feeWeakness + (/scaling|\$4M/i.test(`${firm.maxAccount} ${firm.tags.join(" ")}`) ? -0.08 : 0),
+    markets: marketCount >= 4 ? 0.08 : marketCount === 3 ? 0.18 : marketCount === 2 ? 0.32 : 0.46,
+    freshness: !firm.verified ? 0.45 : checkedAge <= 21 ? 0.08 : checkedAge <= 45 ? 0.18 : checkedAge <= 75 ? 0.3 : 0.45
+  };
+}
+
+export function getScoreBreakdown(firm: PropFirm) {
+  const deductionBudget = Math.max(0, 100 - firm.score);
+  const weaknesses = scoreWeaknesses(firm);
+  const weightedWeaknesses = scoreWeights.map((item) => ({
+    ...item,
+    weakness: Math.max(0.01, weaknesses[item.key]) * item.max
+  }));
+  const weaknessTotal = weightedWeaknesses.reduce((sum, item) => sum + item.weakness, 0);
+
+  const rows = weightedWeaknesses.map((item) => {
+    const deduction = weaknessTotal > 0 ? (deductionBudget * item.weakness) / weaknessTotal : deductionBudget / scoreWeights.length;
+    const earned = Number(Math.max(0, item.max - deduction).toFixed(1));
+    return {
+      key: item.key,
+      label: item.label,
+      earned,
+      max: item.max,
+      explanation: item.explanation,
+      percent: Math.round((earned / item.max) * 100)
+    };
+  });
+
+  const roundedTotal = Math.round(rows.reduce((sum, row) => sum + row.earned, 0));
+  const correction = firm.score - roundedTotal;
+  if (correction !== 0) {
+    const largest = rows.reduce((bestIndex, row, index) => (row.max > rows[bestIndex]!.max ? index : bestIndex), 0);
+    const selected = rows[largest]!;
+    const corrected = Number(Math.min(selected.max, Math.max(0, selected.earned + correction)).toFixed(1));
+    rows[largest] = {
+      ...selected,
+      earned: corrected,
+      percent: Math.round((corrected / selected.max) * 100)
+    };
+  }
+
+  return {
+    total: firm.score,
+    max: 100,
+    formula: "Start from 100, then subtract weighted deductions across rules, payouts, trust, pricing, markets/spreads and freshness.",
+    rows
+  };
 }
 
 export function getFirmTrust(firm: PropFirm) {
@@ -70,7 +167,7 @@ export function getFirmTrust(firm: PropFirm) {
     pros,
     cons,
     methodology:
-      "Score blends rules, payout structure, pricing, market access, review volume, transparency and editorial risk flags. Affiliate relationships do not override scoring."
+      "Score starts from 100 and subtracts weighted deductions across rule fairness, payout quality, trust/reviews, pricing/value, market coverage/spreads and transparency freshness. Affiliate relationships do not override scoring."
   };
 }
 

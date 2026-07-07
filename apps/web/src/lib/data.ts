@@ -658,9 +658,13 @@ export const newsEvents = [
 
 export const routes = [
   { href: "/dashboard", label: "Dashboard" },
+  { href: "/trader-dna", label: "Trader DNA" },
   { href: "/prop-firms", label: "Prop Firms" },
+  { href: "/brokers", label: "Brokers" },
   { href: "/compare", label: "Compare" },
+  { href: "/ai", label: "AI" },
   { href: "/spreads", label: "Spreads" },
+  { href: "/gold", label: "Gold" },
   { href: "/news-radar", label: "News Radar" },
   { href: "/sources", label: "Sources" },
   { href: "/tools", label: "Tools" },

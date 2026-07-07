@@ -53,3 +53,61 @@ a {
     linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
   background-size: 48px 48px;
 }
+
+@keyframes market-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes fundedscope-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes progress-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+.market-marquee {
+  animation: market-marquee 34s linear infinite;
+  width: max-content;
+}
+
+.fundedscope-pulse {
+  animation: fundedscope-pulse 2.4s ease-in-out infinite;
+}
+
+.progress-sweep {
+  animation: progress-sweep 1.7s ease-in-out infinite;
+}
+
+.market-marquee:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .market-marquee {
+    animation: none;
+  }
+
+  .fundedscope-pulse,
+  .progress-sweep {
+    animation: none;
+  }
+}

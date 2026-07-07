@@ -1,4 +1,5 @@
 import { GlassCard } from "../../../components/GlassCard";
+import { scoreWeights } from "../../../lib/trust";
 
 const pages: Record<string, { kicker: string; title: string; intro: string; sections: Array<{ title: string; body: string }> }> = {
   "how-we-score": {
@@ -124,6 +125,25 @@ export default function LegalPage({ params }: { params: { slug: string } }) {
         <p className="leading-8 text-slate-300">{page.intro}</p>
       </GlassCard>
       <div className="mt-6 grid gap-4">
+        {params.slug === "how-we-score" ? (
+          <GlassCard>
+            <h2 className="text-xl font-black text-white">Public score weights</h2>
+            <p className="mt-3 leading-8 text-slate-300">
+              The visible score is out of 100. We start from 100 and subtract deductions inside these weighted categories, so visitors can see why a firm scores highly or loses points.
+            </p>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {scoreWeights.map((item) => (
+                <div key={item.key} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-black text-white">{item.label}</p>
+                    <p className="font-black text-electric">{item.max}%</p>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{item.explanation}</p>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        ) : null}
         {page.sections.map((section) => (
           <GlassCard key={section.title}>
             <h2 className="text-xl font-black text-white">{section.title}</h2>

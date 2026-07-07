@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
 
 const plans = [
@@ -7,6 +8,7 @@ const plans = [
     audience: "For traders researching their first challenge.",
     promise: "Stop guessing which firms are worth your attention.",
     cta: "Start free",
+    href: "/sign-up?plan=free",
     features: [
       "Global prop firm directory",
       "Basic side-by-side comparison",
@@ -23,6 +25,7 @@ const plans = [
     audience: "For traders actively buying, passing or managing challenges.",
     promise: "Catch rule changes, spread risk and payout friction before they cost you.",
     cta: "Upgrade to Pro",
+    href: "/sign-up?plan=pro",
     features: [
       "Saved firms and personal watchlist",
       "Rule-change, payout and spread alerts",
@@ -40,6 +43,7 @@ const plans = [
     audience: "For affiliates, educators, communities and trading teams.",
     promise: "Turn prop firm intelligence into reports, content, leads and revenue.",
     cta: "Start business plan",
+    href: "/contact?plan=business",
     features: [
       "Team seats and shared watchlists",
       "API access for firm, rule and spread data",
@@ -92,6 +96,15 @@ const faqs = [
   ["Who is Business for?", "Affiliates, trading educators, Discord communities, prop firm reviewers and teams that need reports, exports or API access."]
 ];
 
+const stickyFeatures = [
+  ["AI that knows you", "Learns from your journal, mistakes, accounts, brokers, markets and goals."],
+  ["Lifetime trading memory", "Your trading history becomes an advantage competitors cannot copy overnight."],
+  ["Weekly AI mentor", "Sunday reviews for discipline, risk, psychology, market fit and improvement."],
+  ["Career progress", "Novice → Intermediate → Professional → Elite → Institutional status layers."],
+  ["Personal statistics", "Best session, worst hour, best broker, emotional pairs, average hold time and strategy quality."],
+  ["Trader identity", "Build toward becoming a FundedScope Pro trader, not just another challenge buyer."]
+];
+
 export default function PricingPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
@@ -126,10 +139,25 @@ export default function PricingPage() {
               ))}
             </div>
 
-            <button className="mt-8 w-full rounded-2xl bg-white px-4 py-3 font-bold text-void">{plan.cta}</button>
+            <Link href={plan.href} className="mt-8 block w-full rounded-2xl bg-white px-4 py-3 text-center font-bold text-void">
+              {plan.cta}
+            </Link>
           </GlassCard>
         ))}
       </div>
+
+      <section className="mt-14">
+        <p className="text-sm uppercase tracking-[0.28em] text-electric">Premium should feel impossible to replace</p>
+        <h2 className="mt-3 max-w-4xl text-3xl font-black text-white">The Memory Advantage: every day FundedScope becomes smarter about that specific trader.</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {stickyFeatures.map(([title, copy]) => (
+            <GlassCard key={title}>
+              <h3 className="text-xl font-black text-white">{title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-400">{copy}</p>
+            </GlassCard>
+          ))}
+        </div>
+      </section>
 
       <section className="mt-14">
         <p className="text-sm uppercase tracking-[0.28em] text-violet">Why traders upgrade</p>

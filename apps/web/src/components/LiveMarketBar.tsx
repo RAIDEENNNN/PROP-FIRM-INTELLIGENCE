@@ -1,0 +1,60 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { fallbackMarkets, type MarketSnapshot } from "../lib/markets";
+
+export function LiveMarketBar() {
+  const [markets, setMarkets] = useState<MarketSnapshot[]>(fallbackMarkets);
+  const [message, setMessage] = useState("Indicative market bar. Live feeds attach when provider keys are connected.");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadMarkets() {
+      try {
+        const response = await fetch("/api/live/markets", { cache: "no-store" });
+        if (!response.ok) return;
+        const payload = (await response.json()) as { markets?: MarketSnapshot[]; message?: string };
+        if (!cancelled && payload.markets?.length) {
+          setMarkets(payload.markets);
+          setMessage(payload.message ?? "Market data loaded.");
+        }
+      } catch {
+        if (!cancelled) setMessage("Indicative market bar. Live provider unavailable.");
+      }
+    }
+
+    void loadMarkets();
+    const interval = window.setInterval(loadMarkets, 30_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, []);
+
+  return (
+    <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-5">
+        <div className="z-10 shrink-0 rounded-full border border-electric/30 bg-void px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-electric">
+          Live market bar
+        </div>
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <div className="market-marquee flex items-center gap-4">
+            {[...markets, ...markets].map((market, index) => (
+              <div key={`${market.symbol}-${index}`} className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-void/70 px-4 py-2">
+                <span className="text-xs font-bold text-slate-400">{market.label}</span>
+                <span className="text-sm font-black text-white">{market.price}</span>
+                <span className={`text-xs font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
+                  {market.change}
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{market.source}</span>
+              </div>
+            ))}
+            <p className="min-w-[360px] shrink-0 text-xs text-slate-500">{message}</p>
+            <p className="min-w-[360px] shrink-0 text-xs text-slate-500">{message}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

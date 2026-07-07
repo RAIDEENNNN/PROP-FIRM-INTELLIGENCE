@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { asyncHandler, sendOk } from "../../shared/http";
 import { prisma } from "../../shared/prisma";
+import { buildScoreBreakdown } from "../../shared/scoring";
 
 export const compareRouter = Router();
 
@@ -36,7 +37,8 @@ compareRouter.post(
     return sendOk(res, {
       firms: firms.map((firm: any) => ({
         ...firm,
-        fitScore: fitScore(firm)
+        fitScore: fitScore(firm),
+        scoreBreakdown: buildScoreBreakdown(firm)
       }))
     });
   })
@@ -64,6 +66,7 @@ compareRouter.post(
         return {
           ...firm,
           recommendationScore: Math.max(0, fitScore(firm, input.payoutPriority) - penalty),
+          scoreBreakdown: buildScoreBreakdown(firm),
           reasons: [
             feeMatch ? "Fee preference matched" : "Fee may be above preference",
             sizeMatch ? "Account size preference matched" : "Account size may need review",

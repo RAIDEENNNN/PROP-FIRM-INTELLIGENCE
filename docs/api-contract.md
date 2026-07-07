@@ -190,7 +190,20 @@ Response:
         "slug": "ftmo",
         "trustScore": "94",
         "rating": "4.8",
-        "payoutFrequency": "Bi-weekly"
+        "payoutFrequency": "Bi-weekly",
+        "scoreBreakdown": {
+          "total": 94,
+          "max": 100,
+          "formula": "Start from 100, then subtract weighted deductions across rules, payouts, trust, pricing, markets/spreads and freshness.",
+          "rows": [
+            { "key": "rules", "label": "Rule fairness", "earned": 18.8, "max": 20 },
+            { "key": "payouts", "label": "Payout quality", "earned": 18.5, "max": 20 },
+            { "key": "trust", "label": "Trust & reviews", "earned": 24.1, "max": 25 },
+            { "key": "pricing", "label": "Pricing/value", "earned": 13.2, "max": 15 },
+            { "key": "markets", "label": "Markets & spreads", "earned": 9.8, "max": 10 },
+            { "key": "freshness", "label": "Transparency/freshness", "earned": 9.6, "max": 10 }
+          ]
+        }
       }
     ],
     "count": 1,
@@ -208,6 +221,35 @@ Response includes:
 - accounts
 - rules
 - verified reviews
+- scoreBreakdown
+
+### `GET /firms/:slug/score`
+
+Response:
+
+```json
+{
+  "ok": true,
+  "data": {
+    "slug": "ftmo",
+    "name": "FTMO",
+    "trustScore": "94",
+    "scoreBreakdown": {
+      "total": 94,
+      "max": 100,
+      "weights": [
+        { "key": "rules", "label": "Rule fairness", "max": 20 },
+        { "key": "payouts", "label": "Payout quality", "max": 20 },
+        { "key": "trust", "label": "Trust & reviews", "max": 25 },
+        { "key": "pricing", "label": "Pricing/value", "max": 15 },
+        { "key": "markets", "label": "Markets & spreads", "max": 10 },
+        { "key": "freshness", "label": "Transparency/freshness", "max": 10 }
+      ],
+      "rows": []
+    }
+  }
+}
+```
 
 ### `GET /firms/:slug/rules/history`
 
@@ -239,6 +281,11 @@ Response:
         "name": "FTMO",
         "slug": "ftmo",
         "fitScore": 89,
+        "scoreBreakdown": {
+          "total": 94,
+          "max": 100,
+          "rows": []
+        },
         "accounts": [],
         "rules": []
       }
@@ -271,6 +318,11 @@ Response:
       {
         "name": "The5ers",
         "recommendationScore": 91,
+        "scoreBreakdown": {
+          "total": 91,
+          "max": 100,
+          "rows": []
+        },
         "reasons": ["Fee preference matched", "Account size preference matched"]
       }
     ]

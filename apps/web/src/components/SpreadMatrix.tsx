@@ -12,6 +12,7 @@ export function SpreadMatrix() {
   const [query, setQuery] = useState("");
   const [firmSlug, setFirmSlug] = useState("all");
   const [category, setCategory] = useState<"All" | InstrumentCategory>("All");
+  const [showMethodology, setShowMethodology] = useState(false);
 
   const filteredRecords = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -67,6 +68,66 @@ export function SpreadMatrix() {
             <option key={item}>{item}</option>
           ))}
         </select>
+      </div>
+
+      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.24em] text-electric">Data transparency</p>
+            <h2 className="mt-1 text-xl font-black text-white">Not sure what these spread numbers mean? Start here.</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowMethodology((value) => !value)}
+            className="rounded-full bg-white px-5 py-3 text-sm font-black text-void"
+          >
+            {showMethodology ? "Hide explanation" : "Explain spreads"}
+          </button>
+        </div>
+        {showMethodology ? (
+          <div className="mt-5">
+            <div className="rounded-3xl border border-electric/20 bg-electric/10 p-5">
+              <p className="text-lg font-black text-white">Simple version</p>
+              <p className="mt-2 max-w-4xl text-sm leading-7 text-slate-300">
+                These spreads are FundedScope estimates until a live broker/prop firm feed confirms them. Use them to compare which firms may be cheaper or more expensive for the same pair — not as a guaranteed live trading quote.
+              </p>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-2xl border border-white/10 bg-void/60 p-4">
+                <p className="font-black text-white">1. Start with the pair</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Gold, EUR/USD, BTC and NAS100 all usually have different spread ranges. We start with a normal range for that instrument.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-void/60 p-4">
+                <p className="font-black text-white">2. Adjust for the firm</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Some firms or account types tend to be more expensive than others, so we adjust the estimate by firm profile.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-void/60 p-4">
+                <p className="font-black text-white">3. Add market risk</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Gold, crypto and news-heavy markets can widen quickly. Higher-risk instruments get a wider expected range.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-void/60 p-4">
+                <p className="font-black text-white">4. Label it clearly</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Normal means expected. Medium means elevated. Wide means expensive enough that traders should double-check before entering.</p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="font-black text-white">What is a pip?</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">A pip is the unit we use here to compare trading cost. Lower spread usually means cheaper entry and exit.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="font-black text-white">Why not exact live price?</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Live spreads change by broker, account type, time of day, news and liquidity. Exact live rows require provider feeds.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="font-black text-white">How to use this</p>
+                <p className="mt-2 text-sm leading-6 text-slate-400">Compare firms, shortlist cheaper options, then confirm the live spread inside the trading platform before placing a trade.</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       <GlassCard className="overflow-hidden p-0">

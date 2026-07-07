@@ -2,6 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { asyncHandler, HttpError, sendOk } from "../../shared/http";
 import { prisma } from "../../shared/prisma";
+import { buildScoreBreakdown } from "../../shared/scoring";
 
 export const firmsRouter = Router();
 
@@ -49,7 +50,15 @@ firmsRouter.get(
         )
       : firms;
 
-    return sendOk(res, { firms: filtered, count: filtered.length, limit: query.limit, offset: query.offset });
+    return sendOk(res, {
+      firms: filtered.map((firm: any) => ({
+        ...firm,
+        scoreBreakdown: buildScoreBreakdown(firm)
+      })),
+      count: filtered.length,
+      limit: query.limit,
+      offset: query.offset
+    });
   })
 );
 
@@ -71,7 +80,28 @@ firmsRouter.get(
     });
 
     if (!firm) throw new HttpError(404, "Prop firm not found");
-    return sendOk(res, { firm });
+    return sendOk(res, { firm: { ...firm, scoreBreakdown: buildScoreBreakdown(firm) } });
+  })
+);
+
+firmsRouter.get(
+  "/:slug/score",
+  asyncHandler(async (req, res) => {
+    const firm = await prisma.propFirm.findUnique({
+      where: { slug: req.params.slug },
+      include: {
+        accounts: true,
+        rules: true
+      }
+    });
+
+    if (!firm) throw new HttpError(404, "Prop firm not found");
+    return sendOk(res, {
+      slug: firm.slug,
+      name: firm.name,
+      trustScore: firm.trustScore,
+      scoreBreakdown: buildScoreBreakdown(firm)
+    });
   })
 );
 
