@@ -25,7 +25,7 @@ export function GoldRiskPlanner() {
   return (
     <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
       <p className="text-sm uppercase tracking-[0.24em] text-electric">Your Gold risk limit</p>
-      <h2 className="mt-2 text-2xl font-black text-white">Account-aware XAUUSD risk</h2>
+      <h2 className="mt-2 text-2xl font-black text-white">Account aware XAUUSD risk</h2>
       <div className="mt-5 grid gap-3 sm:grid-cols-3">
         <label className="text-sm text-slate-400">
           Account balance

@@ -91,7 +91,7 @@ export default function HomePage() {
               Decide Faster.
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              The intelligence platform that helps traders compare prop firms, evaluate brokers, analyze markets and make better trading decisions — all in one place.
+              The intelligence platform that helps traders compare prop firms, evaluate brokers, analyze markets and make better trading decisions  all in one place.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link href="/sign-up" className="rounded-full bg-white px-6 py-3 text-center font-bold text-void shadow-glow">
@@ -171,7 +171,7 @@ export default function HomePage() {
           <p className="text-sm uppercase tracking-[0.28em] text-electric">Today’s Edge</p>
           <h2 className="mt-3 text-3xl font-black text-white">The page traders open every morning.</h2>
           <p className="mt-4 text-sm leading-7 text-slate-300">
-            AI market summary, major news, upcoming events, best prop firm offers, broker spread comparison, risk reminders and personal trading notes — built to become a daily habit.
+            AI market summary, major news, upcoming events, best prop firm offers, broker spread comparison, risk reminders and personal trading notes  built to become a daily habit.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Link href="/dashboard" className="rounded-full bg-white px-5 py-3 text-center font-bold text-void">

@@ -28,7 +28,7 @@ const pages: Record<string, { kicker: string; title: string; intro: string; sect
     kicker: "Editorial policy",
     title: "How FundedScope keeps comparisons useful",
     intro:
-      "Our editorial standard is simple: traders should understand the trade-off before they pay for a challenge. We prioritize clarity, source labeling and correction speed.",
+      "Our editorial standard is simple: traders should understand the trade off before they pay for a challenge. We prioritize clarity, source labeling and correction speed.",
     sections: [
       {
         title: "Independence",

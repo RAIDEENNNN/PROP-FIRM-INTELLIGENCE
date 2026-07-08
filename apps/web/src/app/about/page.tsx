@@ -32,10 +32,10 @@ export default function AboutPage() {
           <div>
             <h2 className="text-2xl font-black text-white">Why FundedScope exists</h2>
             <p className="mt-4 leading-8 text-slate-300">
-              FundedScope is designed as a premium trader intelligence platform: comparison data, rule-change tracking, payout transparency, spread intelligence and tools that help traders avoid bad-fit challenges.
+              FundedScope is designed as a premium trader intelligence platform: comparison data, rule change tracking, payout transparency, spread intelligence and tools that help traders avoid bad fit challenges.
             </p>
             <p className="mt-4 leading-8 text-slate-300">
-              The mission is to become the trusted research layer between traders and prop firms — clear enough for beginners, detailed enough for serious funded-account shoppers.
+              The mission is to become the trusted research layer between traders and prop firms  clear enough for beginners, detailed enough for serious funded-account shoppers.
             </p>
           </div>
           <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
