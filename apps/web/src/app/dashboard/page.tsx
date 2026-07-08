@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { FirmLogo } from "../../components/FirmLogo";
 import { GlassCard } from "../../components/GlassCard";
@@ -8,6 +9,13 @@ import { dashboardMetrics, featuredFirms, newsEvents } from "../../lib/data";
 import { fallbackMarkets } from "../../lib/markets";
 import { spreadRecords } from "../../lib/spreads";
 import { traderDnaProfile } from "../../lib/trader-dna";
+
+export const metadata: Metadata = {
+  title: "Trader Dashboard & Today's Edge | FundedScope",
+  description: "Start your trading day with market context, Gold risk, watchlists, journal reminders, prop firm alerts and trade readiness.",
+  alternates: { canonical: "/dashboard" },
+  robots: { index: false, follow: true }
+};
 
 const workspaceTabs = ["Gold", "Trader DNA", "Watchlist", "Calendar", "AI Summary", "Journal", "Performance", "News", "Broker Alerts"];
 

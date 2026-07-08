@@ -1,4 +1,25 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
+
+export const metadata: Metadata = {
+  title: "Broker Comparison for Traders | FundedScope",
+  description: "Compare brokers by spreads, commissions, execution notes, assets, trust, regulation and trader fit.",
+  alternates: { canonical: "/brokers" },
+  openGraph: {
+    title: "Broker Comparison for Traders | FundedScope",
+    description: "Broker intelligence for forex, Gold, indices, crypto and prop firm traders.",
+    url: "/brokers",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Broker Comparison for Traders | FundedScope",
+    description: "Broker intelligence for forex, Gold, indices, crypto and prop firm traders.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const brokers = [
   ["IC Markets", "Forex, indices, commodities, crypto", "Raw spread focus", "Live feed ready"],

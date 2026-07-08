@@ -1,4 +1,25 @@
+import type { Metadata } from "next";
 import { PropFirmDirectory } from "../../components/PropFirmDirectory";
+
+export const metadata: Metadata = {
+  title: "Compare Prop Firms Worldwide | FundedScope",
+  description: "Search and compare prop firms worldwide by score, rules, fees, payout speed, drawdown, markets, reviews and spread intelligence.",
+  alternates: { canonical: "/prop-firms" },
+  openGraph: {
+    title: "Compare Prop Firms Worldwide | FundedScope",
+    description: "Search prop firm rules, payout terms, drawdown and score breakdowns in one trusted directory.",
+    url: "/prop-firms",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Compare Prop Firms Worldwide | FundedScope",
+    description: "Search prop firm rules, payout terms, drawdown and score breakdowns in one trusted directory.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 export default function PropFirmsPage() {
   return (

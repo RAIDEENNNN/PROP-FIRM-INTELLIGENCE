@@ -1,10 +1,32 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { ExternalMarketChart } from "../../components/ExternalMarketChart";
 import { FirmLogo } from "../../components/FirmLogo";
 import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
 import { propFirms } from "../../lib/data";
 import { spreadRecords } from "../../lib/spreads";
 import { getFirmTrust } from "../../lib/trust";
+
+export const metadata: Metadata = {
+  title: "Gold Trading Intelligence: XAUUSD Risk, News & Spreads | FundedScope",
+  description: "View XAUUSD market context, high-impact news risk, Gold spread comparisons, prop firm restrictions and risk planning tools.",
+  alternates: { canonical: "/gold" },
+  openGraph: {
+    title: "Gold Trading Intelligence | FundedScope",
+    description: "XAUUSD risk, news, spreads and prop firm conditions in one place.",
+    url: "/gold",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gold Trading Intelligence | FundedScope",
+    description: "XAUUSD risk, news, spreads and prop firm conditions in one place.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const highImpactEvents = [
   { event: "US CPI / inflation data", countdown: "Next major inflation print", risk: "Gold can spike both directions within seconds." },
@@ -58,6 +80,10 @@ export default function GoldPage() {
           <p className="mt-2 text-3xl font-black text-white">Check news</p>
           <p className="mt-2 text-sm text-slate-500">Some firms restrict news trading</p>
         </GlassCard>
+      </div>
+
+      <div className="mt-6">
+        <ExternalMarketChart title="Gold / XAUUSD external live reference" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">

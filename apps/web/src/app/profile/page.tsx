@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
+import { ProfileDetailsForm } from "../../components/ProfileDetailsForm";
 import { traderDnaProfile } from "../../lib/trader-dna";
 
 export default function ProfilePage() {
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-5 sm:py-12">
-      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Profile</p>
-      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Your trader profile should become your unfair advantage.</h1>
+      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">My Trading DNA™</p>
+      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Your trading identity should become your unfair advantage.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
         This is where FundedScope stops being a comparison site and becomes a personal operating system for trading decisions.
       </p>
@@ -29,6 +30,17 @@ export default function ProfilePage() {
           <Link href="/trader-dna" className="mt-6 block rounded-full bg-white px-5 py-3 text-center font-bold text-void">
             View full DNA
           </Link>
+        </GlassCard>
+      </section>
+
+      <section className="mt-6">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Your FundedScope DNA</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Tell FundedScope who you are as a trader.</h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
+            These details are saved through the backend database and will power recommendations, readiness checks, alerts, dashboards, prop firm fit and AI coaching.
+          </p>
+          <ProfileDetailsForm />
         </GlassCard>
       </section>
 

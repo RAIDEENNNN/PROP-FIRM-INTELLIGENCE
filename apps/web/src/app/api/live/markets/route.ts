@@ -79,7 +79,7 @@ export async function GET() {
         const price = Number(ticker.lastPrice);
         const change = Number(ticker.priceChangePercent);
 
-        markets = fallbackMarkets.map((market) =>
+        markets = markets.map((market) =>
           market.symbol === "BTCUSD"
             ? {
                 ...market,
@@ -101,6 +101,6 @@ export async function GET() {
     markets,
     message: markets.some((market) => market.source === "Live")
       ? "Live/provider quotes attached where available. Any remaining indicative assets need provider coverage or symbol mapping."
-      : "Indicative market bar. Connect market data provider keys for full live quotes."
+      : "No live market provider returned a usable quote. Configure TWELVE_DATA_API_KEY/Binance or hide the market bar in production."
   });
 }

@@ -1,5 +1,26 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
+
+export const metadata: Metadata = {
+  title: "Trading Calculators & Tools | FundedScope",
+  description: "Use lot size, risk, position size, pip, drawdown, profit, margin, compounding and session tools for prop firm trading.",
+  alternates: { canonical: "/tools" },
+  openGraph: {
+    title: "Trading Calculators & Tools | FundedScope",
+    description: "Risk calculators and trading tools for funded-account traders.",
+    url: "/tools",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trading Calculators & Tools | FundedScope",
+    description: "Risk calculators and trading tools for funded-account traders.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const calculators = [
   ["Lot Size Calculator", "Estimate position size from account balance, stop loss and risk percentage."],

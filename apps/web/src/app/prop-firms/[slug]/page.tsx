@@ -1,10 +1,46 @@
+import type { Metadata } from "next";
 import { FirmLogo } from "../../../components/FirmLogo";
 import { GlassCard } from "../../../components/GlassCard";
+import { JsonLd } from "../../../components/JsonLd";
 import { RiskMeter } from "../../../components/RiskMeter";
 import { ScoreBreakdown } from "../../../components/ScoreBreakdown";
 import { propFirms } from "../../../lib/data";
 import { spreadRecords } from "../../../lib/spreads";
 import { getFirmTrust } from "../../../lib/trust";
+
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
+
+export function generateStaticParams() {
+  return propFirms.map((firm) => ({ slug: firm.slug }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const firm = propFirms.find((item) => item.slug === params.slug) ?? propFirms[0]!;
+  const title = `${firm.name} Review, Rules, Fees & Spreads | FundedScope`;
+  const description = `Compare ${firm.name} challenge fees, payout speed, drawdown rules, score breakdown, market coverage and spread samples on FundedScope.`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/prop-firms/${firm.slug}`
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/prop-firms/${firm.slug}`,
+      siteName: "FundedScope",
+      type: "article",
+      images: [firm.logoUrl || "/brand/fundedscope-logo.png"]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [firm.logoUrl || "/brand/fundedscope-logo.png"]
+    }
+  };
+}
 
 export default function FirmProfilePage({ params }: { params: { slug: string } }) {
   const firm = propFirms.find((item) => item.slug === params.slug) ?? propFirms[0];
@@ -18,8 +54,69 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
   if (!firm || !trust) return null;
 
+  const profileUrl = `${siteUrl}/prop-firms/${firm.slug}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Prop Firms",
+        item: `${siteUrl}/prop-firms`
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: firm.name,
+        item: profileUrl
+      }
+    ]
+  };
+  const reviewJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Review",
+    name: `${firm.name} FundedScope review`,
+    url: profileUrl,
+    dateModified: firm.lastRuleUpdate,
+    author: {
+      "@type": "Organization",
+      name: "FundedScope",
+      url: siteUrl
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "FundedScope",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteUrl}/brand/fundedscope-logo.png`
+      }
+    },
+    itemReviewed: {
+      "@type": "Organization",
+      name: firm.name,
+      url: `https://${firm.domain}`,
+      logo: firm.logoUrl
+    },
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: firm.score,
+      bestRating: 100,
+      worstRating: 0
+    },
+    reviewBody: `${firm.summary} FundedScope score is based on rule fairness, payout quality, trust signals, pricing/value, markets/spreads and transparency freshness.`
+  };
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+      <JsonLd id={`${firm.slug}-breadcrumb-jsonld`} data={breadcrumbJsonLd} />
+      <JsonLd id={`${firm.slug}-review-jsonld`} data={reviewJsonLd} />
       <div className="grid gap-6 lg:grid-cols-[0.7fr_0.3fr]">
         <GlassCard className="glow-border">
           <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Firm profile</p>

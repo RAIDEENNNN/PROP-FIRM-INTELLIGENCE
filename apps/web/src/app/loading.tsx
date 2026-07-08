@@ -5,7 +5,7 @@ export default function Loading() {
     <main className="grid min-h-[70vh] place-items-center px-5">
       <div className="w-full max-w-lg rounded-[2rem] border border-white/10 bg-white/[0.03] p-8 text-center shadow-glow backdrop-blur-xl">
         <div className="fundedscope-pulse mx-auto grid h-24 w-24 place-items-center overflow-hidden rounded-[2rem] border border-white/10 bg-black shadow-glow">
-          <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" className="h-full w-full object-cover" />
+          <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" width={64} height={64} decoding="async" className="h-full w-full object-cover" />
         </div>
         <p className="mt-6 text-xs font-black uppercase tracking-[0.32em] text-electric">FundedScope</p>
         <h1 className="mt-3 text-3xl font-black text-white">Preparing your trading intelligence.</h1>

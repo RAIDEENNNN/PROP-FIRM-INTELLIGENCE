@@ -22,7 +22,7 @@ export function Header() {
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 sm:px-5 xl:grid-cols-[260px_1fr_auto]">
         <Link href="/" className="flex min-w-0 items-center gap-3" onClick={closeMenus}>
           <span className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-2xl border border-white/10 bg-black shadow-glow">
-            <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" className="h-full w-full object-cover" />
+            <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" width={40} height={40} decoding="async" className="h-full w-full object-cover" />
           </span>
           <span className="hidden min-w-0 sm:block">
             <span className="block text-sm font-black tracking-[0.28em] text-white">FUNDEDSCOPE</span>

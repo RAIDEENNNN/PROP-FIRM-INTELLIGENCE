@@ -1,9 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { FirmLogo } from "../../components/FirmLogo";
 import { GlassCard } from "../../components/GlassCard";
 import { ScoreBreakdown } from "../../components/ScoreBreakdown";
 import { propFirms } from "../../lib/data";
 import { getFirmTrust, getScoreBreakdown } from "../../lib/trust";
+
+export const metadata: Metadata = {
+  title: "Side-by-Side Prop Firm Comparison | FundedScope",
+  description: "Compare prop firms side by side across fees, profit targets, drawdown, payout rules, score breakdowns, markets and trader fit.",
+  alternates: { canonical: "/compare" },
+  openGraph: {
+    title: "Side-by-Side Prop Firm Comparison | FundedScope",
+    description: "A structured comparison dashboard for choosing better-fit prop firms.",
+    url: "/compare",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Side-by-Side Prop Firm Comparison | FundedScope",
+    description: "A structured comparison dashboard for choosing better-fit prop firms.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const compareModes = [
   ["Prop firms", "Challenge fees, payout rules, drawdown, score formula and market access."],

@@ -12,7 +12,14 @@ export const authRouter = Router();
 const signUpSchema = z.object({
   email: z.string().email().transform((value) => value.toLowerCase()),
   password: z.string().min(10),
-  name: z.string().min(2).max(80).optional()
+  name: z.string().min(2).max(80).optional(),
+  username: z.string().min(2).max(40).optional(),
+  country: z.string().max(80).optional(),
+  timezone: z.string().max(80).optional(),
+  traderType: z.string().max(40).optional(),
+  experienceLevel: z.string().max(80).optional(),
+  preferredMarkets: z.array(z.string()).optional(),
+  riskTolerance: z.enum(["LOW", "MEDIUM", "HIGH", "EXTREME"]).optional()
 });
 
 const signInSchema = z.object({
@@ -47,7 +54,13 @@ authRouter.post(
         passwordHash,
         traderProfile: {
           create: {
-            preferredMarkets: []
+            username: input.username,
+            country: input.country,
+            timezone: input.timezone,
+            traderType: input.traderType,
+            experienceLevel: input.experienceLevel,
+            preferredMarkets: input.preferredMarkets ?? [],
+            riskTolerance: input.riskTolerance ?? "MEDIUM"
           }
         }
       }

@@ -14,14 +14,16 @@ Then run:
 
 ```bash
 npm run prisma:generate
-npm run prisma:migrate
+npx prisma migrate deploy
 npm run db:seed
 ```
+
+For local development, use `npm run prisma:migrate`. For production, use `npx prisma migrate deploy` so the Trading DNA profile migration runs safely against the hosted database.
 
 To create the first admin user during seed, set:
 
 ```bash
-ADMIN_EMAIL="admin@fundedscope.com"
+ADMIN_EMAIL="admin@myfundedscope.com"
 ADMIN_PASSWORD="use-a-real-strong-password"
 ```
 
@@ -35,10 +37,10 @@ Required API env:
 DATABASE_URL=""
 JWT_ACCESS_SECRET=""
 JWT_REFRESH_SECRET=""
-FRONTEND_URL="https://your-frontend-domain.com"
+FRONTEND_URL="https://myfundedscope.com"
 STRIPE_SECRET_KEY=""
 STRIPE_WEBHOOK_SECRET=""
-EMAIL_FROM="FundedScope <hello@fundedscope.com>"
+EMAIL_FROM="FundedScope <hello@myfundedscope.com>"
 ```
 
 Generate JWT secrets with at least 32 random characters each.
@@ -56,8 +58,13 @@ npm run build:web
 Set:
 
 ```bash
-NEXT_PUBLIC_SITE_URL="https://fundedscope.com"
+NEXT_PUBLIC_SITE_URL="https://myfundedscope.com"
+API_URL="https://YOUR_DEPLOYED_API_DOMAIN/api"
+NEXT_PUBLIC_GA_MEASUREMENT_ID=""
+NEXT_PUBLIC_CLARITY_PROJECT_ID=""
 ```
+
+`API_URL` is required for signup, signin and My Trading DNA profile saving. If it is missing, the frontend will load, but account/database features will show a clear backend-not-configured message.
 
 ## 4. Stripe
 
@@ -121,6 +128,7 @@ Needed for:
 - Finalize Privacy, Terms, Affiliate Disclosure and Editorial Policy.
 - Add analytics.
 - Test auth and checkout in production.
+- Test signup → signin → My Trading DNA save against the hosted database.
 - Submit sitemap to Google Search Console.
 - Confirm mobile navigation and spread matrix usability.
 - Manually verify firm data before heavy SEO traffic.

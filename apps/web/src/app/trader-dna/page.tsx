@@ -1,6 +1,27 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { traderDnaPrinciples, traderDnaProfile } from "../../lib/trader-dna";
+
+export const metadata: Metadata = {
+  title: "Trader DNA: Personal Trading Memory | FundedScope",
+  description: "Build a personal trading profile that remembers habits, markets, risk tolerance, mistakes, strengths and decision patterns.",
+  alternates: { canonical: "/trader-dna" },
+  openGraph: {
+    title: "Trader DNA | FundedScope",
+    description: "The personal trading memory competitors cannot copy.",
+    url: "/trader-dna",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Trader DNA | FundedScope",
+    description: "The personal trading memory competitors cannot copy.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 export default function TraderDnaPage() {
   return (

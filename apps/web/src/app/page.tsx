@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CommandPreview } from "../components/CommandPreview";
 import { FirmCard } from "../components/FirmCard";
 import { GlassCard } from "../components/GlassCard";
+import { JsonLd } from "../components/JsonLd";
 import { featuredFirms, propFirms } from "../lib/data";
 import { fallbackMarkets } from "../lib/markets";
 import { spreadRecords } from "../lib/spreads";
@@ -58,13 +59,28 @@ const faqs = [
 export default function HomePage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-16">
+      <JsonLd
+        id="homepage-faq-jsonld"
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map(([question, answer]) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: answer
+            }
+          }))
+        }}
+      />
       <section className="relative overflow-hidden rounded-[2.25rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.22),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(139,92,246,0.2),transparent_34%),rgba(255,255,255,0.03)] p-5 shadow-glow sm:p-8 lg:p-10">
         <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.08)_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="relative grid items-center gap-10 lg:grid-cols-[0.88fr_1.12fr]">
           <div>
             <div className="mb-6 flex w-fit items-center gap-3 rounded-full border border-white/10 bg-black/30 p-2 pr-5">
               <span className="grid h-10 w-10 overflow-hidden rounded-full bg-black">
-                <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" className="h-full w-full object-cover" />
+                <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" width={56} height={56} decoding="async" className="h-full w-full object-cover" />
               </span>
               <span className="text-xs font-bold uppercase tracking-[0.22em] text-slate-300">Today’s Edge · Trading Intelligence</span>
             </div>

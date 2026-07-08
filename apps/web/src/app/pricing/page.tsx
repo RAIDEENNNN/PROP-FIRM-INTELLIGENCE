@@ -1,72 +1,104 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
+import { JsonLd } from "../../components/JsonLd";
+
+export const metadata: Metadata = {
+  title: "FundedScope Pricing | Free, Pro & Elite",
+  description: "Choose a FundedScope plan for prop firm comparison, unlimited AI, Trade Readiness, journaling, Trader DNA and personal trading intelligence.",
+  alternates: { canonical: "/pricing" },
+  openGraph: {
+    title: "FundedScope Pricing",
+    description: "Free, Pro and Elite plans for trader intelligence.",
+    url: "/pricing",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FundedScope Pricing",
+    description: "Free, Pro and Elite plans for trader intelligence.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const plans = [
   {
     name: "Free",
     price: "$0",
-    audience: "For traders researching their first challenge.",
-    promise: "Stop guessing which firms are worth your attention.",
+    audience: "For traders researching firms, brokers and markets.",
+    promise: "Good enough to trust, simple enough to start.",
     cta: "Start free",
     href: "/sign-up?plan=free",
     features: [
       "Global prop firm directory",
+      "Broker comparison preview",
+      "Limited market news and Today’s Edge",
+      "Limited AI assistant prompts",
       "Basic side-by-side comparison",
+      "Basic economic calendar",
       "Lot size, drawdown and profit target calculators",
-      "Starter spread matrix preview",
-      "Firm profile pages with rules and payout notes"
+      "Starter spread matrix preview"
     ],
-    limits: ["No saved alerts", "No personalized dashboard", "Indicative spread view only"]
+    limits: ["Limited AI", "No saved alerts", "No unlimited journal analytics"]
   },
   {
     name: "Pro",
-    price: "$19",
-    badge: "Most useful for serious traders",
-    audience: "For traders actively buying, passing or managing challenges.",
-    promise: "Catch rule changes, spread risk and payout friction before they cost you.",
+    price: "$14.99",
+    badge: "Best starting upgrade",
+    audience: "For active traders who want FundedScope in their daily routine.",
+    promise: "Become better every month — not just better informed.",
     cta: "Upgrade to Pro",
     href: "/sign-up?plan=pro",
     features: [
-      "Saved firms and personal watchlist",
-      "Rule-change, payout and spread alerts",
-      "Compare any five firms with fit scoring",
-      "Advanced filters by fee, drawdown, payout and market",
-      "Trader profile recommendations",
-      "Challenge and funded account dashboard",
-      "Saved calculator history and payout progress"
+      "Unlimited AI assistant",
+      "Unlimited Trade Readiness checks",
+      "Unlimited trader journal entries and screenshots",
+      "AI Weekly Review every Sunday",
+      "Unlimited saved dashboards and watchlists",
+      "Broker Optimizer and Prop Optimizer",
+      "Real-time alerts for news, spreads, firms and discounts",
+      "Morning Brief, Afternoon Brief and Weekend Outlook",
+      "Performance analytics and payout progress"
     ],
-    limits: ["No team seats", "No API access"]
+    limits: ["Trader DNA depth limited", "No monthly PDF report", "No AI trade replay"]
   },
   {
-    name: "Business",
-    price: "$99",
-    audience: "For affiliates, educators, communities and trading teams.",
-    promise: "Turn prop firm intelligence into reports, content, leads and revenue.",
-    cta: "Start business plan",
-    href: "/contact?plan=business",
+    name: "Elite",
+    price: "$39.99",
+    audience: "For serious traders who want a personal AI coach and long-term trading memory.",
+    promise: "Make cancelling feel like losing your trading operating system.",
+    cta: "Go Elite",
+    href: "/sign-up?plan=elite",
     features: [
-      "Team seats and shared watchlists",
-      "API access for firm, rule and spread data",
-      "Exportable reports and analytics",
-      "Featured listing and sponsorship tools",
-      "Affiliate link performance tracking",
-      "Priority data requests",
-      "Editorial/admin collaboration workflow"
+      "Everything in Pro",
+      "Trader DNA: habits, psychology, mistakes and strengths",
+      "Personal AI Coach with evidence-based warnings",
+      "Monthly Trading Report PDF",
+      "AI Trade Replay for uploaded history",
+      "Deep psychology and risk pattern detection",
+      "Long-term performance graphing and goals",
+      "Priority research and alert rules"
     ],
-    limits: ["Custom enterprise feeds priced separately"]
+    limits: ["Business/API access available separately"]
   }
 ];
 
 const comparisonRows: Array<[string, string, string, string]> = [
   ["Prop firm directory", "Yes", "Yes", "Yes"],
   ["Every firm profile page", "Yes", "Yes", "Yes"],
-  ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview", "Full", "Full + export"],
-  ["Saved firms/watchlist", "No", "Yes", "Team"],
+  ["Broker comparison", "Preview", "Full", "Full"],
+  ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview", "Full", "Full"],
+  ["AI assistant", "Limited", "Unlimited", "Unlimited + personal coach"],
+  ["Trade Readiness™", "Limited", "Unlimited", "Unlimited + Trader DNA"],
+  ["Trader journal", "Basic", "Unlimited", "Unlimited + deep analytics"],
+  ["AI Weekly Review", "No", "Yes", "Yes + monthly report"],
+  ["Saved firms/watchlist", "No", "Unlimited", "Unlimited"],
   ["Rule-change alerts", "No", "Yes", "Yes"],
-  ["Payout and drawdown dashboard", "No", "Yes", "Team"],
-  ["AI-style recommendations", "Basic", "Personalized", "Portfolio/team"],
-  ["Affiliate tracking", "No", "No", "Yes"],
-  ["API access", "No", "No", "Yes"],
+  ["Payout and drawdown dashboard", "No", "Yes", "Advanced"],
+  ["Trader DNA™", "No", "Preview", "Full"],
+  ["AI Trade Replay", "No", "No", "Yes"],
   ["Reports and analytics", "No", "Limited", "Full"]
 ];
 
@@ -93,7 +125,9 @@ const faqs = [
   ["Is the Free plan useful?", "Yes. Free users can research firms, compare basics and use calculators. Pro is for traders who want saved intelligence and alerts."],
   ["Are spreads live?", "The platform is live-source ready. It ships with indicative baselines and connects to provider feeds as API keys are added."],
   ["Can firms pay for better scores?", "No. Featured placements and sponsorships must be disclosed separately from editorial scoring."],
-  ["Who is Business for?", "Affiliates, trading educators, Discord communities, prop firm reviewers and teams that need reports, exports or API access."]
+  ["Why Pro instead of just Free?", "Pro is for traders who want daily intelligence: unlimited AI, Trade Readiness, journal analytics, saved dashboards and real-time alerts."],
+  ["Who is Elite for?", "Elite is for traders who want FundedScope to learn their habits deeply through Trader DNA, AI coaching, monthly reports and trade replay."],
+  ["Where is API or Business access?", "API access, sponsorships, reports and analytics are commercial products handled through business inquiries."]
 ];
 
 const stickyFeatures = [
@@ -108,10 +142,25 @@ const stickyFeatures = [
 export default function PricingPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+      <JsonLd
+        id="pricing-faq-jsonld"
+        data={{
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map(([question, answer]) => ({
+            "@type": "Question",
+            name: question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: answer
+            }
+          }))
+        }}
+      />
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Pricing</p>
-      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-5xl md:text-6xl">Choose the intelligence level that protects your next funded account.</h1>
+      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-5xl md:text-6xl">Choose the plan that makes you a better trader every month.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-        FundedScope is not just a list of prop firms. It is a decision system for avoiding bad-fit challenges, tracking rule changes and finding where your strategy has the best chance.
+        FundedScope subscriptions make sense because consistency, risk, psychology, decisions and research are not one-time problems. They are continuous trading problems.
       </p>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
@@ -187,7 +236,7 @@ export default function PricingPage() {
               <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
                 <MiniCell label="Free" value={free} />
                 <MiniCell label="Pro" value={pro} />
-                <MiniCell label="Business" value={business} />
+                <MiniCell label="Elite" value={business} />
               </div>
             </GlassCard>
           ))}
@@ -200,7 +249,7 @@ export default function PricingPage() {
                 <th className="p-4">Feature</th>
                 <th className="p-4">Free</th>
                 <th className="p-4">Pro</th>
-                <th className="p-4">Business</th>
+                <th className="p-4">Elite</th>
               </tr>
             </thead>
             <tbody>

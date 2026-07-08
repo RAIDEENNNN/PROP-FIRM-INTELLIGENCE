@@ -108,12 +108,38 @@ model User {
 model TraderProfile {
   id                    String       @id @default(cuid())
   userId                String       @unique
+  username              String?
+  country               String?
+  timezone              String?
+  profilePictureUrl     String?
+  traderType            String?
   experienceLevel       String?
   strategy              String?
   preferredMarkets      String[]
+  brokers               String[]
+  propFirms             String[]
+  liveAccountSize       Int?
+  propAccountSize       Int?
+  challengeSize         Int?
+  tradingStyle          String?
+  goals                 String[]
+  targetMonthlyPercent  Decimal?
+  targetMonthlyProfit   Decimal?
+  targetWinRate         Decimal?
   maxDailyDrawdown      Decimal?
   maxTotalDrawdown      Decimal?
   preferredAccountSize  Int?
+  sessions              String[]
+  favoriteAssets        String[]
+  yearsExperience       Decimal?
+  propChallenges        Int?
+  fundedBefore          Boolean      @default(false)
+  largestAccount        Int?
+  psychologyWeaknesses  String[]
+  personality           Json?
+  preferences           Json?
+  connectedAccounts     Json?
+  performance           Json?
   riskTolerance         RiskLevel    @default(MEDIUM)
   payoutPriority        Boolean      @default(false)
   swingTrading          Boolean      @default(false)

@@ -1,23 +1,16 @@
 import { GlassCard } from "../../components/GlassCard";
+import { SignUpForm } from "../../components/AuthForms";
 
 export default function SignUpPage() {
   return (
-    <main className="mx-auto grid min-h-[70vh] max-w-2xl place-items-center px-5 py-12">
+    <main className="mx-auto grid min-h-[70vh] max-w-4xl place-items-center px-4 py-10 sm:px-5 sm:py-12">
       <GlassCard className="w-full glow-border">
         <p className="text-sm uppercase tracking-[0.28em] text-electric">Trader onboarding</p>
-        <h1 className="mt-3 text-3xl font-black text-white">Build your funded profile</h1>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <input className="rounded-2xl border border-white/10 bg-void px-4 py-3" placeholder="Name" />
-          <input className="rounded-2xl border border-white/10 bg-void px-4 py-3" placeholder="Email" />
-          <input className="rounded-2xl border border-white/10 bg-void px-4 py-3" placeholder="Password" type="password" />
-          <select className="rounded-2xl border border-white/10 bg-void px-4 py-3">
-            <option>Risk tolerance</option>
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-          </select>
-        </div>
-        <button className="mt-6 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void">Create account</button>
+        <h1 className="mt-3 text-3xl font-black text-white sm:text-4xl">Create My Trading DNA™</h1>
+        <p className="mt-3 text-sm leading-6 text-slate-400">
+          You are not just creating a login. You are creating the identity FundedScope will use to personalize dashboards, AI, alerts and Trade Readiness.
+        </p>
+        <SignUpForm />
       </GlassCard>
     </main>
   );

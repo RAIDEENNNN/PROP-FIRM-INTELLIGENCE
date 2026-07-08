@@ -1,5 +1,31 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
+import { JsonLd } from "../../components/JsonLd";
 import { newsEvents } from "../../lib/data";
+
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
+
+export const metadata: Metadata = {
+  title: "Live Prop Firm & Market News Radar | FundedScope",
+  description: "Track prop firm rule changes, payout news, Gold volatility, high-impact market events and trader decision context inside FundedScope.",
+  alternates: {
+    canonical: "/news-radar"
+  },
+  openGraph: {
+    title: "Live Prop Firm & Market News Radar | FundedScope",
+    description: "Prop firm and market news with decision context for modern traders.",
+    url: "/news-radar",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Live Prop Firm & Market News Radar | FundedScope",
+    description: "Prop firm and market news with decision context for modern traders.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const enrichedNews = newsEvents.map((event, index) => ({
   ...event,
@@ -15,8 +41,59 @@ const enrichedNews = newsEvents.map((event, index) => ({
 }));
 
 export default function NewsRadarPage() {
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "FundedScope News Radar",
+    url: `${siteUrl}/news-radar`,
+    itemListElement: enrichedNews.map((event, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Article",
+        headline: event.title,
+        description: event.summary,
+        datePublished: new Date().toISOString(),
+        dateModified: new Date().toISOString(),
+        author: {
+          "@type": "Organization",
+          name: "FundedScope"
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "FundedScope",
+          logo: {
+            "@type": "ImageObject",
+            url: `${siteUrl}/brand/fundedscope-logo.png`
+          }
+        },
+        mainEntityOfPage: `${siteUrl}/news-radar`
+      }
+    }))
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "News Radar",
+        item: `${siteUrl}/news-radar`
+      }
+    ]
+  };
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+      <JsonLd id="news-radar-articles-jsonld" data={articleJsonLd} />
+      <JsonLd id="news-radar-breadcrumb-jsonld" data={breadcrumbJsonLd} />
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">News radar</p>
       <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Market and prop firm news with decision context.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">

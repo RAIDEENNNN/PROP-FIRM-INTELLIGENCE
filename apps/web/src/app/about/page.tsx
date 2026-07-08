@@ -1,5 +1,26 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { trustPrinciples } from "../../lib/trust";
+
+export const metadata: Metadata = {
+  title: "About FundedScope | Trusted Trader Intelligence",
+  description: "Learn why FundedScope exists, how it scores prop firms and how it aims to help traders make better decisions.",
+  alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About FundedScope",
+    description: "The trusted research layer between traders, prop firms, brokers and better decisions.",
+    url: "/about",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About FundedScope",
+    description: "The trusted research layer between traders, prop firms, brokers and better decisions.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 export default function AboutPage() {
   return (

@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../../components/GlassCard";
+import { JsonLd } from "../../../components/JsonLd";
 import { scoreWeights } from "../../../lib/trust";
 
 const pages: Record<string, { kicker: string; title: string; intro: string; sections: Array<{ title: string; body: string }> }> = {
@@ -104,6 +106,40 @@ const pages: Record<string, { kicker: string; title: string; intro: string; sect
   }
 };
 
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
+
+export function generateStaticParams() {
+  return Object.keys(pages).map((slug) => ({ slug }));
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
+  const page = pages[params.slug];
+  const title = page ? `${page.title} | FundedScope` : "FundedScope Legal";
+  const description = page?.intro ?? "FundedScope legal, editorial and company information.";
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `/legal/${params.slug}`
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/legal/${params.slug}`,
+      siteName: "FundedScope",
+      type: "article",
+      images: ["/brand/fundedscope-logo.png"]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/brand/fundedscope-logo.png"]
+    }
+  };
+}
+
 export default function LegalPage({ params }: { params: { slug: string } }) {
   const page = pages[params.slug] ?? {
     kicker: "Legal",
@@ -116,9 +152,28 @@ export default function LegalPage({ params }: { params: { slug: string } }) {
       }
     ]
   };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: siteUrl
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: page.title,
+        item: `${siteUrl}/legal/${params.slug}`
+      }
+    ]
+  };
 
   return (
     <main className="mx-auto max-w-4xl px-5 py-12">
+      <JsonLd id={`${params.slug}-breadcrumb-jsonld`} data={breadcrumbJsonLd} />
       <p className="text-sm uppercase tracking-[0.28em] text-electric">{page.kicker}</p>
       <h1 className="mt-3 text-4xl font-black capitalize text-white">{page.title}</h1>
       <GlassCard className="mt-8">

@@ -14,6 +14,10 @@ export function FirmLogo({ firm, size = "md" }: { firm: Pick<PropFirm, "name" | 
           <img
             src={firm.logoUrl}
             alt={`${firm.name} logo`}
+            width={64}
+            height={64}
+            loading="lazy"
+            decoding="async"
             className="h-full w-full object-contain p-2"
             onError={() => setFailed(true)}
           />

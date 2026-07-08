@@ -1,6 +1,27 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { traderDnaProfile } from "../../lib/trader-dna";
+
+export const metadata: Metadata = {
+  title: "FundedScope AI Trading Assistant | Trader DNA",
+  description: "A personalized AI trading assistant concept that uses Trader DNA, journal patterns, market risk, spreads and prop firm rules.",
+  alternates: { canonical: "/ai" },
+  openGraph: {
+    title: "FundedScope AI Trading Assistant",
+    description: "Personalized trading intelligence built around your profile, habits and risk.",
+    url: "/ai",
+    siteName: "FundedScope",
+    type: "website",
+    images: ["/brand/fundedscope-logo.png"]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FundedScope AI Trading Assistant",
+    description: "Personalized trading intelligence built around your profile, habits and risk.",
+    images: ["/brand/fundedscope-logo.png"]
+  }
+};
 
 const prompts = [
   ["Should I trade Gold today?", "Uses your Trader DNA, news risk, spread status, session and recent journal behaviour."],
