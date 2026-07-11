@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { NotificationBell } from "./NotificationBell";
 import { routes } from "../lib/data";
 
 const primaryHrefs = new Set(["/dashboard", "/trader-dna", "/prop-firms", "/brokers", "/compare", "/spreads"]);
@@ -63,6 +64,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <NotificationBell />
           <Link href="/sign-in" onClick={closeMenus} className="hidden rounded-full border border-white/15 px-5 py-2.5 text-sm font-bold text-slate-200 transition hover:border-white/30 hover:text-white sm:inline-block">
             Sign in
           </Link>

@@ -662,6 +662,7 @@ export const routes = [
   { href: "/prop-firms", label: "Prop Firms" },
   { href: "/brokers", label: "Brokers" },
   { href: "/compare", label: "Compare" },
+  { href: "/decision-engine", label: "Decision Engine" },
   { href: "/ai", label: "AI" },
   { href: "/spreads", label: "Spreads" },
   { href: "/gold", label: "Gold" },

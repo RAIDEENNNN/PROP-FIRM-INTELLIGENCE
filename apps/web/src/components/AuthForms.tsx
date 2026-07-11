@@ -2,23 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { saveAuth, type AuthPayload } from "../lib/client-auth";
-
-type ApiResponse = {
-  ok: boolean;
-  data?: AuthPayload;
-  code?: string;
-  error?: string;
-  details?: string;
-};
-
-function getAuthErrorMessage(payload: ApiResponse) {
-  if (payload.code === "BACKEND_API_NOT_CONFIGURED") {
-    return "Account creation is temporarily unavailable while FundedScope connects the production API. Please try again shortly.";
-  }
-
-  return payload.error ?? payload.details ?? "Unable to complete request";
-}
+import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -53,16 +37,45 @@ export function SignUpForm() {
     setStatus("");
 
     try {
-      const response = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, username, email, password, country, timezone, traderType, experienceLevel, preferredMarkets, riskTolerance })
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/profile`,
+          data: {
+            full_name: name,
+            username,
+            country,
+            timezone,
+            trader_type: traderType,
+            experience_level: experienceLevel,
+            markets: preferredMarkets,
+            risk_tolerance: riskTolerance
+          }
+        }
       });
-      const payload = (await response.json()) as ApiResponse;
-      if (!response.ok || !payload.ok || !payload.data) throw new Error(getAuthErrorMessage(payload));
+      if (error) throw error;
 
-      saveAuth(payload.data);
-      router.push("/profile");
+      if (data.session?.access_token) {
+        window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
+        await supabase.from("profiles").upsert({
+          id: data.user!.id,
+          full_name: name,
+          username,
+          email,
+          country,
+          timezone,
+          trader_type: traderType,
+          experience_level: experienceLevel,
+          markets: preferredMarkets,
+          preferences: { riskTolerance }
+        });
+        router.push("/profile");
+        return;
+      }
+
+      setStatus("Account created. Check your email to verify your address, then sign in.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to create account");
     } finally {
@@ -151,15 +164,11 @@ export function SignInForm() {
     setStatus("");
 
     try {
-      const response = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
-      const payload = (await response.json()) as ApiResponse;
-      if (!response.ok || !payload.ok || !payload.data) throw new Error(getAuthErrorMessage(payload));
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
 
-      saveAuth(payload.data);
+      if (data.session?.access_token) window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
       router.push("/dashboard");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to sign in");
@@ -174,6 +183,27 @@ export function SignInForm() {
       <input value={password} onChange={(event) => setPassword(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Password" type="password" required />
       <button disabled={loading} className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-void disabled:opacity-60">
         {loading ? "Signing in..." : "Sign in"}
+      </button>
+      <button
+        type="button"
+        onClick={async () => {
+          setStatus("");
+          if (!email) {
+            setStatus("Enter your email first, then request a password reset.");
+            return;
+          }
+          try {
+            const supabase = getSupabaseBrowserClient();
+            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/settings` });
+            if (error) throw error;
+            setStatus("Password reset email sent if the address exists.");
+          } catch (error) {
+            setStatus(error instanceof Error ? error.message : "Unable to send password reset email");
+          }
+        }}
+        className="w-full rounded-2xl border border-white/10 px-4 py-3 font-bold text-white"
+      >
+        Send password reset email
       </button>
       {status ? <p className="rounded-2xl border border-danger/30 bg-danger/10 p-3 text-sm text-danger">{status}</p> : null}
     </form>

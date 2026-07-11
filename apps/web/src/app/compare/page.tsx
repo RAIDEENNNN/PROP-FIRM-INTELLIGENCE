@@ -49,6 +49,7 @@ export default function ComparePage() {
     score: getScoreBreakdown(firm)
   }));
   const leader = comparedFirms[0];
+  const runnerUp = comparedFirms[1];
   const fastestPayout = [...comparedFirms].sort((a, b) => {
     const fast = (value: string) => (/on demand|weekly|fast|5 days/i.test(value) ? 0 : /bi-weekly|14 days/i.test(value) ? 1 : 2);
     return fast(a.firm.payoutFrequency) - fast(b.firm.payoutFrequency);
@@ -87,6 +88,30 @@ export default function ComparePage() {
           <p className="text-sm uppercase tracking-[0.24em] text-warning">Lowest entry fee</p>
           <h2 className="mt-2 text-2xl font-black text-white">{lowestFee?.firm.name}</h2>
           <p className="mt-2 text-sm text-slate-400">Challenge fee starts around {lowestFee?.firm.challengeFee}.</p>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8">
+        <GlassCard className="glow-border">
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">FundedScope Explain™</p>
+          <h2 className="mt-2 text-3xl font-black text-white">
+            Why is {leader?.firm.name} ranked above {runnerUp?.firm.name} in this set?
+          </h2>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {[
+              `Higher overall FundedScope Score: ${leader?.firm.score}/100 vs ${runnerUp?.firm.score}/100.`,
+              `${leader?.trust.sourceLabel} with ${leader?.trust.confidence.toLowerCase()} confidence.`,
+              `Better fit reasons: ${leader?.trust.bestFor.slice(0, 2).join(", ")}.`,
+              `Caution check: ${leader?.trust.cautions[0] ?? "No major caution from seeded data."}`
+            ].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">
+                ✔ {item}
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-sm leading-6 text-slate-400">
+            Explanations are generated from the same score categories, source labels and fit notes shown on each profile. Paid placement cannot override this explanation.
+          </p>
         </GlassCard>
       </section>
 

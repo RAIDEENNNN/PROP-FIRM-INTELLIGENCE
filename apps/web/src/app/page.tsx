@@ -3,6 +3,8 @@ import { CommandPreview } from "../components/CommandPreview";
 import { FirmCard } from "../components/FirmCard";
 import { GlassCard } from "../components/GlassCard";
 import { JsonLd } from "../components/JsonLd";
+import { PersonalizationStrip } from "../components/PersonalizationStrip";
+import { UniversalSearch } from "../components/UniversalSearch";
 import { featuredFirms, propFirms } from "../lib/data";
 import { fallbackMarkets } from "../lib/markets";
 import { spreadRecords } from "../lib/spreads";
@@ -104,6 +106,9 @@ export default function HomePage() {
                 Watch Demo
               </Link>
             </div>
+            <div className="mt-8">
+              <UniversalSearch compact />
+            </div>
             <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {stats.map(([label, value]) => (
                 <div key={label} className="rounded-2xl border border-white/10 bg-black/20 p-3">
@@ -116,6 +121,8 @@ export default function HomePage() {
           <CommandPreview />
         </div>
       </section>
+
+      <PersonalizationStrip />
 
       <section className="mt-14 sm:mt-20">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-5 sm:p-6">

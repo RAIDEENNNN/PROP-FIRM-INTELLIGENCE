@@ -2,7 +2,7 @@
 
 import type { Dispatch, FormEvent, ReactNode, SetStateAction } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { getAccessToken } from "../lib/client-auth";
+import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const marketOptions = ["Forex", "Gold", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
 const brokerOptions = ["Exness", "IC Markets", "Pepperstone", "Vantage", "JustMarkets", "Other"];
@@ -111,7 +111,9 @@ export function ProfileDetailsForm() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const token = getAccessToken();
+    const supabase = getSupabaseBrowserClient();
+    const { data: sessionData } = await supabase.auth.getSession();
+    const token = sessionData.session?.access_token ?? window.localStorage.getItem("fundedscope_access_token");
     if (!token) {
       setStatus("Sign in first so FundedScope can save My Trading DNA to the database.");
       return;

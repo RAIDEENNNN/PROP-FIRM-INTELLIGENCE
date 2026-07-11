@@ -15,6 +15,59 @@ const firmQuerySchema = z.object({
   offset: z.coerce.number().int().min(0).default(0)
 });
 
+function publicFirmDto(firm: any) {
+  return {
+    name: firm.name,
+    slug: firm.slug,
+    logoUrl: firm.logoUrl,
+    websiteUrl: firm.websiteUrl,
+    country: firm.country,
+    trustScore: firm.trustScore,
+    rating: firm.rating,
+    reviewCount: firm.reviewCount,
+    foundedYear: firm.foundedYear,
+    payoutFrequency: firm.payoutFrequency,
+    status: firm.status,
+    editorSummary: firm.editorSummary,
+    seoTitle: firm.seoTitle,
+    seoDescription: firm.seoDescription,
+    featured: firm.featured,
+    updatedAt: firm.updatedAt,
+    accounts: firm.accounts?.map((account: any) => ({
+      name: account.name,
+      challengeType: account.challengeType,
+      accountSize: account.accountSize,
+      challengeFee: account.challengeFee,
+      profitTargetPhaseOne: account.profitTargetPhaseOne,
+      profitTargetPhaseTwo: account.profitTargetPhaseTwo,
+      dailyDrawdown: account.dailyDrawdown,
+      maxDrawdown: account.maxDrawdown,
+      profitSplit: account.profitSplit,
+      minimumTradingDays: account.minimumTradingDays,
+      maxTradingDays: account.maxTradingDays,
+      refundableFee: account.refundableFee
+    })),
+    rules: firm.rules?.map((rule: any) => ({
+      category: rule.category,
+      title: rule.title,
+      currentValue: rule.currentValue,
+      previousValue: rule.previousValue,
+      impactLevel: rule.impactLevel,
+      effectiveAt: rule.effectiveAt,
+      updatedAt: rule.updatedAt
+    })),
+    reviews: firm.reviews?.map((review: any) => ({
+      rating: review.rating,
+      title: review.title,
+      body: review.body,
+      createdAt: review.createdAt,
+      user: review.user ? { name: review.user.name, avatarUrl: review.user.avatarUrl } : null
+    })),
+    counts: firm._count,
+    scoreBreakdown: buildScoreBreakdown(firm)
+  };
+}
+
 firmsRouter.get(
   "/",
   asyncHandler(async (req, res) => {
@@ -51,10 +104,7 @@ firmsRouter.get(
       : firms;
 
     return sendOk(res, {
-      firms: filtered.map((firm: any) => ({
-        ...firm,
-        scoreBreakdown: buildScoreBreakdown(firm)
-      })),
+      firms: filtered.map((firm: any) => publicFirmDto(firm)),
       count: filtered.length,
       limit: query.limit,
       offset: query.offset
@@ -81,7 +131,7 @@ firmsRouter.get(
     });
 
     if (!firm) throw new HttpError(404, "Prop firm not found");
-    return sendOk(res, { firm: { ...firm, scoreBreakdown: buildScoreBreakdown(firm) } });
+    return sendOk(res, { firm: publicFirmDto(firm) });
   })
 );
 
@@ -124,7 +174,19 @@ firmsRouter.get(
     });
 
     if (!firm) throw new HttpError(404, "Prop firm not found");
-    const firmWithHistory = firm as typeof firm & { rules: unknown[]; auditLogs: unknown[] };
-    return sendOk(res, { firmId: firm.id, slug: firm.slug, rules: firmWithHistory.rules, auditLogs: firmWithHistory.auditLogs });
+    const firmWithHistory = firm as typeof firm & { rules: any[]; auditLogs: any[] };
+    return sendOk(res, {
+      slug: firm.slug,
+      rules: firmWithHistory.rules.map((rule) => ({
+        category: rule.category,
+        title: rule.title,
+        currentValue: rule.currentValue,
+        previousValue: rule.previousValue,
+        impactLevel: rule.impactLevel,
+        effectiveAt: rule.effectiveAt,
+        updatedAt: rule.updatedAt
+      })),
+      auditLogs: []
+    });
   })
 );

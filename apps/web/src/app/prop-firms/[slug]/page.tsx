@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { BookmarkButton } from "../../../components/BookmarkButton";
 import { FirmLogo } from "../../../components/FirmLogo";
 import { GlassCard } from "../../../components/GlassCard";
 import { JsonLd } from "../../../components/JsonLd";
+import { RecentlyViewedTracker } from "../../../components/RecentlyViewedTracker";
 import { RiskMeter } from "../../../components/RiskMeter";
 import { ScoreBreakdown } from "../../../components/ScoreBreakdown";
 import { brokers } from "../../../lib/brokers";
@@ -137,6 +139,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+      <RecentlyViewedTracker item={{ title: firm.name, href: `/prop-firms/${firm.slug}`, type: "Prop Firm" }} />
       <JsonLd id={`${firm.slug}-breadcrumb-jsonld`} data={breadcrumbJsonLd} />
       <JsonLd id={`${firm.slug}-review-jsonld`} data={reviewJsonLd} />
       <div className="grid gap-6 lg:grid-cols-[0.7fr_0.3fr]">
@@ -206,6 +209,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           >
             Visit firm / get code
           </a>
+          <BookmarkButton bookmark={{ type: "Prop Firm", slug: firm.slug, title: firm.name, href: `/prop-firms/${firm.slug}` }} />
           <button className="mt-3 w-full rounded-2xl border border-white/10 px-5 py-3 font-bold text-white">Save alert</button>
           <a
             href={`mailto:hello@myfundedscope.com?subject=Incorrect information report: ${encodeURIComponent(firm.name)}`}

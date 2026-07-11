@@ -25,6 +25,43 @@ function fitScore(firm: { trustScore: unknown; rating: unknown; payoutFrequency:
   return Math.min(100, Math.round(trust * 0.65 + rating * 0.25 + payoutBoost));
 }
 
+function publicCompareFirm(firm: any, extra: Record<string, unknown> = {}) {
+  return {
+    name: firm.name,
+    slug: firm.slug,
+    logoUrl: firm.logoUrl,
+    country: firm.country,
+    trustScore: firm.trustScore,
+    rating: firm.rating,
+    reviewCount: firm.reviewCount,
+    payoutFrequency: firm.payoutFrequency,
+    editorSummary: firm.editorSummary,
+    updatedAt: firm.updatedAt,
+    accounts: firm.accounts?.map((account: any) => ({
+      name: account.name,
+      challengeType: account.challengeType,
+      accountSize: account.accountSize,
+      challengeFee: account.challengeFee,
+      profitTargetPhaseOne: account.profitTargetPhaseOne,
+      profitTargetPhaseTwo: account.profitTargetPhaseTwo,
+      dailyDrawdown: account.dailyDrawdown,
+      maxDrawdown: account.maxDrawdown,
+      profitSplit: account.profitSplit,
+      refundableFee: account.refundableFee
+    })),
+    rules: firm.rules?.map((rule: any) => ({
+      category: rule.category,
+      title: rule.title,
+      currentValue: rule.currentValue,
+      previousValue: rule.previousValue,
+      impactLevel: rule.impactLevel,
+      effectiveAt: rule.effectiveAt
+    })),
+    scoreBreakdown: buildScoreBreakdown(firm),
+    ...extra
+  };
+}
+
 compareRouter.post(
   "/",
   asyncHandler(async (req, res) => {
@@ -35,11 +72,7 @@ compareRouter.post(
     });
 
     return sendOk(res, {
-      firms: firms.map((firm: any) => ({
-        ...firm,
-        fitScore: fitScore(firm),
-        scoreBreakdown: buildScoreBreakdown(firm)
-      }))
+      firms: firms.map((firm: any) => publicCompareFirm(firm, { fitScore: fitScore(firm) }))
     });
   })
 );
@@ -63,16 +96,19 @@ compareRouter.post(
           : true;
 
         const penalty = feeMatch && sizeMatch && marketMatch ? 0 : 12;
-        return {
-          ...firm,
+        return publicCompareFirm(firm, {
           recommendationScore: Math.max(0, fitScore(firm, input.payoutPriority) - penalty),
-          scoreBreakdown: buildScoreBreakdown(firm),
+          recommendationLabel: "Option worth researching based on your preferences",
+          limitations: [
+            "Country availability must be confirmed from structured availability records.",
+            "This is research guidance, not financial advice or a guarantee."
+          ],
           reasons: [
             feeMatch ? "Fee preference matched" : "Fee may be above preference",
             sizeMatch ? "Account size preference matched" : "Account size may need review",
             marketMatch ? "Market preference matched" : "Market coverage needs manual check"
           ]
-        };
+        });
       })
       .sort((a: any, b: any) => b.recommendationScore - a.recommendationScore)
       .slice(0, 10);

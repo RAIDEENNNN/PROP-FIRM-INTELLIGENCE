@@ -17,6 +17,7 @@ import { reviewsRouter } from "./modules/reviews/reviews.routes";
 import { billingRouter } from "./modules/billing/billing.routes";
 import { toolsRouter } from "./modules/tools/tools.routes";
 import { adminRouter } from "./modules/admin/admin.routes";
+import { persistenceRouter } from "./modules/persistence/persistence.routes";
 
 const app = express();
 const allowedCorsOrigins = new Set([
@@ -66,6 +67,7 @@ app.use("/api/alerts", alertsRouter);
 app.use("/api/reviews", reviewsRouter);
 app.use("/api/billing", billingRouter);
 app.use("/api/tools", toolsRouter);
+app.use("/api/persistence", persistenceRouter);
 app.use("/api/admin", adminRouter);
 
 app.use((_req, _res, next) => {

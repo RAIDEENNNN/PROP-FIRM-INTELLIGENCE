@@ -23,6 +23,22 @@ const firmSchema = z.object({
   featured: z.boolean().default(false)
 });
 
+const reportStatusSchema = z.enum(["new", "under_review", "resolved", "rejected", "archived"]);
+
+const reportUpdateSchema = z.object({
+  status: reportStatusSchema.optional(),
+  assignedAdmin: z.string().uuid().nullable().optional(),
+  resolutionNotes: z.string().max(3000).nullable().optional()
+});
+
+const contentStatusSchema = z.enum(["draft", "under_review", "published", "archived"]);
+
+const moderationQueueSchema = z.object({
+  status: reportStatusSchema.optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(50),
+  offset: z.coerce.number().int().min(0).default(0)
+});
+
 adminRouter.get(
   "/overview",
   asyncHandler(async (_req, res) => {
@@ -44,6 +60,101 @@ adminRouter.get(
       activeSubscriptions: subscriptions,
       newsEvents,
       spreadRecords
+    });
+  })
+);
+
+adminRouter.get(
+  "/reports",
+  asyncHandler(async (req, res) => {
+    const query = moderationQueueSchema.parse(req.query);
+    const rows = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        reporter_user_id: string | null;
+        reported_page: string;
+        reported_company: string | null;
+        category: string;
+        explanation: string;
+        supporting_url: string | null;
+        evidence: string | null;
+        status: string;
+        assigned_admin: string | null;
+        resolution_notes: string | null;
+        created_at: Date;
+        resolved_at: Date | null;
+      }>
+    >`
+      select
+        id::text,
+        reporter_user_id::text,
+        reported_page,
+        reported_company,
+        category,
+        explanation,
+        supporting_url,
+        evidence,
+        status,
+        assigned_admin::text,
+        resolution_notes,
+        created_at,
+        resolved_at
+      from public.information_reports
+      where (${query.status ?? null}::text is null or status = ${query.status ?? null})
+      order by created_at desc
+      limit ${query.limit}
+      offset ${query.offset}
+    `;
+
+    return sendOk(res, {
+      reports: rows.map((row) => ({
+        id: row.id,
+        reporterUserId: row.reporter_user_id,
+        reportedPage: row.reported_page,
+        reportedCompany: row.reported_company,
+        category: row.category,
+        explanation: row.explanation,
+        supportingUrl: row.supporting_url,
+        evidence: row.evidence,
+        status: row.status,
+        assignedAdmin: row.assigned_admin,
+        resolutionNotes: row.resolution_notes,
+        createdAt: row.created_at,
+        resolvedAt: row.resolved_at
+      }))
+    });
+  })
+);
+
+adminRouter.patch(
+  "/reports/:id",
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const params = z.object({ id: z.string().uuid() }).parse(req.params);
+    const input = reportUpdateSchema.parse(req.body);
+    const rows = await prisma.$queryRaw<Array<{ id: string; status: string; resolved_at: Date | null }>>`
+      update public.information_reports
+      set
+        status = coalesce(${input.status ?? null}, status),
+        assigned_admin = coalesce(${input.assignedAdmin ?? null}::uuid, assigned_admin, ${req.user!.sub}::uuid),
+        resolution_notes = coalesce(${input.resolutionNotes ?? null}, resolution_notes),
+        resolved_at = case
+          when coalesce(${input.status ?? null}, status) in ('resolved', 'rejected', 'archived') then coalesce(resolved_at, now())
+          else resolved_at
+        end
+      where id = ${params.id}::uuid
+      returning id::text, status, resolved_at
+    `;
+
+    return sendOk(res, { report: rows[0] ?? null });
+  })
+);
+
+adminRouter.get(
+  "/content-states",
+  asyncHandler(async (_req, res) => {
+    return sendOk(res, {
+      states: contentStatusSchema.options,
+      entities: ["prop_firms", "challenges", "rules", "rule_change_history", "reports", "reviews", "brokers", "broker_accounts", "notifications"]
     });
   })
 );
