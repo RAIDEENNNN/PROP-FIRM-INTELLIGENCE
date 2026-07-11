@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "FundedScope Pricing",
     description: "Free, Pro and Elite plans for trader intelligence.",
     url: "/pricing",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

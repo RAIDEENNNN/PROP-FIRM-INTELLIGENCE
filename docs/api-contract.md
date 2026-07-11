@@ -3,7 +3,7 @@
 Base URL:
 
 ```txt
-https://api.fundedscope.com/api
+https://api.myfundedscope.com/api
 ```
 
 Local URL:
@@ -12,7 +12,7 @@ Local URL:
 http://localhost:4000/api
 ```
 
-All JSON responses use:
+Most application JSON responses use:
 
 ```json
 {
@@ -39,10 +39,8 @@ Response:
 
 ```json
 {
-  "ok": true,
-  "service": "FundedScope API",
-  "version": "0.1.0",
-  "timestamp": "2026-07-06T10:00:00.000Z"
+  "status": "ok",
+  "service": "myfundedscope-api"
 }
 ```
 

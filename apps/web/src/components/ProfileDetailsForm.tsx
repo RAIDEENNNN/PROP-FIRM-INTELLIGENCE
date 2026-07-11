@@ -12,6 +12,13 @@ const sessionOptions = ["London", "New York", "Asian", "Overlap"];
 const assetOptions = ["Gold", "BTC", "EURUSD", "GBPUSD", "NAS100", "US30", "XAGUSD", "ETHUSD"];
 const weaknessOptions = ["Fear", "Greed", "Overtrading", "Revenge Trading", "FOMO", "Holding losers", "Closing winners too early"];
 
+type ApiResponse = {
+  ok: boolean;
+  code?: string;
+  error?: string;
+  details?: string;
+};
+
 type Personality = {
   patience: number;
   emotionalControl: number;
@@ -173,8 +180,14 @@ export function ProfileDetailsForm() {
           newsTrading: newsAlerts
         })
       });
-      const payload = await response.json();
-      if (!response.ok || !payload.ok) throw new Error(payload.error ?? payload.details ?? "My Trading DNA could not be saved");
+      const payload = (await response.json()) as ApiResponse;
+      if (!response.ok || !payload.ok) {
+        throw new Error(
+          payload.code === "BACKEND_API_NOT_CONFIGURED"
+            ? "Profile saving is temporarily unavailable while FundedScope connects the production API. Please try again shortly."
+            : payload.error ?? payload.details ?? "My Trading DNA could not be saved"
+        );
+      }
       setStatus("Saved. FundedScope can now personalize dashboards, AI summaries, alerts and Trade Readiness from your Trading DNA.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "My Trading DNA could not be saved");

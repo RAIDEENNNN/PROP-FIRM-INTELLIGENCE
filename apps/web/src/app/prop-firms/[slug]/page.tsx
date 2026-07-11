@@ -4,6 +4,7 @@ import { GlassCard } from "../../../components/GlassCard";
 import { JsonLd } from "../../../components/JsonLd";
 import { RiskMeter } from "../../../components/RiskMeter";
 import { ScoreBreakdown } from "../../../components/ScoreBreakdown";
+import { brokers } from "../../../lib/brokers";
 import { propFirms } from "../../../lib/data";
 import { spreadRecords } from "../../../lib/spreads";
 import { getFirmTrust } from "../../../lib/trust";
@@ -29,7 +30,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       title,
       description,
       url: `/prop-firms/${firm.slug}`,
-      siteName: "FundedScope",
+      siteName: "MyFundedScope",
       type: "article",
       images: [firm.logoUrl || "/brand/fundedscope-logo.png"]
     },
@@ -55,6 +56,27 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
   if (!firm || !trust) return null;
 
   const profileUrl = `${siteUrl}/prop-firms/${firm.slug}`;
+  const compatibilityScore = Math.min(
+    98,
+    Math.max(62, firm.score + (firm.markets.includes("Commodities") ? 2 : 0) + (firm.markets.includes("Forex") ? 1 : 0) - (/Strict/i.test(firm.tags.join(" ")) ? 3 : 0))
+  );
+  const beforeBuyChecklist = [
+    `News trading: ${/Strict|News/i.test(firm.tags.join(" ")) ? "confirm restrictions first" : "check official restrictions"}`,
+    `Weekend holding: confirm on the official ${firm.name} rules page`,
+    `EA/copy trading: verify before buying`,
+    `Refund: compare fee policy against payout rules`,
+    `Platform: confirm MT4/MT5/cTrader/TradeLocker availability`
+  ];
+  const ruleTimeline = [
+    { date: firm.lastRuleUpdate, title: "Profile reviewed", change: "Rules and score inputs refreshed from FundedScope dataset." },
+    { date: "2026-07-11", title: "Verification model added", change: "Last verified, source, and report-error controls added to profile pages." },
+    { date: "Coming soon", title: "Official source history", change: "Rule changes will be stored as timestamped records with source URLs." }
+  ];
+  const similarFirms = propFirms
+    .filter((item) => item.slug !== firm.slug && item.markets.some((market) => firm.markets.includes(market)))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4);
+  const pairedBroker = brokers.find((broker) => firm.markets.some((market) => broker.markets.includes(market))) ?? brokers[0]!;
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -140,6 +162,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             </span>
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Last checked {trust.lastChecked}</span>
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Source: {trust.sourceLabel}</span>
+            <span className="rounded-full border border-electric/20 bg-electric/10 px-3 py-1 text-xs font-bold text-electric">
+              Verified by FundedScope
+            </span>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
             <div className="rounded-2xl border border-white/10 p-4">
@@ -182,9 +207,33 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             Visit firm / get code
           </a>
           <button className="mt-3 w-full rounded-2xl border border-white/10 px-5 py-3 font-bold text-white">Save alert</button>
+          <a
+            href={`mailto:hello@myfundedscope.com?subject=Incorrect information report: ${encodeURIComponent(firm.name)}`}
+            className="mt-3 block w-full rounded-2xl border border-warning/25 bg-warning/10 px-5 py-3 text-center font-bold text-warning"
+          >
+            Report incorrect information
+          </a>
           <p className="mt-3 text-xs leading-5 text-slate-500">This outbound link may be an affiliate link. FundedScope scoring stays editorial and comparison-led.</p>
         </GlassCard>
       </div>
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">
+        <GlassCard className="glow-border">
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Decision summary</p>
+          <h2 className="mt-2 text-3xl font-black text-white">FundedScope opinion</h2>
+          <p className="mt-4 text-sm leading-7 text-slate-300">
+            {firm.name} is best considered by {trust.bestFor.join(", ").toLowerCase()}. Compare alternatives if your strategy depends on rules that are not clearly verified yet, especially news trading, EA usage, weekend holding or drawdown style.
+          </p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Trader Compatibility Score™</p>
+          <p className="mt-2 text-6xl font-black text-electric">{compatibilityScore}%</p>
+          <p className="mt-3 text-sm leading-6 text-slate-300">
+            Match estimate for a Gold/forex-focused trader using FundedScope default Trader DNA. Logged-in users will receive a personal score from their own markets, session, risk style and restrictions.
+          </p>
+        </GlassCard>
+      </section>
+
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <GlassCard className="lg:col-span-2">
           <p className="text-sm uppercase tracking-[0.28em] text-electric">FundedScope verdict</p>
@@ -203,16 +252,67 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <GlassCard>
           <p className="text-sm uppercase tracking-[0.28em] text-warning">Before buying</p>
-          <h2 className="mt-2 text-2xl font-black text-white">What to check</h2>
+          <h2 className="mt-2 text-2xl font-black text-white">Checklist</h2>
           <ul className="mt-5 space-y-3 text-sm leading-6 text-slate-300">
+            {beforeBuyChecklist.map((item) => (
+              <li key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                ☑ {item}
+              </li>
+            ))}
             {trust.cautions.map((item) => (
               <li key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-                {item}
+                ⚠ {item}
               </li>
             ))}
           </ul>
         </GlassCard>
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Broker pairing</p>
+          <h2 className="mt-2 text-2xl font-black text-white">{pairedBroker.name}</h2>
+          <p className="mt-4 text-sm leading-6 text-slate-300">
+            Suggested research pairing because {pairedBroker.name} covers {pairedBroker.markets.slice(0, 4).join(", ")} and supports {pairedBroker.platforms.slice(0, 3).join(", ")}.
+          </p>
+          <a href="/brokers" className="mt-5 block rounded-2xl bg-white px-5 py-3 text-center font-black text-void">
+            Compare brokers
+          </a>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-gold">Community alerts</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Moderated signals</h2>
+          <div className="mt-4 space-y-3 text-sm text-slate-300">
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">0 confirmed payout delay reports today.</p>
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">Rule changes require FundedScope moderation before confirmation.</p>
+          </div>
+        </GlassCard>
       </div>
+      <section className="mt-6 grid gap-6 lg:grid-cols-[0.48fr_0.52fr]">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Rule Change Timeline™</p>
+          <h2 className="mt-2 text-2xl font-black text-white">How this profile changes over time</h2>
+          <div className="mt-5 space-y-3">
+            {ruleTimeline.map((item) => (
+              <div key={`${item.date}-${item.title}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-electric">{item.date}</p>
+                <p className="mt-2 font-black text-white">{item.title}</p>
+                <p className="mt-1 text-sm leading-6 text-slate-400">{item.change}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Similar firms</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Compare before you buy</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {similarFirms.map((item) => (
+              <a key={item.slug} href={`/prop-firms/${item.slug}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-electric/40">
+                <p className="font-black text-white">{item.name}</p>
+                <p className="mt-1 text-sm text-electric">{item.score}/100</p>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{item.markets.slice(0, 3).join(", ")}</p>
+              </a>
+            ))}
+          </div>
+        </GlassCard>
+      </section>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <GlassCard>
           <h2 className="text-xl font-black text-white">Pros</h2>

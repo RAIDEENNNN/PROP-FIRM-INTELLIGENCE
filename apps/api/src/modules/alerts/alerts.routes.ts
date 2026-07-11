@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { requireAuth, type AuthenticatedRequest } from "../../shared/auth";
 import { asyncHandler, HttpError, sendOk } from "../../shared/http";
@@ -48,7 +49,11 @@ alertsRouter.post(
     const alert = await prisma.alert.create({
       data: {
         userId: req.user!.sub,
-        ...input
+        firmId: input.firmId,
+        type: input.type,
+        title: input.title,
+        message: input.message,
+        triggerConfig: input.triggerConfig as Prisma.InputJsonValue | undefined
       },
       include: { firm: true }
     });
@@ -62,15 +67,21 @@ alertsRouter.patch(
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const input = alertUpdateSchema.parse(req.body);
+    const id = String(req.params.id);
     const existing = await prisma.alert.findFirst({
-      where: { id: req.params.id, userId: req.user!.sub }
+      where: { id, userId: req.user!.sub }
     });
 
     if (!existing) throw new HttpError(404, "Alert not found");
 
     const alert = await prisma.alert.update({
-      where: { id: req.params.id },
-      data: input,
+      where: { id },
+      data: {
+        enabled: input.enabled,
+        title: input.title,
+        message: input.message,
+        triggerConfig: input.triggerConfig as Prisma.InputJsonValue | undefined
+      },
       include: { firm: true }
     });
 
@@ -82,12 +93,13 @@ alertsRouter.delete(
   "/:id",
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const id = String(req.params.id);
     const existing = await prisma.alert.findFirst({
-      where: { id: req.params.id, userId: req.user!.sub }
+      where: { id, userId: req.user!.sub }
     });
 
     if (!existing) throw new HttpError(404, "Alert not found");
-    await prisma.alert.delete({ where: { id: req.params.id } });
+    await prisma.alert.delete({ where: { id } });
     return sendOk(res, { deleted: true });
   })
 );
@@ -126,8 +138,9 @@ alertsRouter.delete(
   "/watchlist/:firmId",
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const firmId = String(req.params.firmId);
     await prisma.watchlist.delete({
-      where: { userId_firmId: { userId: req.user!.sub, firmId: req.params.firmId } }
+      where: { userId_firmId: { userId: req.user!.sub, firmId } }
     });
 
     return sendOk(res, { deleted: true });

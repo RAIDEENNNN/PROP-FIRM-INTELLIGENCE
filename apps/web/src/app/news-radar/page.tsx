@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     title: "Live Prop Firm & Market News Radar | FundedScope",
     description: "Prop firm and market news with decision context for modern traders.",
     url: "/news-radar",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

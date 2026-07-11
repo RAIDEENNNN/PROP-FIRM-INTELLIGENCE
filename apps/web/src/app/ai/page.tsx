@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "FundedScope AI Trading Assistant",
     description: "Personalized trading intelligence built around your profile, habits and risk.",
     url: "/ai",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     title: "Gold Trading Intelligence | FundedScope",
     description: "XAUUSD risk, news, spreads and prop firm conditions in one place.",
     url: "/gold",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

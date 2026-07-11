@@ -65,8 +65,9 @@ firmsRouter.get(
 firmsRouter.get(
   "/:slug",
   asyncHandler(async (req, res) => {
+    const slug = String(req.params.slug);
     const firm = await prisma.propFirm.findUnique({
-      where: { slug: req.params.slug },
+      where: { slug },
       include: {
         accounts: { orderBy: [{ accountSize: "asc" }] },
         rules: { orderBy: [{ updatedAt: "desc" }] },
@@ -87,8 +88,9 @@ firmsRouter.get(
 firmsRouter.get(
   "/:slug/score",
   asyncHandler(async (req, res) => {
+    const slug = String(req.params.slug);
     const firm = await prisma.propFirm.findUnique({
-      where: { slug: req.params.slug },
+      where: { slug },
       include: {
         accounts: true,
         rules: true
@@ -108,8 +110,9 @@ firmsRouter.get(
 firmsRouter.get(
   "/:slug/rules/history",
   asyncHandler(async (req, res) => {
+    const slug = String(req.params.slug);
     const firm = await prisma.propFirm.findUnique({
-      where: { slug: req.params.slug },
+      where: { slug },
       include: {
         rules: { orderBy: { updatedAt: "desc" } },
         auditLogs: {
@@ -121,6 +124,7 @@ firmsRouter.get(
     });
 
     if (!firm) throw new HttpError(404, "Prop firm not found");
-    return sendOk(res, { firmId: firm.id, slug: firm.slug, rules: firm.rules, auditLogs: firm.auditLogs });
+    const firmWithHistory = firm as typeof firm & { rules: unknown[]; auditLogs: unknown[] };
+    return sendOk(res, { firmId: firm.id, slug: firm.slug, rules: firmWithHistory.rules, auditLogs: firmWithHistory.auditLogs });
   })
 );

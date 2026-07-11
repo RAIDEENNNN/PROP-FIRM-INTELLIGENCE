@@ -7,9 +7,18 @@ import { saveAuth, type AuthPayload } from "../lib/client-auth";
 type ApiResponse = {
   ok: boolean;
   data?: AuthPayload;
+  code?: string;
   error?: string;
   details?: string;
 };
+
+function getAuthErrorMessage(payload: ApiResponse) {
+  if (payload.code === "BACKEND_API_NOT_CONFIGURED") {
+    return "Account creation is temporarily unavailable while FundedScope connects the production API. Please try again shortly.";
+  }
+
+  return payload.error ?? payload.details ?? "Unable to complete request";
+}
 
 export function SignUpForm() {
   const router = useRouter();
@@ -50,7 +59,7 @@ export function SignUpForm() {
         body: JSON.stringify({ name, username, email, password, country, timezone, traderType, experienceLevel, preferredMarkets, riskTolerance })
       });
       const payload = (await response.json()) as ApiResponse;
-      if (!response.ok || !payload.ok || !payload.data) throw new Error(payload.error ?? payload.details ?? "Unable to create account");
+      if (!response.ok || !payload.ok || !payload.data) throw new Error(getAuthErrorMessage(payload));
 
       saveAuth(payload.data);
       router.push("/profile");
@@ -148,7 +157,7 @@ export function SignInForm() {
         body: JSON.stringify({ email, password })
       });
       const payload = (await response.json()) as ApiResponse;
-      if (!response.ok || !payload.ok || !payload.data) throw new Error(payload.error ?? payload.details ?? "Unable to sign in");
+      if (!response.ok || !payload.ok || !payload.data) throw new Error(getAuthErrorMessage(payload));
 
       saveAuth(payload.data);
       router.push("/dashboard");

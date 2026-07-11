@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: "Trader DNA | FundedScope",
     description: "The personal trading memory competitors cannot copy.",
     url: "/trader-dna",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

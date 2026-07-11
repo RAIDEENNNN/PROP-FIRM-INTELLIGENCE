@@ -5,31 +5,43 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { LiveMarketBar } from "../components/LiveMarketBar";
 import { EntryOfferModal } from "../components/EntryOfferModal";
+import { brand, brandSameAs } from "../lib/brand";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com"),
-  title: "FundedScope | Trading Intelligence Platform",
-  description: "A premium trading intelligence platform for comparing prop firms, brokers, spreads, market risk, journals and trader decisions.",
+  metadataBase: new URL(brand.url),
+  title: "MyFundedScope | FundedScope Trading Intelligence Platform",
+  description: "MyFundedScope is the company behind FundedScope, a trading intelligence platform for comparing prop firms, brokers, spreads, market risk, journals and trader decisions.",
   alternates: {
     canonical: "/"
   },
   icons: {
-    icon: "/brand/fundedscope-logo.png",
-    apple: "/brand/fundedscope-logo.png"
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicon.png", sizes: "256x256", type: "image/png" },
+      { url: brand.logoPath, type: "image/png" }
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png"
   },
+  manifest: "/manifest.webmanifest",
+  applicationName: brand.companyName,
+  keywords: ["MyFundedScope", "FundedScope", "prop firm comparison", "trading intelligence", "prop firms", "broker comparison", "Trader DNA"],
   openGraph: {
-    title: "FundedScope | Trading Intelligence Platform",
+    title: "MyFundedScope | FundedScope Trading Intelligence Platform",
     description: "Trade smarter. Decide faster.",
     url: "/",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
-    images: ["/brand/fundedscope-logo.png"]
+    images: [brand.logoPath]
   },
   twitter: {
     card: "summary_large_image",
-    title: "FundedScope | Trading Intelligence Platform",
+    title: "MyFundedScope | FundedScope Trading Intelligence Platform",
     description: "Trade smarter. Decide faster.",
-    images: ["/brand/fundedscope-logo.png"]
+    images: [brand.logoPath]
   }
 };
 
@@ -65,16 +77,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "FundedScope",
-            url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com",
-            logo: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com"}/brand/fundedscope-logo.png`,
-            sameAs: [
-              "https://myfundedscope.com"
-            ],
+            name: brand.companyName,
+            alternateName: brand.productName,
+            legalName: brand.legalName,
+            url: brand.url,
+            logo: brand.logoUrl,
+            image: brand.logoUrl,
+            description: brand.description,
+            sameAs: brandSameAs(),
             contactPoint: {
               "@type": "ContactPoint",
               contactType: "customer support",
-              email: "hello@myfundedscope.com"
+              email: brand.email,
+              url: `${brand.url}/contact`
             }
           })}
         </Script>
@@ -82,11 +97,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "FundedScope",
-            url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com",
+            name: brand.companyName,
+            alternateName: brand.productName,
+            url: brand.url,
             potentialAction: {
               "@type": "SearchAction",
-              target: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com"}/prop-firms?q={search_term_string}`,
+              target: `${brand.url}/prop-firms?q={search_term_string}`,
               "query-input": "required name=search_term_string"
             }
           })}

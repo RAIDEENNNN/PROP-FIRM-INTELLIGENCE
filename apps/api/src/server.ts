@@ -19,11 +19,24 @@ import { toolsRouter } from "./modules/tools/tools.routes";
 import { adminRouter } from "./modules/admin/admin.routes";
 
 const app = express();
+const allowedCorsOrigins = new Set([
+  env.FRONTEND_URL,
+  "https://myfundedscope.com",
+  "https://www.myfundedscope.com",
+  "http://localhost:3000"
+]);
 
 app.use(helmet());
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin(origin, callback) {
+      if (!origin || allowedCorsOrigins.has(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(new Error(`CORS blocked origin: ${origin}`));
+    },
     credentials: true
   })
 );
@@ -37,10 +50,8 @@ app.use(
 
 app.get("/api/health", (_req, res) => {
   res.json({
-    ok: true,
-    service: "FundedScope API",
-    version: "0.1.0",
-    timestamp: new Date().toISOString()
+    status: "ok",
+    service: "myfundedscope-api"
   });
 });
 

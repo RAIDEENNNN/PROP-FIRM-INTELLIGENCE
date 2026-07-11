@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Prop Firm Spreads & Live Gold Chart | FundedScope",
     description: "Understand spread estimates, source status and live market reference charts before trading.",
     url: "/spreads",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

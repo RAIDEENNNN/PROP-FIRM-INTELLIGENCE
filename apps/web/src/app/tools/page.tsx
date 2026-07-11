@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: "Trading Calculators & Tools | FundedScope",
     description: "Risk calculators and trading tools for funded-account traders.",
     url: "/tools",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

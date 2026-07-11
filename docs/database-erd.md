@@ -1,5 +1,13 @@
 # FundedScope Database ERD
 
+This legacy ERD is a high-level map of the current application direction. The next production database expansion should follow the deeper verified intelligence blueprint:
+
+```text
+docs/verified-intelligence-database-blueprint.md
+```
+
+The production Supabase schema must be pulled and confirmed before creating additional tables.
+
 ```mermaid
 erDiagram
   User ||--o| TraderProfile : has

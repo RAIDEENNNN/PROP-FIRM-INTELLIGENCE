@@ -127,7 +127,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
       title,
       description,
       url: `/legal/${params.slug}`,
-      siteName: "FundedScope",
+      siteName: "MyFundedScope",
       type: "article",
       images: ["/brand/fundedscope-logo.png"]
     },

@@ -8,8 +8,9 @@ async function proxy(request: Request, method: "GET" | "PUT") {
     return NextResponse.json(
       {
         ok: false,
+        code: "BACKEND_API_NOT_CONFIGURED",
         error: "Backend API is not configured",
-        details: "Set API_URL in Netlify/environment variables so profiles can be stored in the database."
+        details: "Set API_URL in Netlify environment variables to the deployed Express API base URL. It must include /api so profiles can be stored in the database."
       },
       { status: 503 }
     );

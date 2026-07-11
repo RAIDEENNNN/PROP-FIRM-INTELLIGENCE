@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { requireAuth, type AuthenticatedRequest } from "../../shared/auth";
 import { asyncHandler, sendOk } from "../../shared/http";
@@ -63,12 +64,19 @@ traderProfileRouter.put(
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const input = traderProfileSchema.parse(req.body);
+    const data = {
+      ...input,
+      personality: input.personality == null ? undefined : (input.personality as Prisma.InputJsonValue),
+      preferences: input.preferences == null ? undefined : (input.preferences as Prisma.InputJsonValue),
+      connectedAccounts: input.connectedAccounts == null ? undefined : (input.connectedAccounts as Prisma.InputJsonValue),
+      performance: input.performance == null ? undefined : (input.performance as Prisma.InputJsonValue)
+    };
     const profile = await prisma.traderProfile.upsert({
       where: { userId: req.user!.sub },
-      update: input,
+      update: data,
       create: {
         userId: req.user!.sub,
-        ...input
+        ...data
       }
     });
 

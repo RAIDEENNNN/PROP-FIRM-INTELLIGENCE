@@ -17,14 +17,15 @@ const reviewSchema = z.object({
 reviewsRouter.get(
   "/firm/:firmId",
   asyncHandler(async (req, res) => {
+    const firmId = String(req.params.firmId);
     const reviews = await prisma.review.findMany({
-      where: { firmId: req.params.firmId, status: "VERIFIED" },
+      where: { firmId, status: "VERIFIED" },
       include: { user: { select: { id: true, name: true, avatarUrl: true } } },
       orderBy: { createdAt: "desc" },
       take: 100
     });
 
-    return sendOk(res, { firmId: req.params.firmId, reviews });
+    return sendOk(res, { firmId, reviews });
   })
 );
 
@@ -52,9 +53,10 @@ reviewsRouter.patch(
   requireAuth,
   requireAdmin,
   asyncHandler(async (req, res) => {
+    const id = String(req.params.id);
     const input = z.object({ status: z.enum(["PENDING", "VERIFIED", "REJECTED"]) }).parse(req.body);
     const review = await prisma.review.update({
-      where: { id: req.params.id },
+      where: { id },
       data: { status: input.status }
     });
 

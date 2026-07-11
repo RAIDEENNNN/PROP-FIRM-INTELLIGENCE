@@ -666,6 +666,9 @@ export const routes = [
   { href: "/spreads", label: "Spreads" },
   { href: "/gold", label: "Gold" },
   { href: "/news-radar", label: "News Radar" },
+  { href: "/trader-connect", label: "Trader Connect" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/articles", label: "Articles" },
   { href: "/sources", label: "Sources" },
   { href: "/tools", label: "Tools" },
   { href: "/pricing", label: "Pricing" }

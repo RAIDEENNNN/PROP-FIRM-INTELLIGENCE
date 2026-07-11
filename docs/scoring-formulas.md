@@ -1,8 +1,293 @@
-# FundedScope Scoring Formulas
+# FundedScope Intelligence System™
 
-All scores should be shown as 0–100. A score is only as strong as the data quality behind it, so each score should eventually expose a confidence level.
+FundedScope should be trusted because its scores are clear, explainable and cannot be bought.
 
-## 1. FundedScope Score
+All scores should be shown as 0–100 unless explicitly stated otherwise. A score is only as strong as the data quality behind it, so each score should expose:
+
+- score value;
+- data confidence;
+- last verified date;
+- source status;
+- whether the profile is `Verified by FundedScope™`.
+
+No affiliate, sponsorship or featured listing payment may directly increase a Trust Score, Broker Score or recommendation score.
+
+## 1. FundedScope Trust Score™
+
+Purpose: explain how trustworthy and trader-friendly a prop firm appears based on verified criteria.
+
+```txt
+FundedScope Trust Score =
+  Payout Reliability       * 0.20
++ Rule Transparency        * 0.15
++ Community Rating         * 0.15
++ Support Quality          * 0.10
++ Challenge Fairness       * 0.10
++ Company Reputation       * 0.10
++ Platform Reliability     * 0.10
++ Verification Status      * 0.10
++ Refund Policy            * 0.05
++ Trading Flexibility      * 0.05
+```
+
+### Prop firm score components
+
+| Component | Weight | Meaning |
+|---|---:|---|
+| Payout Reliability | 20 | Payout speed, payout disputes, proof quality, consistency |
+| Rule Transparency | 15 | Clear rules, official pages, fewer vague restrictions |
+| Community Rating | 15 | Verified user reviews, complaints, public sentiment |
+| Support Quality | 10 | Response channels, response time, support reputation |
+| Challenge Fairness | 10 | Profit targets, drawdown model, fee fairness, minimum days |
+| Company Reputation | 10 | Operating history, public company details, incident history |
+| Platform Reliability | 10 | Platform options, uptime, execution/trading environment |
+| Verification Status | 10 | Manual verification, source URLs, freshness |
+| Refund Policy | 5 | Refund clarity and conditions |
+| Trading Flexibility | 5 | News, weekend, EA, scalping, copy trading, strategy fit |
+
+### Trust Score display
+
+```txt
+FTMO
+92 / 100
+
+Verified by FundedScope™
+Last checked: 10 July 2026
+```
+
+The UI must show the category breakdown so users can understand why a firm earned the score.
+
+## 2. FundedScope Broker Score™
+
+Purpose: explain broker quality for live traders, especially by regulation, execution and instrument-specific trading cost.
+
+```txt
+FundedScope Broker Score =
+  Regulation       * 0.18
++ Execution        * 0.15
++ Spreads          * 0.15
++ Withdrawals      * 0.12
++ Support          * 0.10
++ Platforms        * 0.10
++ Transparency     * 0.08
++ Safety           * 0.07
++ Commissions      * 0.03
++ Community        * 0.02
+```
+
+### Broker score components
+
+| Component | Weight | Meaning |
+|---|---:|---|
+| Regulation | 18 | Regulators, licence status, entity clarity, negative balance protection |
+| Execution | 15 | Execution speed, slippage, reliability, order restrictions |
+| Spreads | 15 | Average/min spread by instrument and session |
+| Withdrawals | 12 | Speed, fees, dispute rate, supported methods |
+| Support | 10 | Live chat, email, phone, WhatsApp/Telegram, response quality |
+| Platforms | 10 | MT4, MT5, cTrader, TradingView, WebTrader, mobile quality |
+| Transparency | 8 | Public fees, terms, entity clarity, source quality |
+| Safety | 7 | Segregated funds, risk controls, operating history |
+| Commissions | 3 | Commission clarity and competitiveness |
+| Community | 2 | Verified reviews and complaint ratio |
+
+### Broker Score display
+
+```txt
+Exness
+95 / 100
+
+Regulation      ★★★★★
+Execution       ★★★★★
+Spreads         ★★★★☆
+Withdrawals     ★★★★★
+Support         ★★★★☆
+Platforms       ★★★★★
+Transparency    ★★★★★
+```
+
+The UI must explain why each score was earned.
+
+## 3. Verified by FundedScope™
+
+Purpose: show users that FundedScope manually reviewed the profile.
+
+This badge means:
+
+```txt
+We have manually checked this information against official or high-confidence sources.
+```
+
+It does not mean:
+
+```txt
+The company paid us.
+```
+
+### Requirements before showing badge
+
+For prop firms:
+
+- challenge rules checked;
+- pricing checked;
+- payout information checked;
+- platforms checked;
+- contact information checked;
+- company details checked;
+- source URL stored;
+- verifier stored;
+- last verified date stored.
+
+For brokers:
+
+- regulation checked;
+- trading accounts checked;
+- instruments/spreads checked;
+- deposit/withdrawal information checked;
+- platforms checked;
+- support/contact checked;
+- source URL stored;
+- verifier stored;
+- last verified date stored.
+
+## 4. Rule History™
+
+Purpose: make FundedScope a living intelligence source rather than a static directory.
+
+Examples:
+
+```txt
+Daily Drawdown
+5%
+↓
+4%
+
+Updated yesterday
+```
+
+```txt
+Profit Split
+80%
+↓
+90%
+
+Changed 10 Jan 2026
+```
+
+Every important rule/pricing/payout change should store:
+
+```text
+entity_type
+entity_id
+field_name
+old_value
+new_value
+change_summary
+source_url
+changed_at
+verified_by
+created_at
+```
+
+## 5. Broker Intelligence™
+
+Purpose: compare brokers by instrument, not only by one generic overall score.
+
+Example:
+
+```txt
+Gold / XAUUSD
+Average Spread: 1.2 pips
+Period: Last 30 days
+```
+
+```txt
+EURUSD
+Average Spread: 0.1 pips
+Period: Last 30 days
+```
+
+Instrument-level broker comparison should support:
+
+- average spread;
+- minimum spread;
+- commission;
+- swap long;
+- swap short;
+- maximum leverage;
+- execution speed;
+- regulation score;
+- last updated period.
+
+## 6. Trader DNA™ Recommendation Score
+
+Purpose: personalize recommendations based on the trader, not only the firm/broker.
+
+Inputs:
+
+- available capital;
+- preferred markets: Gold, Forex, Crypto, Indices, Futures;
+- trading style: scalper, day trader, swing, position;
+- news trader or not;
+- weekend holding needed or not;
+- preferred platform: MT4, MT5, cTrader, TradingView, DXTrade;
+- preferred evaluation type: one-step, two-step, instant funding;
+- risk tolerance;
+- country/restrictions;
+- account size target.
+
+```txt
+Trader DNA Recommendation Score =
+  Base Trust/Broker Score  * 0.35
++ Market Match             * 0.15
++ Strategy Match           * 0.15
++ Risk Match               * 0.10
++ Platform Match           * 0.08
++ Country Eligibility      * 0.07
++ Budget Match             * 0.05
++ Preference Match         * 0.05
+```
+
+Examples:
+
+- A Gold scalper prioritizes XAUUSD spreads, execution and scalping permission.
+- A swing trader prioritizes overnight/weekend rules and swap costs.
+- A beginner prioritizes support, rule clarity and refund policy.
+- A news trader needs explicit news trading rules and volatility warnings.
+
+## 7. Market Health™
+
+Purpose: give traders a daily decision snapshot before trading.
+
+Example:
+
+```txt
+Today's Market
+Risk Level: Low
+Volatility: Medium
+Major News: 2
+Recommended: Trade after London Open
+```
+
+Suggested score:
+
+```txt
+Market Health Score =
+  News Risk          * 0.30
++ Volatility Risk    * 0.25
++ Spread Conditions  * 0.20
++ Liquidity/Session  * 0.15
++ User Risk Context  * 0.10
+```
+
+Display:
+
+```text
+0-39    High risk
+40-69   Caution
+70-100  Healthy
+```
+
+## 8. Legacy FundedScope Score
 
 Purpose: overall firm quality and trader-fit signal.
 
@@ -27,7 +312,7 @@ FundedScope Score =
 | Pricing Score | Challenge fee vs account size and rules |
 | Review Score | Verified user sentiment and payout proof quality |
 
-## 2. Trust Score
+## 9. Legacy Trust Score
 
 ```txt
 Trust Score =
@@ -45,7 +330,7 @@ Risk flags subtract points:
 - Sudden rule changes without notice: -5 to -20
 - Missing legal/contact information: -5 to -15
 
-## 3. Spread Score
+## 10. Spread Score
 
 Purpose: estimate how tradable a firm/source is for active traders.
 
@@ -74,7 +359,7 @@ Then average across watched symbols.
 | Frequent spikes | -10 |
 | Severe news/session widening | -20 |
 
-## 4. Rules Score
+## 11. Rules Score
 
 ```txt
 Rules Score =
@@ -91,7 +376,7 @@ Examples:
 - Clear weekend/news/EA rules score better than vague rules.
 - Frequent policy changes reduce score.
 
-## 5. Payout Score
+## 12. Payout Score
 
 ```txt
 Payout Score =
@@ -102,7 +387,7 @@ Payout Score =
 + Payment Method Coverage * 0.10
 ```
 
-## 6. Pricing Score
+## 13. Pricing Score
 
 ```txt
 Pricing Score =
@@ -113,7 +398,7 @@ Pricing Score =
 + Hidden Cost Adjustment * 0.15
 ```
 
-## 7. Recommendation Score
+## 14. Recommendation Score
 
 Personalized score used for trader profiles.
 

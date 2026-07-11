@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: "Compare Prop Firms Worldwide | FundedScope",
     description: "Search prop firm rules, payout terms, drawdown and score breakdowns in one trusted directory.",
     url: "/prop-firms",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },

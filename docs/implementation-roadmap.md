@@ -2,6 +2,10 @@
 
 For a more precise day-by-day launch plan, see [mvp-timeline.md](/docs/mvp-timeline.md).
 
+For the product/company roadmap from Version 1.0 through Version 3.0, see [fundedscope-version-roadmap.md](/docs/fundedscope-version-roadmap.md).
+
+For the branded scoring and intelligence systems, see [scoring-formulas.md](/docs/scoring-formulas.md).
+
 ## Phase 1 — Production foundation
 
 - Install dependencies and verify both workspaces build.

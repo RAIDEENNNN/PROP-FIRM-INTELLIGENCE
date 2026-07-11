@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: "Side-by-Side Prop Firm Comparison | FundedScope",
     description: "A structured comparison dashboard for choosing better-fit prop firms.",
     url: "/compare",
-    siteName: "FundedScope",
+    siteName: "MyFundedScope",
     type: "website",
     images: ["/brand/fundedscope-logo.png"]
   },
