@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png"
   },
-  manifest: "/manifest.webmanifest",
+  manifest: "/site.webmanifest",
   applicationName: brand.companyName,
   keywords: ["MyFundedScope", "FundedScope", "prop firm comparison", "trading intelligence", "prop firms", "broker comparison", "Trader DNA"],
   openGraph: {
