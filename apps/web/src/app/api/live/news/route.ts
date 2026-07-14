@@ -41,9 +41,9 @@ export async function GET() {
 
   return Response.json({
     ok: true,
-    source: "FundedScope launch radar",
+    source: "FundedScope News Radar",
     live: false,
-    message: "Add GNEWS_API_KEY or NEWS_API_KEY to activate live news ingestion.",
+    message: "Showing curated FundedScope market radar items. Provider-backed ingestion appears when verified.",
     articles: newsEvents.map((event) => ({
       title: event.title,
       impact: event.impact,

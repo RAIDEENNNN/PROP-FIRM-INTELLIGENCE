@@ -56,14 +56,14 @@ export default function GoldPage() {
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Gold command center</p>
       <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-4xl md:text-6xl">Trade XAUUSD with the context traders usually open five websites to find.</h1>
       <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-        One page for Gold volatility context, high-impact news risk, prop firm spread comparison, rule reminders, personal risk limits and journal prompts. Live market/news APIs can replace these launch baselines when keys are connected.
+        One page for Gold volatility context, high-impact news risk, prop firm spread comparison, rule reminders, personal risk limits and journal prompts.
       </p>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-4">
         <GlassCard>
           <p className="text-sm text-slate-400">Gold trend</p>
           <p className="mt-2 text-3xl font-black text-white">Volatile</p>
-          <p className="mt-2 text-sm text-slate-500">Launch baseline · live feed ready</p>
+          <p className="mt-2 text-sm text-slate-500">Source-aware risk model</p>
         </GlassCard>
         <GlassCard>
           <p className="text-sm text-slate-400">XAUUSD spread mode</p>
@@ -151,7 +151,7 @@ export default function GoldPage() {
           <p className="text-sm uppercase tracking-[0.28em] text-violet">AI risk summary</p>
           <h2 className="mt-2 text-2xl font-black text-white">Today’s Gold trading notes</h2>
           <p className="mt-5 leading-8 text-slate-300">
-            Gold is treated as a high-volatility instrument in this launch model. If USD news is close, reduce risk or wait for spreads to normalize. Prefer firms with clear commodity rules, stable XAUUSD spread rows and no hidden news-trading traps.
+            Gold is treated as a high-volatility instrument in the FundedScope risk model. If USD news is close, reduce risk or wait for spreads to normalize. Prefer firms with clear commodity rules, stable XAUUSD spread rows and no hidden news-trading traps.
           </p>
           <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <p className="font-black text-white">Journal reminders</p>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CalculatorCard } from "../../components/CalculatorCard";
 import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
 
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
   }
 };
 
-const calculators = [
+const calculators: Array<[string, string]> = [
   ["Lot Size Calculator", "Estimate position size from account balance, stop loss and risk percentage."],
   ["Risk Calculator", "Translate risk percentage into cash amount before entering a trade."],
   ["Position Size Calculator", "Plan trade size across forex, metals, indices and crypto-style CFDs."],
@@ -57,15 +58,7 @@ export default function ToolsPage() {
 
       <section className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {calculators.map(([title, copy]) => (
-          <GlassCard key={title}>
-            <h2 className="text-xl font-black text-white">{title}</h2>
-            <p className="mt-3 min-h-12 text-sm leading-6 text-slate-400">{copy}</p>
-            <div className="mt-5 space-y-3">
-              <input className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Account balance / symbol / value" />
-              <input className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Risk, stop loss or target" />
-              <button className="w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void">Calculate</button>
-            </div>
-          </GlassCard>
+          <CalculatorCard key={title} title={title} copy={copy} />
         ))}
       </section>
 

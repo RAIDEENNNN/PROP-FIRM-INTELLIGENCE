@@ -146,7 +146,7 @@ Request:
 
 ```json
 {
-  "name": "Raiden",
+  "name": "THE PĦILOSOPHER",
   "avatarUrl": "https://example.com/avatar.png"
 }
 ```
@@ -436,7 +436,7 @@ Request:
 ```json
 {
   "firmId": "firm_id",
-  "notes": "Interested in $100k challenge"
+  "notes": "Interested in £100k challenge"
 }
 ```
 

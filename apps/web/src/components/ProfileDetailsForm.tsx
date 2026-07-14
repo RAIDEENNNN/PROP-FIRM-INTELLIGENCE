@@ -186,7 +186,7 @@ export function ProfileDetailsForm() {
       if (!response.ok || !payload.ok) {
         throw new Error(
           payload.code === "BACKEND_API_NOT_CONFIGURED"
-            ? "Profile saving is temporarily unavailable while FundedScope connects the production API. Please try again shortly."
+            ? "Account services could not be reached. Please check your connection and try saving again shortly."
             : payload.error ?? payload.details ?? "My Trading DNA could not be saved"
         );
       }
@@ -315,7 +315,7 @@ export function ProfileDetailsForm() {
       </section>
 
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-        <p className="text-xs uppercase tracking-[0.24em] text-electric">Preferences and future connections</p>
+        <p className="text-xs uppercase tracking-[0.24em] text-electric">Preferences and account connections</p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
             ["Notifications", notifications, setNotifications],

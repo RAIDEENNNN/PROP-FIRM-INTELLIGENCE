@@ -1,5 +1,8 @@
 import { GlassCard } from "../../components/GlassCard";
 import { SignUpForm } from "../../components/AuthForms";
+import { noindexMetadata } from "../../lib/seo";
+
+export const metadata = noindexMetadata("Create account | FundedScope", "Create a private FundedScope trading profile.", "/sign-up");
 
 export default function SignUpPage() {
   return (

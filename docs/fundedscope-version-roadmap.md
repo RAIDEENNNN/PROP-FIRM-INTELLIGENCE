@@ -45,7 +45,7 @@ Goal: prove FundedScope is a real, trusted trader intelligence product.
 ### Intelligence
 
 - Public scoring explanation.
-- Early Trust Score logic.
+- Early Confidence Score logic.
 - Verified by FundedScope™ concept.
 - Rule History™ concept.
 - Trader DNA™ onboarding concept.
@@ -121,8 +121,8 @@ Goal: create the secret sauce that separates FundedScope from normal comparison 
 
 ### Intelligence systems
 
-- FundedScope Trust Score™ live.
-- FundedScope Broker Score™ live.
+- FundedScope Confidence Score™ for prop firms live.
+- FundedScope Confidence Score™ for brokers live.
 - Verified by FundedScope™ workflow live.
 - Rule History™ live.
 - Broker Intelligence™ live.

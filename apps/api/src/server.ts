@@ -24,8 +24,8 @@ const allowedCorsOrigins = new Set([
   env.FRONTEND_URL,
   "https://myfundedscope.com",
   "https://www.myfundedscope.com",
-  "http://localhost:3000"
-]);
+  ...(env.NODE_ENV === "production" ? [] : ["http://localhost:3000"])
+].filter(Boolean));
 
 app.use(helmet());
 app.use(
@@ -98,6 +98,6 @@ app.use((error: unknown, _req: express.Request, res: express.Response, _next: ex
   });
 });
 
-app.listen(env.PORT, () => {
-  console.log(`FundedScope API running on http://localhost:${env.PORT}`);
+app.listen(env.PORT, "0.0.0.0", () => {
+  console.log(`FundedScope API running on 0.0.0.0:${env.PORT}`);
 });

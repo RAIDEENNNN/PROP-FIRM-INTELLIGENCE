@@ -1,4 +1,7 @@
 import { GlassCard } from "../../components/GlassCard";
+import { noindexMetadata } from "../../lib/seo";
+
+export const metadata = noindexMetadata("Alerts | FundedScope", "Private FundedScope alert preferences and notifications.", "/alerts");
 
 export default function AlertsPage() {
   return (

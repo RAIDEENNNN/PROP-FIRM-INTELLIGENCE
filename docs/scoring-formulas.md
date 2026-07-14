@@ -10,14 +10,14 @@ All scores should be shown as 0–100 unless explicitly stated otherwise. A scor
 - source status;
 - whether the profile is `Verified by FundedScope™`.
 
-No affiliate, sponsorship or featured listing payment may directly increase a Trust Score, Broker Score or recommendation score.
+No affiliate, sponsorship or featured listing payment may directly increase a FundedScope Confidence Score or recommendation score.
 
-## 1. FundedScope Trust Score™
+## 1. FundedScope Confidence Score™ for prop firms
 
 Purpose: explain how trustworthy and trader-friendly a prop firm appears based on verified criteria.
 
 ```txt
-FundedScope Trust Score =
+FundedScope Confidence Score =
   Payout Reliability       * 0.20
 + Rule Transparency        * 0.15
 + Community Rating         * 0.15
@@ -45,7 +45,7 @@ FundedScope Trust Score =
 | Refund Policy | 5 | Refund clarity and conditions |
 | Trading Flexibility | 5 | News, weekend, EA, scalping, copy trading, strategy fit |
 
-### Trust Score display
+### Confidence Score display
 
 ```txt
 FTMO
@@ -57,52 +57,43 @@ Last checked: 10 July 2026
 
 The UI must show the category breakdown so users can understand why a firm earned the score.
 
-## 2. FundedScope Broker Score™
+## 2. FundedScope Confidence Score™ for brokers
 
 Purpose: explain broker quality for live traders, especially by regulation, execution and instrument-specific trading cost.
 
 ```txt
-FundedScope Broker Score =
-  Regulation       * 0.18
-+ Execution        * 0.15
-+ Spreads          * 0.15
-+ Withdrawals      * 0.12
-+ Support          * 0.10
-+ Platforms        * 0.10
-+ Transparency     * 0.08
-+ Safety           * 0.07
-+ Commissions      * 0.03
-+ Community        * 0.02
+FundedScope Confidence Score =
+  Withdrawal Reliability   * 0.20
++ Rule Transparency        * 0.15
++ Customer Support         * 0.15
++ Trading Conditions       * 0.20
++ Platform Stability       * 0.15
++ Community Trust          * 0.15
 ```
 
 ### Broker score components
 
 | Component | Weight | Meaning |
 |---|---:|---|
-| Regulation | 18 | Regulators, licence status, entity clarity, negative balance protection |
-| Execution | 15 | Execution speed, slippage, reliability, order restrictions |
-| Spreads | 15 | Average/min spread by instrument and session |
-| Withdrawals | 12 | Speed, fees, dispute rate, supported methods |
-| Support | 10 | Live chat, email, phone, WhatsApp/Telegram, response quality |
-| Platforms | 10 | MT4, MT5, cTrader, TradingView, WebTrader, mobile quality |
-| Transparency | 8 | Public fees, terms, entity clarity, source quality |
-| Safety | 7 | Segregated funds, risk controls, operating history |
-| Commissions | 3 | Commission clarity and competitiveness |
-| Community | 2 | Verified reviews and complaint ratio |
+| Withdrawal Reliability | 20 | Speed, fees, dispute rate, supported withdrawal methods |
+| Rule Transparency | 15 | Public fees, terms, entity clarity, account restrictions and source quality |
+| Customer Support | 15 | Live chat, email, phone, WhatsApp/Telegram, hours and response quality |
+| Trading Conditions | 20 | Execution, spreads, commissions, instruments, order restrictions |
+| Platform Stability | 15 | MT4, MT5, cTrader, TradingView, WebTrader, mobile quality and tool coverage |
+| Community Trust | 15 | Regulation, operating history, public reputation and verified review signals |
 
-### Broker Score display
+### Broker Confidence Score display
 
 ```txt
 Exness
 95 / 100
 
-Regulation      ★★★★★
-Execution       ★★★★★
-Spreads         ★★★★☆
-Withdrawals     ★★★★★
-Support         ★★★★☆
-Platforms       ★★★★★
-Transparency    ★★★★★
+Withdrawal Reliability   19/20
+Rule Transparency        14/15
+Customer Support         14/15
+Trading Conditions       19/20
+Platform Stability       14/15
+Community Trust          15/15
 ```
 
 The UI must explain why each score was earned.
@@ -237,7 +228,7 @@ Inputs:
 
 ```txt
 Trader DNA Recommendation Score =
-  Base Trust/Broker Score  * 0.35
+  Base Confidence Score    * 0.35
 + Market Match             * 0.15
 + Strategy Match           * 0.15
 + Risk Match               * 0.10
@@ -293,7 +284,7 @@ Purpose: overall firm quality and trader-fit signal.
 
 ```txt
 FundedScope Score =
-  Trust Score * 0.35
+  Confidence Score * 0.35
 + Rules Score * 0.20
 + Payout Score * 0.15
 + Spread Score * 0.10
@@ -305,7 +296,7 @@ FundedScope Score =
 
 | Component | Meaning |
 |---|---|
-| Trust Score | Operational credibility, age, transparency, incident history |
+| Confidence Score | Operational credibility, age, transparency, incident history |
 | Rules Score | Challenge clarity, drawdown fairness, trading restrictions |
 | Payout Score | Frequency, proof volume, consistency, disputes |
 | Spread Score | Trading cost by market and session |
@@ -404,7 +395,7 @@ Personalized score used for trader profiles.
 
 ```txt
 Recommendation Score =
-  FundedScope Score * 0.45
+  FundedScope Confidence Score * 0.45
 + Strategy Match * 0.20
 + Risk Tolerance Match * 0.15
 + Market Match * 0.10

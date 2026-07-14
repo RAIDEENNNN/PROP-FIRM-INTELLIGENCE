@@ -99,7 +99,7 @@ export default function ComparePage() {
           </h2>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
             {[
-              `Higher overall FundedScope Score: ${leader?.firm.score}/100 vs ${runnerUp?.firm.score}/100.`,
+              `Higher overall FundedScope Confidence Score: ${leader?.firm.score}/100 vs ${runnerUp?.firm.score}/100.`,
               `${leader?.trust.sourceLabel} with ${leader?.trust.confidence.toLowerCase()} confidence.`,
               `Better fit reasons: ${leader?.trust.bestFor.slice(0, 2).join(", ")}.`,
               `Caution check: ${leader?.trust.cautions[0] ?? "No major caution from seeded data."}`

@@ -29,6 +29,29 @@ export function PropFirmDirectory() {
 
   return (
     <>
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        {["Firms", "Challenges", "Offers", "Reviews", "Futures Firms"].map((item, index) => (
+          <button
+            key={item}
+            type="button"
+            onClick={() => {
+              if (item === "Futures Firms") setMarket("Futures");
+              if (item === "Firms") setMarket("All markets");
+            }}
+            className={`rounded-full px-5 py-3 text-sm font-black transition ${
+              index === 1
+                ? "bg-white text-void"
+                : item === "Futures Firms"
+                  ? "border border-fuchsia-400/35 bg-fuchsia-400/10 text-fuchsia-100 hover:bg-fuchsia-400/15"
+                  : "border border-white/10 bg-white/[0.04] text-slate-200 hover:border-white/20"
+            }`}
+          >
+            {item}
+            {item === "Futures Firms" ? <span className="ml-2 rounded-full bg-violet px-2 py-0.5 text-[10px] text-white">Trending</span> : null}
+          </button>
+        ))}
+      </div>
+
       <div className="mt-6 grid gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4 lg:grid-cols-[1fr_180px_180px_auto]">
         <input
           value={query}
@@ -49,6 +72,23 @@ export function PropFirmDirectory() {
           <option>Monthly</option>
         </select>
         <div className="rounded-2xl bg-electric px-5 py-3 text-center font-bold text-void">{firms.length} firms</div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm font-bold text-slate-300">
+          Challenges <span className="text-fuchsia-300">{firms.length}</span>
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {["How we verify and rank firms", "Source-reviewed data", "Report incorrect information"].map((item, index) => (
+            <a
+              key={item}
+              href={index === 0 ? "/legal/how-we-score" : index === 1 ? "/sources" : "/report"}
+              className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-bold text-slate-200 hover:border-electric/40 hover:text-electric"
+            >
+              {item}
+            </a>
+          ))}
+        </div>
       </div>
 
       <div className="mt-6 grid gap-3 md:grid-cols-3">

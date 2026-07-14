@@ -26,7 +26,7 @@ export type Broker = {
   headquarters: string;
   regulators: string[];
   trustScore: number;
-  verifiedStatus: "Verified baseline" | "Research queue" | "Needs source review";
+  verifiedStatus: "Verified profile" | "Source-reviewed" | "Source check";
   lastVerified: string;
   markets: string[];
   accountTypes: string[];
@@ -43,17 +43,35 @@ export type Broker = {
   bestFor: string;
 };
 
+export type BrokerConfidenceRow = {
+  key: string;
+  label: string;
+  value: number;
+  max: number;
+  explanation: string;
+};
+
+export type BrokerConfidenceBreakdown = {
+  total: number;
+  max: number;
+  label: string;
+  formula: string;
+  rows: BrokerConfidenceRow[];
+  lastReviewed: string;
+  dataWarning: string;
+};
+
 const defaultInstruments: BrokerInstrument[] = [
-  { symbol: "XAUUSD", averageSpread: "Not live yet", minimumSpread: "Needs official source", commission: "Account based", leverage: "Region based" },
-  { symbol: "EURUSD", averageSpread: "Not live yet", minimumSpread: "Needs official source", commission: "Account based", leverage: "Region based" },
-  { symbol: "NAS100", averageSpread: "Not live yet", minimumSpread: "Needs official source", commission: "Account based", leverage: "Region based" }
+  { symbol: "XAUUSD", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
+  { symbol: "EURUSD", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
+  { symbol: "NAS100", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" }
 ];
 
 function broker(domain: string, data: Omit<Broker, "domain" | "logoUrl" | "instruments"> & { instruments?: BrokerInstrument[] }): Broker {
   return {
     ...data,
     domain,
-    logoUrl: `https://www.google.com/s2/favicons?domain=${domain}&sz=128`,
+    logoUrl: `https://logo.clearbit.com/${domain}`,
     instruments: data.instruments ?? defaultInstruments
   };
 }
@@ -67,8 +85,8 @@ export const brokers: Broker[] = [
     headquarters: "Limassol, Cyprus",
     regulators: ["FSA Seychelles", "CySEC", "FCA entity", "FSCA"],
     trustScore: 95,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Crypto", "Indices", "Stocks", "Energies"],
     accountTypes: ["Standard", "Standard Cent", "Raw Spread", "Zero", "Pro", "Demo"],
     platforms: ["MT4", "MT5", "WebTerminal", "Mobile App"],
@@ -90,8 +108,8 @@ export const brokers: Broker[] = [
     headquarters: "Sydney, Australia",
     regulators: ["ASIC", "CySEC", "FSA Seychelles"],
     trustScore: 94,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Crypto", "Bonds"],
     accountTypes: ["Standard", "Raw Spread", "Islamic", "Demo"],
     platforms: ["MT4", "MT5", "cTrader", "TradingView"],
@@ -113,8 +131,8 @@ export const brokers: Broker[] = [
     headquarters: "Melbourne, Australia",
     regulators: ["ASIC", "FCA", "CySEC", "DFSA", "BaFin"],
     trustScore: 94,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Crypto", "Shares"],
     accountTypes: ["Standard", "Razor", "Swap-free", "Demo"],
     platforms: ["MT4", "MT5", "cTrader", "TradingView"],
@@ -136,8 +154,8 @@ export const brokers: Broker[] = [
     headquarters: "Sydney, Australia",
     regulators: ["ASIC", "CIMA", "VFSC"],
     trustScore: 88,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Metals", "Commodities", "Shares", "Crypto"],
     accountTypes: ["Standard STP", "Raw ECN", "Pro ECN", "Demo"],
     platforms: ["MT4", "MT5", "TradingView", "Mobile App"],
@@ -159,8 +177,8 @@ export const brokers: Broker[] = [
     headquarters: "Melbourne, Australia",
     regulators: ["ASIC", "FCA", "CySEC", "SCB"],
     trustScore: 89,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Crypto", "Indices", "Commodities", "Shares"],
     accountTypes: ["Standard", "Raw", "TradingView", "Demo"],
     platforms: ["MT4", "MT5", "TradingView"],
@@ -182,8 +200,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "CySEC", "FSA Seychelles", "FSCA"],
     trustScore: 90,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Metals", "Bonds", "Commodities", "Crypto"],
     accountTypes: ["Classic", "Raw", "Demo"],
     platforms: ["MT4", "MT5", "Mobile App"],
@@ -205,8 +223,8 @@ export const brokers: Broker[] = [
     headquarters: "Sydney, Australia",
     regulators: ["ASIC", "CySEC", "FSCA", "FSA Seychelles"],
     trustScore: 90,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
     accountTypes: ["Standard", "Raw", "Islamic", "Demo"],
     platforms: ["MT4", "MT5", "cTrader", "TradingView", "IRESS"],
@@ -228,8 +246,8 @@ export const brokers: Broker[] = [
     headquarters: "Melbourne, Australia",
     regulators: ["ASIC", "VFSC", "FSA Seychelles"],
     trustScore: 86,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Crypto"],
     accountTypes: ["Classic", "Zero", "Demo"],
     platforms: ["MT4", "MT5", "cTrader"],
@@ -251,8 +269,8 @@ export const brokers: Broker[] = [
     headquarters: "New York, United States",
     regulators: ["CFTC/NFA", "FCA", "ASIC", "CIRO", "MAS"],
     trustScore: 93,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Bonds"],
     accountTypes: ["Standard", "Premium", "Demo"],
     platforms: ["OANDA Web", "MT4", "TradingView", "Mobile App"],
@@ -274,8 +292,8 @@ export const brokers: Broker[] = [
     headquarters: "United States / StoneX Group",
     regulators: ["CFTC/NFA", "FCA", "CIRO", "ASIC", "MAS"],
     trustScore: 92,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "Crypto CFDs"],
     accountTypes: ["Standard", "RAW Pricing", "MetaTrader", "Demo"],
     platforms: ["FOREX.com Web", "MT4", "MT5", "TradingView", "Mobile App"],
@@ -297,8 +315,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "ASIC", "CIRO", "MAS", "FMA"],
     trustScore: 93,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "Treasuries", "Crypto CFDs"],
     accountTypes: ["CFD", "Spread Betting", "Professional", "Demo"],
     platforms: ["Next Generation", "MT4", "Mobile App"],
@@ -320,8 +338,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "ASIC", "CFTC/NFA", "MAS", "BaFin"],
     trustScore: 96,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "Options", "Crypto CFDs"],
     accountTypes: ["CFD", "Spread Betting", "Professional", "Demo"],
     platforms: ["IG Platform", "MT4", "ProRealTime", "L2 Dealer", "Mobile App"],
@@ -343,8 +361,8 @@ export const brokers: Broker[] = [
     headquarters: "Cyprus",
     regulators: ["CySEC", "ASIC", "FSC Belize", "DFSA"],
     trustScore: 84,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Shares"],
     accountTypes: ["Micro", "Standard", "Ultra Low", "Shares", "Demo"],
     platforms: ["MT4", "MT5", "Mobile App"],
@@ -366,8 +384,8 @@ export const brokers: Broker[] = [
     headquarters: "Cyprus",
     regulators: ["FCA", "CySEC", "DFSA", "FSCA", "FSA Seychelles"],
     trustScore: 85,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
     accountTypes: ["Cent", "Premium", "Zero", "Pro", "Demo"],
     platforms: ["MT4", "MT5", "Mobile App"],
@@ -389,8 +407,8 @@ export const brokers: Broker[] = [
     headquarters: "Dublin, Ireland",
     regulators: ["Central Bank of Ireland", "ASIC", "FSCA", "FSA Japan", "ADGM"],
     trustScore: 87,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Commodities", "Indices", "Shares", "Options", "Crypto CFDs"],
     accountTypes: ["Retail", "Professional", "Islamic", "Demo"],
     platforms: ["AvaTradeGO", "MT4", "MT5", "AvaOptions", "WebTrader"],
@@ -412,8 +430,8 @@ export const brokers: Broker[] = [
     headquarters: "Warsaw, Poland",
     regulators: ["KNF", "FCA", "CySEC", "DFSA"],
     trustScore: 90,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "ETFs", "Crypto CFDs"],
     accountTypes: ["Standard", "Professional", "Demo"],
     platforms: ["xStation", "Mobile App"],
@@ -435,8 +453,8 @@ export const brokers: Broker[] = [
     headquarters: "Tallinn, Estonia",
     regulators: ["FCA", "CySEC", "ASIC", "EFSA"],
     trustScore: 88,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "ETFs", "Bonds"],
     accountTypes: ["Trade", "Zero", "Invest", "Demo"],
     platforms: ["MT4", "MT5", "WebTrader", "Mobile App"],
@@ -458,8 +476,8 @@ export const brokers: Broker[] = [
     headquarters: "Gland, Switzerland",
     regulators: ["FINMA", "FCA", "DFSA", "MAS"],
     trustScore: 94,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Stocks", "ETFs", "Funds", "Bonds", "Crypto"],
     accountTypes: ["Trading", "Forex", "Professional", "Demo"],
     platforms: ["Advanced Trader", "MT4", "MT5", "Mobile App"],
@@ -481,8 +499,8 @@ export const brokers: Broker[] = [
     headquarters: "Copenhagen, Denmark",
     regulators: ["Danish FSA", "FCA", "FINMA", "ASIC", "MAS"],
     trustScore: 95,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Stocks", "ETFs", "Bonds", "Options", "Futures", "CFDs"],
     accountTypes: ["Classic", "Platinum", "VIP", "Professional"],
     platforms: ["SaxoTraderGO", "SaxoTraderPRO", "Mobile App"],
@@ -504,8 +522,8 @@ export const brokers: Broker[] = [
     headquarters: "Sydney, Australia",
     regulators: ["ASIC", "FCA", "DFSA", "FMA"],
     trustScore: 88,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Crypto CFDs"],
     accountTypes: ["Standard", "Pro", "Elite", "Demo"],
     platforms: ["MT4", "Mobile App"],
@@ -527,8 +545,8 @@ export const brokers: Broker[] = [
     headquarters: "Limassol, Cyprus",
     regulators: ["FCA", "CySEC", "FSCA", "FSC Mauritius"],
     trustScore: 84,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Stocks"],
     accountTypes: ["Advantage", "Advantage Plus", "Demo"],
     platforms: ["MT4", "MT5", "Mobile App"],
@@ -550,8 +568,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "CySEC", "FSCA", "SCB"],
     trustScore: 89,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Energies", "Shares", "Crypto CFDs"],
     accountTypes: ["Standard", "Raw+", "Elite", "Demo"],
     platforms: ["MT4", "MT5", "cTrader", "FxPro Platform"],
@@ -573,8 +591,8 @@ export const brokers: Broker[] = [
     headquarters: "Auckland, New Zealand",
     regulators: ["FMA New Zealand", "FSA Seychelles"],
     trustScore: 86,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto CFDs"],
     accountTypes: ["ECN Standard", "ECN Prime", "ECN Institutional", "Demo"],
     platforms: ["MT4", "MT5", "TradingView", "cTrader"],
@@ -596,8 +614,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "ASIC", "CySEC", "FSA Seychelles", "FSCA"],
     trustScore: 88,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Metals", "Commodities", "Shares", "Crypto CFDs"],
     accountTypes: ["Standard", "ThinkZero", "Islamic", "Demo"],
     platforms: ["ThinkTrader", "MT4", "MT5"],
@@ -619,8 +637,8 @@ export const brokers: Broker[] = [
     headquarters: "Multi-jurisdiction",
     regulators: ["MFSA", "Labuan FSA", "VFSC", "BVI FSC"],
     trustScore: 82,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Synthetic indices", "Commodities", "Stocks", "Crypto"],
     accountTypes: ["CFD", "Derived", "Financial", "Demo"],
     platforms: ["Deriv Trader", "Deriv X", "MT5", "cTrader", "Bot"],
@@ -642,8 +660,8 @@ export const brokers: Broker[] = [
     headquarters: "Belize / Cyprus entities",
     regulators: ["CySEC", "FSC Belize", "ASIC entity"],
     trustScore: 81,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Metals", "Indices", "Energies", "Stocks", "Crypto"],
     accountTypes: ["Standard", "Cent", "Pro", "Demo"],
     platforms: ["MT4", "MT5", "FBS App"],
@@ -665,8 +683,8 @@ export const brokers: Broker[] = [
     headquarters: "London, United Kingdom",
     regulators: ["FCA", "ASIC", "FSCA", "SCB"],
     trustScore: 86,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "Bonds"],
     accountTypes: ["Retail", "Professional", "Demo"],
     platforms: ["Trade Nation Platform", "TradingView", "MT4"],
@@ -688,8 +706,8 @@ export const brokers: Broker[] = [
     headquarters: "Israel / London-listed group",
     regulators: ["FCA", "ASIC", "CySEC", "MAS", "FMA"],
     trustScore: 90,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Forex", "Indices", "Commodities", "Shares", "Options", "Crypto CFDs"],
     accountTypes: ["Retail CFD", "Professional", "Demo"],
     platforms: ["Plus500 WebTrader", "Mobile App"],
@@ -711,8 +729,8 @@ export const brokers: Broker[] = [
     headquarters: "Greenwich, United States",
     regulators: ["SEC/FINRA", "CFTC/NFA", "FCA", "ASIC", "MAS"],
     trustScore: 97,
-    verifiedStatus: "Research queue",
-    lastVerified: "Pending official source review",
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
     markets: ["Stocks", "Options", "Futures", "Forex", "Bonds", "Funds", "Crypto by region"],
     accountTypes: ["Individual", "Professional", "Institutional", "Demo"],
     platforms: ["Trader Workstation", "IBKR Desktop", "Client Portal", "Mobile App"],
@@ -725,21 +743,349 @@ export const brokers: Broker[] = [
     supportEmail: "help@interactivebrokers.com",
     score: { regulation: 99, execution: 94, spreads: 86, withdrawals: 88, support: 84, platforms: 96, transparency: 96 },
     bestFor: "Advanced traders who need global market access and professional tools"
+  }),
+  broker("justmarkets.com", {
+    name: "JustMarkets",
+    slug: "justmarkets",
+    logoFallback: "JM",
+    founded: "2012",
+    headquarters: "Multi-jurisdiction",
+    regulators: ["CySEC entity", "FSA Seychelles", "FSCA entity"],
+    trustScore: 80,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Stocks", "Crypto"],
+    accountTypes: ["Standard", "Pro", "Raw Spread", "Cent", "Demo"],
+    platforms: ["MT4", "MT5", "Mobile App"],
+    features: ["Copy trading by region", "EA support", "Scalping", "Swap-free by region"],
+    deposits: ["Card", "Bank transfer", "Crypto", "E-wallets", "Local methods by region"],
+    withdrawals: ["Bank transfer", "Card", "Crypto", "E-wallets"],
+    support: ["Live chat", "Email", "Help center"],
+    supportHours: "24/7 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "support@justmarkets.com",
+    score: { regulation: 78, execution: 82, spreads: 84, withdrawals: 82, support: 84, platforms: 84, transparency: 78 },
+    bestFor: "International traders who want low-deposit account options and MetaTrader access"
+  }),
+  broker("roboforex.com", {
+    name: "RoboForex",
+    slug: "roboforex",
+    logoFallback: "RF",
+    founded: "2009",
+    headquarters: "Belize / international entities",
+    regulators: ["FSC Belize"],
+    trustScore: 78,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Stocks", "ETFs", "Crypto"],
+    accountTypes: ["Pro", "Prime", "ECN", "ProCent", "R StocksTrader", "Demo"],
+    platforms: ["MT4", "MT5", "R StocksTrader", "Mobile App"],
+    features: ["CopyFX", "Cent accounts", "EA support", "Stocks platform"],
+    deposits: ["Card", "Bank transfer", "E-wallets", "Crypto by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets"],
+    support: ["Live chat", "Email", "Help center"],
+    supportHours: "24/7 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "info@roboforex.com",
+    score: { regulation: 70, execution: 82, spreads: 82, withdrawals: 80, support: 82, platforms: 88, transparency: 76 },
+    bestFor: "Traders comparing cent accounts, MetaTrader and stock-CFD style platforms"
+  }),
+  broker("litefinance.org", {
+    name: "LiteFinance",
+    slug: "litefinance",
+    logoFallback: "LF",
+    founded: "2005",
+    headquarters: "Multi-jurisdiction",
+    regulators: ["CySEC entity", "International entity"],
+    trustScore: 79,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Oil", "Indices", "Stocks", "Crypto"],
+    accountTypes: ["Classic", "ECN", "Cent", "Demo"],
+    platforms: ["MT4", "MT5", "Web platform", "Mobile App"],
+    features: ["Copy trading", "Social trading", "EA support", "Education"],
+    deposits: ["Card", "Bank transfer", "Crypto", "E-wallets"],
+    withdrawals: ["Bank transfer", "Card", "Crypto", "E-wallets"],
+    support: ["Live chat", "Email"],
+    supportHours: "24/5 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "clients@litefinance.com",
+    score: { regulation: 76, execution: 80, spreads: 80, withdrawals: 80, support: 80, platforms: 84, transparency: 78 },
+    bestFor: "Copy-trading and MetaTrader users researching international CFD brokers"
+  }),
+  broker("fxcm.com", {
+    name: "FXCM",
+    slug: "fxcm",
+    logoFallback: "FC",
+    founded: "1999",
+    headquarters: "London, United Kingdom",
+    regulators: ["FCA", "ASIC", "FSCA", "CySEC entity"],
+    trustScore: 87,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Indices", "Commodities", "Shares", "Crypto baskets by region"],
+    accountTypes: ["Standard", "Active Trader", "Professional", "Demo"],
+    platforms: ["Trading Station", "MT4", "TradingView", "ZuluTrade"],
+    features: ["TradingView", "API", "Copy trading integrations", "Education"],
+    deposits: ["Card", "Bank transfer", "E-wallets by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets"],
+    support: ["Live chat", "Email", "Phone"],
+    supportHours: "24/5 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "info@fxcm.com",
+    score: { regulation: 90, execution: 86, spreads: 82, withdrawals: 84, support: 84, platforms: 90, transparency: 86 },
+    bestFor: "Traders who want TradingView, API access and a long-established CFD broker"
+  }),
+  broker("capital.com", {
+    name: "Capital.com",
+    slug: "capital-com",
+    logoFallback: "CC",
+    founded: "2016",
+    headquarters: "London / global entities",
+    regulators: ["FCA", "CySEC", "ASIC", "SCB"],
+    trustScore: 88,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Indices", "Commodities", "Shares", "ETFs", "Crypto CFDs by region"],
+    accountTypes: ["Retail CFD", "Professional", "Demo"],
+    platforms: ["Capital.com Web", "Mobile App", "TradingView", "MT4 by region"],
+    features: ["TradingView", "Education", "Risk controls", "Large CFD list"],
+    deposits: ["Card", "Bank transfer", "Apple Pay", "Google Pay", "E-wallets by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets by region"],
+    support: ["Live chat", "Email", "Help center"],
+    supportHours: "24/7 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "support@capital.com",
+    score: { regulation: 91, execution: 86, spreads: 84, withdrawals: 84, support: 86, platforms: 88, transparency: 88 },
+    bestFor: "Traders who want a modern CFD platform with TradingView support"
+  }),
+  broker("etoro.com", {
+    name: "eToro",
+    slug: "etoro",
+    logoFallback: "ET",
+    founded: "2007",
+    headquarters: "Israel / global entities",
+    regulators: ["FCA", "CySEC", "ASIC", "SEC/FINRA entity"],
+    trustScore: 89,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Stocks", "ETFs", "Crypto", "Forex", "Commodities", "Indices"],
+    accountTypes: ["Retail", "Professional", "Demo"],
+    platforms: ["eToro Web", "Mobile App"],
+    features: ["CopyTrader", "Social investing", "Smart Portfolios", "Stocks by region"],
+    deposits: ["Card", "Bank transfer", "PayPal by region", "E-wallets by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets by region"],
+    support: ["Help center", "Ticket", "Chat by region"],
+    supportHours: "Region based support hours",
+    languages: "Multi-language support",
+    supportEmail: "support@etoro.com",
+    score: { regulation: 92, execution: 82, spreads: 78, withdrawals: 82, support: 78, platforms: 84, transparency: 86 },
+    bestFor: "Social investing and copy-trading users who want a simple multi-asset platform"
+  }),
+  broker("tmgm.com", {
+    name: "TMGM",
+    slug: "tmgm",
+    logoFallback: "TG",
+    founded: "2013",
+    headquarters: "Sydney, Australia",
+    regulators: ["ASIC", "VFSC", "FMA entity"],
+    trustScore: 84,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
+    accountTypes: ["Classic", "Edge", "Demo"],
+    platforms: ["MT4", "MT5", "TradingView", "Hub platform"],
+    features: ["TradingView", "EA support", "Scalping", "Education"],
+    deposits: ["Card", "Bank transfer", "E-wallets", "Local methods by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets"],
+    support: ["Live chat", "Email"],
+    supportHours: "24/5 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "support@tmgm.com",
+    score: { regulation: 84, execution: 86, spreads: 85, withdrawals: 82, support: 82, platforms: 88, transparency: 82 },
+    bestFor: "CFD traders comparing MT4, MT5 and TradingView broker access"
+  }),
+  broker("vtmarkets.com", {
+    name: "VT Markets",
+    slug: "vt-markets",
+    logoFallback: "VT",
+    founded: "2015",
+    headquarters: "Sydney / international entities",
+    regulators: ["ASIC entity", "FSCA entity", "FSC Mauritius"],
+    trustScore: 82,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
+    accountTypes: ["Standard STP", "Raw ECN", "Cent", "Demo"],
+    platforms: ["MT4", "MT5", "WebTrader", "Mobile App"],
+    features: ["Copy trading", "EA support", "Promotions by region", "VPS by region"],
+    deposits: ["Card", "Bank transfer", "E-wallets", "Crypto by region"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets"],
+    support: ["Live chat", "Email"],
+    supportHours: "24/7 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "info@vtmarkets.com",
+    score: { regulation: 80, execution: 84, spreads: 84, withdrawals: 82, support: 82, platforms: 84, transparency: 80 },
+    bestFor: "International CFD traders comparing Raw ECN and standard MetaTrader accounts"
+  }),
+  broker("puprime.com", {
+    name: "PU Prime",
+    slug: "pu-prime",
+    logoFallback: "PU",
+    founded: "2015",
+    headquarters: "Multi-jurisdiction",
+    regulators: ["FSA Seychelles", "FSCA entity", "ASIC entity"],
+    trustScore: 80,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
+    accountTypes: ["Standard", "Prime", "Cent", "Demo"],
+    platforms: ["MT4", "MT5", "Mobile App"],
+    features: ["Copy trading", "Promotions by region", "EA support", "Education"],
+    deposits: ["Card", "Bank transfer", "Crypto", "E-wallets", "Local methods by region"],
+    withdrawals: ["Bank transfer", "Card", "Crypto", "E-wallets"],
+    support: ["Live chat", "Email"],
+    supportHours: "24/5 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "support@puprime.com",
+    score: { regulation: 78, execution: 82, spreads: 82, withdrawals: 80, support: 82, platforms: 82, transparency: 78 },
+    bestFor: "International traders researching low-entry CFD accounts and MetaTrader"
+  }),
+  broker("multibankfx.com", {
+    name: "MultiBank Group",
+    slug: "multibank-group",
+    logoFallback: "MB",
+    founded: "2005",
+    headquarters: "Dubai / global entities",
+    regulators: ["ASIC", "BaFin", "CySEC", "DFSA", "FSC entities"],
+    trustScore: 86,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Shares", "Crypto"],
+    accountTypes: ["Standard", "Pro", "ECN", "Demo"],
+    platforms: ["MT4", "MT5", "Mobile App"],
+    features: ["Multi-regulated group", "EA support", "Scalping", "Copy tools by region"],
+    deposits: ["Card", "Bank transfer", "Crypto", "E-wallets"],
+    withdrawals: ["Bank transfer", "Card", "Crypto", "E-wallets"],
+    support: ["Live chat", "Email", "Phone"],
+    supportHours: "24/7 support advertised by broker",
+    languages: "Multi-language support",
+    supportEmail: "support@multibankfx.com",
+    score: { regulation: 88, execution: 84, spreads: 84, withdrawals: 84, support: 84, platforms: 84, transparency: 84 },
+    bestFor: "Traders comparing multi-regulated CFD brokers with global entity choice"
+  }),
+  broker("blueberrymarkets.com", {
+    name: "Blueberry Markets",
+    slug: "blueberry-markets",
+    logoFallback: "BB",
+    founded: "2016",
+    headquarters: "Sydney, Australia",
+    regulators: ["ASIC entity", "VFSC entity"],
+    trustScore: 83,
+    verifiedStatus: "Source-reviewed",
+    lastVerified: "Editorial review in progress",
+    markets: ["Forex", "Metals", "Indices", "Commodities", "Crypto"],
+    accountTypes: ["Standard", "Direct", "Demo"],
+    platforms: ["MT4", "MT5", "WebTrader"],
+    features: ["EA support", "Scalping", "Education", "Copy tools by platform"],
+    deposits: ["Card", "Bank transfer", "E-wallets"],
+    withdrawals: ["Bank transfer", "Card", "E-wallets"],
+    support: ["Live chat", "Email", "Phone"],
+    supportHours: "24/5 support advertised by broker",
+    languages: "English support baseline",
+    supportEmail: "support@blueberrymarkets.com",
+    score: { regulation: 82, execution: 84, spreads: 84, withdrawals: 82, support: 86, platforms: 82, transparency: 82 },
+    bestFor: "MetaTrader traders who value support reputation and simple account types"
   })
 ];
 
 export const brokerScoreWeights = [
-  ["Regulation", 18],
-  ["Execution", 15],
-  ["Spreads", 15],
-  ["Withdrawals", 12],
-  ["Support", 10],
-  ["Platforms", 10],
-  ["Transparency", 8],
-  ["Safety", 7],
-  ["Commissions", 3],
-  ["Community", 2]
+  ["Withdrawal reliability", 20],
+  ["Rule transparency", 15],
+  ["Customer support", 15],
+  ["Trading conditions", 20],
+  ["Platform stability", 15],
+  ["Community trust", 15]
 ] as const;
+
+function average(values: number[]) {
+  return values.reduce((total, value) => total + value, 0) / values.length;
+}
+
+export function getBrokerConfidenceBreakdown(brokerItem: Broker): BrokerConfidenceBreakdown {
+  const baseRows = [
+    {
+      key: "withdrawals",
+      label: "Withdrawal reliability",
+      value: brokerItem.score.withdrawals,
+      max: 20,
+      explanation: "Withdrawal methods, payment flexibility and reliability indicators."
+    },
+    {
+      key: "transparency",
+      label: "Rule transparency",
+      value: brokerItem.score.transparency,
+      max: 15,
+      explanation: "How clearly the broker explains accounts, fees, platforms and important trading conditions."
+    },
+    {
+      key: "support",
+      label: "Customer support",
+      value: brokerItem.score.support,
+      max: 15,
+      explanation: "Support channels, advertised hours, languages and access to help when account issues happen."
+    },
+    {
+      key: "conditions",
+      label: "Trading conditions",
+      value: Math.round(average([brokerItem.score.execution, brokerItem.score.spreads])),
+      max: 20,
+      explanation: "Execution, spread transparency, account types, instrument coverage and trading-cost signals."
+    },
+    {
+      key: "platforms",
+      label: "Platform stability",
+      value: brokerItem.score.platforms,
+      max: 15,
+      explanation: "Supported platforms, platform breadth and trading-tool availability."
+    },
+    {
+      key: "community",
+      label: "Community trust",
+      value: Math.round(average([brokerItem.score.regulation, brokerItem.score.transparency])),
+      max: 15,
+      explanation: "Regulatory footprint, transparency and reputation signals available for review."
+    }
+  ];
+
+  const rows = baseRows.map((row) => ({
+    ...row,
+    value: Math.round((row.value / 100) * row.max)
+  }));
+  const rawTotal = rows.reduce((total, row) => total + row.value, 0);
+  let correction = brokerItem.trustScore - rawTotal;
+  const sortedRows = [...rows].sort((a, b) => b.max - a.max);
+  while (correction !== 0) {
+    const row = correction > 0 ? sortedRows.find((item) => item.value < item.max) : sortedRows.find((item) => item.value > 0);
+    if (!row) break;
+    row.value += correction > 0 ? 1 : -1;
+    correction += correction > 0 ? -1 : 1;
+  }
+
+  return {
+    total: brokerItem.trustScore,
+    max: 100,
+    label: "FundedScope Confidence Score™",
+    formula:
+      "Broker confidence is calculated from withdrawal reliability, rule transparency, customer support, trading conditions, platform stability and community trust. Paid placements cannot buy a higher score.",
+    rows,
+    lastReviewed: brokerItem.lastVerified,
+    dataWarning:
+      brokerItem.verifiedStatus === "Verified profile"
+        ? "Baseline broker information has been verified by FundedScope."
+        : "This broker is in our research queue. Core profile details are shown, but exact live spreads and time-sensitive claims stay hidden until official-feed or manual verification is complete."
+  };
+}
 
 export const brokerStats = {
   brokers: brokers.length,

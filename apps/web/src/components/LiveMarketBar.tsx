@@ -5,7 +5,7 @@ import { fallbackMarkets, type MarketSnapshot } from "../lib/markets";
 
 export function LiveMarketBar() {
   const [markets, setMarkets] = useState<MarketSnapshot[]>(fallbackMarkets);
-  const [message, setMessage] = useState("Indicative market bar. Live feeds attach when provider keys are connected.");
+  const [message, setMessage] = useState("Market reference bar. Always verify executable quotes inside your trading platform before placing trades.");
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +20,7 @@ export function LiveMarketBar() {
           setMessage(payload.message ?? "Market data loaded.");
         }
       } catch {
-        if (!cancelled) setMessage("Indicative market bar. Live provider unavailable.");
+        if (!cancelled) setMessage("Market reference bar. Verify executable quotes inside your broker or prop-firm platform.");
       }
     }
 
@@ -36,7 +36,7 @@ export function LiveMarketBar() {
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-5">
         <div className="z-10 shrink-0 rounded-full border border-electric/30 bg-void px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-electric">
-          Live market bar
+          Market bar
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">
           <div className="market-marquee flex items-center gap-4">

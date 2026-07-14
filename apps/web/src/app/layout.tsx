@@ -9,8 +9,8 @@ import { brand, brandSameAs } from "../lib/brand";
 
 export const metadata: Metadata = {
   metadataBase: new URL(brand.url),
-  title: "MyFundedScope | FundedScope Trading Intelligence Platform",
-  description: "MyFundedScope is the company behind FundedScope, a trading intelligence platform for comparing prop firms, brokers, spreads, market risk, journals and trader decisions.",
+  title: "FundedScope – Compare Prop Firms, Brokers, Spreads & Trading Tools",
+  description: "Compare prop firms, forex brokers, spreads, payout rules, trading conditions and platform features. Research before you buy a challenge or open a broker account with FundedScope.",
   alternates: {
     canonical: "/"
   },
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   applicationName: brand.companyName,
   keywords: ["MyFundedScope", "FundedScope", "prop firm comparison", "trading intelligence", "prop firms", "broker comparison", "Trader DNA"],
   openGraph: {
-    title: "MyFundedScope | FundedScope Trading Intelligence Platform",
-    description: "Trade smarter. Decide faster.",
+    title: "FundedScope – Compare Prop Firms, Brokers, Spreads & Trading Tools",
+    description: "Compare prop firms, forex brokers, spreads, payout rules, trading conditions and platform features before you buy a challenge or open a broker account.",
     url: "/",
     siteName: "MyFundedScope",
     type: "website",
@@ -39,8 +39,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyFundedScope | FundedScope Trading Intelligence Platform",
-    description: "Trade smarter. Decide faster.",
+    title: "FundedScope – Compare Prop Firms, Brokers, Spreads & Trading Tools",
+    description: "Compare prop firms, forex brokers, spreads, payout rules, trading conditions and platform features.",
     images: [brand.logoPath]
   }
 };

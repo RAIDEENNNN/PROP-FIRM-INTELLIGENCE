@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { hasPersistenceApi, persistenceFetch } from "../lib/persistence-api";
 
 const fallbackNotifications = [
-  "Notification persistence is ready. Sign in after the backend URL is configured to load your personal alerts.",
-  "Report moderation and saved research now have database contracts.",
-  "Market and broker data remains source-gated until official/feed-backed verification is connected."
+  "Sign in to view personal alerts, watchlists and saved research.",
+  "Report moderation helps FundedScope keep broker and prop-firm data accurate.",
+  "Market and broker figures are source-gated so unsupported numbers are not presented as facts."
 ];
 
 export function NotificationBell() {
@@ -23,7 +23,7 @@ export function NotificationBell() {
         if (items.length) setNotifications(items);
       })
       .catch(() => {
-        // Fallback notices are intentionally shown when the user is signed out or API is unavailable.
+        // Fallback notices are intentionally shown when the user is signed out or account services are unreachable.
       });
   }, []);
 
@@ -40,7 +40,7 @@ export function NotificationBell() {
         <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-electric" />
       </button>
       {open ? (
-        <div className="absolute right-0 top-13 z-50 w-80 rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
+        <div className="absolute right-0 top-13 z-50 w-[min(calc(100vw-2rem),20rem)] rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
           <p className="px-2 text-xs font-bold uppercase tracking-[0.2em] text-electric">Notifications</p>
           <div className="mt-3 grid gap-2">
             {notifications.map((notification) => (

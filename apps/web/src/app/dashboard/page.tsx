@@ -7,15 +7,15 @@ import { MetricCard } from "../../components/MetricCard";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { dashboardMetrics, featuredFirms, newsEvents } from "../../lib/data";
 import { fallbackMarkets } from "../../lib/markets";
+import { noindexMetadata } from "../../lib/seo";
 import { spreadRecords } from "../../lib/spreads";
 import { traderDnaProfile } from "../../lib/trader-dna";
 
-export const metadata: Metadata = {
-  title: "Trader Dashboard & Today's Edge | FundedScope",
-  description: "Start your trading day with market context, Gold risk, watchlists, journal reminders, prop firm alerts and trade readiness.",
-  alternates: { canonical: "/dashboard" },
-  robots: { index: false, follow: true }
-};
+export const metadata: Metadata = noindexMetadata(
+  "Trader Dashboard & Today's Edge | FundedScope",
+  "Start your trading day with market context, Gold risk, watchlists, journal reminders, prop firm alerts and trade readiness.",
+  "/dashboard"
+);
 
 const workspaceTabs = ["Gold", "Trader DNA", "Watchlist", "Calendar", "AI Summary", "Journal", "Performance", "News", "Broker Alerts"];
 

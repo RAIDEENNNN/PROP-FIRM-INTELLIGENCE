@@ -31,12 +31,12 @@ function daysSinceChecked(firm: PropFirm) {
 }
 
 export const scoreWeights = [
-  { key: "rules", label: "Rule fairness", max: 20, explanation: "Drawdown style, challenge structure, trading restrictions and how forgiving the rules are." },
-  { key: "payouts", label: "Payout quality", max: 20, explanation: "Payout speed, payout clarity and whether the payout structure looks trader-friendly." },
-  { key: "trust", label: "Trust & reviews", max: 25, explanation: "Review volume, public reputation, verification state and broad market confidence signals." },
-  { key: "pricing", label: "Pricing/value", max: 15, explanation: "Challenge fee versus account size, refund positioning, scaling and accessibility." },
-  { key: "markets", label: "Markets & spreads", max: 10, explanation: "Forex, metals, indices, crypto/futures coverage and spread intelligence availability." },
-  { key: "freshness", label: "Transparency/freshness", max: 10, explanation: "How recently rules were checked and how clearly the profile can be sourced." }
+  { key: "rules", label: "Rule transparency", max: 20, explanation: "Drawdown style, challenge structure, trading restrictions and how clearly the rules are published." },
+  { key: "payouts", label: "Payout reliability", max: 20, explanation: "Payout speed, payout clarity and whether the payout structure looks trader-friendly." },
+  { key: "trust", label: "Community trust", max: 25, explanation: "Review volume, public reputation, verification state and broad market confidence signals." },
+  { key: "pricing", label: "Trading conditions", max: 15, explanation: "Challenge fee versus account size, refund positioning, scaling and practical account conditions." },
+  { key: "markets", label: "Platform stability", max: 10, explanation: "Market coverage, platform coverage and whether spread/rule intelligence exists for the firm." },
+  { key: "freshness", label: "Last reviewed", max: 10, explanation: "How recently rules were checked and how clearly the profile can be sourced." }
 ] as const;
 
 type ScoreKey = (typeof scoreWeights)[number]["key"];
@@ -66,7 +66,7 @@ function scoreWeaknesses(firm: PropFirm): Record<ScoreKey, number> {
       (firm.verified ? 0.08 : 0.5) +
       (firm.rating >= 4.6 ? 0.04 : firm.rating >= 4.2 ? 0.16 : 0.3) +
       (firm.reviewCount >= 9000 ? 0.04 : firm.reviewCount >= 3500 ? 0.12 : 0.24),
-    pricing: feeWeakness + (/scaling|\$4M/i.test(`${firm.maxAccount} ${firm.tags.join(" ")}`) ? -0.08 : 0),
+    pricing: feeWeakness + (/scaling|£4M/i.test(`${firm.maxAccount} ${firm.tags.join(" ")}`) ? -0.08 : 0),
     markets: marketCount >= 4 ? 0.08 : marketCount === 3 ? 0.18 : marketCount === 2 ? 0.32 : 0.46,
     freshness: !firm.verified ? 0.45 : checkedAge <= 21 ? 0.08 : checkedAge <= 45 ? 0.18 : checkedAge <= 75 ? 0.3 : 0.45
   };
@@ -110,7 +110,8 @@ export function getScoreBreakdown(firm: PropFirm) {
   return {
     total: firm.score,
     max: 100,
-    formula: "Start from 100, then subtract weighted deductions across rules, payouts, trust, pricing, markets/spreads and freshness.",
+    label: "FundedScope Confidence Score™",
+    formula: "Start from 100, then subtract weighted deductions across rule transparency, payout reliability, community trust, trading conditions, platform stability and last-reviewed freshness.",
     rows
   };
 }
@@ -122,7 +123,7 @@ export function getFirmTrust(firm: PropFirm) {
   const hasCrypto = firm.markets.includes("Crypto");
   const hasFutures = firm.markets.includes("Futures");
   const hasCommodities = firm.markets.includes("Commodities");
-  const hasScaling = firm.tags.some((tag) => /scaling/i.test(tag)) || /scaling|\$4M/i.test(firm.maxAccount);
+  const hasScaling = firm.tags.some((tag) => /scaling/i.test(tag)) || /scaling|£4M/i.test(firm.maxAccount);
   const lowEntry = fee !== null && fee <= 79;
   const localMarket = /Nigeria/i.test(firm.country) || firm.tags.some((tag) => /Nigeria|Local/i.test(tag));
 
@@ -167,7 +168,7 @@ export function getFirmTrust(firm: PropFirm) {
     pros,
     cons,
     methodology:
-      "Score starts from 100 and subtracts weighted deductions across rule fairness, payout quality, trust/reviews, pricing/value, market coverage/spreads and transparency freshness. Affiliate relationships do not override scoring."
+      "FundedScope Confidence Score starts from 100 and subtracts weighted deductions across rule transparency, payout reliability, community trust, trading conditions, platform stability and last-reviewed freshness. Affiliate relationships do not override scoring."
   };
 }
 

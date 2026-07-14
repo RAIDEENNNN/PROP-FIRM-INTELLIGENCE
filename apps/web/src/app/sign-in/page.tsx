@@ -1,5 +1,8 @@
 import { GlassCard } from "../../components/GlassCard";
 import { SignInForm } from "../../components/AuthForms";
+import { noindexMetadata } from "../../lib/seo";
+
+export const metadata = noindexMetadata("Sign in | FundedScope", "Sign in to your private FundedScope account.", "/sign-in");
 
 export default function SignInPage() {
   return (

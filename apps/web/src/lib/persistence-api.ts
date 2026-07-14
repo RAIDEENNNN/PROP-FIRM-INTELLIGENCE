@@ -15,7 +15,7 @@ export function hasPersistenceApi() {
 }
 
 export async function persistenceFetch(path: string, init: RequestInit = {}) {
-  if (!apiBaseUrl) throw new Error("Backend API is not configured");
+  if (!apiBaseUrl) throw new Error("Account services are temporarily unavailable");
   const token = await getAccessToken();
   if (!token) throw new Error("Sign in required");
 

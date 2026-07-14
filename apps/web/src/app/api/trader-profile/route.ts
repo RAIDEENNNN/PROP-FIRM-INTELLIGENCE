@@ -8,9 +8,9 @@ async function proxy(request: Request, method: "GET" | "PUT") {
     return NextResponse.json(
       {
         ok: false,
-        code: "BACKEND_API_NOT_CONFIGURED",
-        error: "Backend API is not configured",
-        details: "Set API_URL in Netlify environment variables to the deployed Express API base URL. It must include /api so profiles can be stored in the database."
+        code: "ACCOUNT_SERVICE_UNAVAILABLE",
+        error: "Account services are temporarily unavailable.",
+        details: "Please try again shortly or contact FundedScope support if the issue continues."
       },
       { status: 503 }
     );

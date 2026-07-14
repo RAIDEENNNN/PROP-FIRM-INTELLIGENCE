@@ -50,7 +50,13 @@ const missionCards = [
   }
 ];
 
-const socialReservations = ["X / Twitter", "LinkedIn", "YouTube", "TikTok", "Instagram"];
+const socialLinks = [
+  { label: "X / Twitter", href: "https://x.com/MyFundedScope" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/company/myfundedscope" },
+  { label: "YouTube", href: "https://www.youtube.com/@MyFundedScope" },
+  { label: "TikTok", href: "https://www.tiktok.com/@myfundedscope" },
+  { label: "Instagram", href: "https://www.instagram.com/myfundedscope" }
+];
 
 export default function AboutPage() {
   const organizationJsonLd = {
@@ -72,7 +78,7 @@ export default function AboutPage() {
     },
     founder: {
       "@type": "Person",
-      name: "Alliy",
+      name: "THE PĦILOSOPHER",
       jobTitle: "Founder and creator"
     },
     contactPoint: {
@@ -103,14 +109,14 @@ export default function AboutPage() {
           MyFundedScope is building the trading intelligence layer for modern traders.
         </h1>
         <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-          MyFundedScope is the company behind FundedScope — a platform designed to help traders compare prop firms, evaluate brokers, understand market risk and build a personal Trading DNA that improves over time.
+          MyFundedScope is the company behind FundedScope  a platform designed to help traders compare prop firms, evaluate brokers, understand market risk and build a personal Trading DNA that improves over time.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Link href="/prop-firms" className="rounded-full bg-white px-6 py-3 text-center font-black text-void">
             Compare prop firms
           </Link>
           <Link href="/articles/introducing-myfundedscope" className="rounded-full border border-white/15 px-6 py-3 text-center font-black text-white">
-            Read the launch story
+            Read our story
           </Link>
         </div>
       </section>
@@ -127,7 +133,7 @@ export default function AboutPage() {
       <section className="mt-8 grid gap-6 lg:grid-cols-[0.64fr_0.36fr]">
         <GlassCard className="glow-border">
           <p className="text-sm uppercase tracking-[0.28em] text-electric">Founder and creator</p>
-          <h2 className="mt-3 text-3xl font-black text-white">Built by Alliy to make trader research cleaner, faster and more trustworthy.</h2>
+          <h2 className="mt-3 text-3xl font-black text-white">Built by THE PĦILOSOPHER to make trader research cleaner, faster and more trustworthy.</h2>
           <div className="mt-5 space-y-4 text-sm leading-7 text-slate-300 sm:text-base sm:leading-8">
             <p>
               MyFundedScope exists because traders should not need five tabs, ten screenshots and guesswork before choosing a firm or planning risk. The platform is being built around a simple standard: every feature must save traders time, reduce risk or improve decisions.
@@ -186,16 +192,23 @@ export default function AboutPage() {
         </GlassCard>
 
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-violet">Social entity building</p>
-          <h2 className="mt-2 text-2xl font-black text-white">Reserve @MyFundedScope everywhere.</h2>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Brand presence</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Follow FundedScope across the major trader communities.</h2>
           <p className="mt-3 text-sm leading-7 text-slate-300">
-            After the social profiles are live, add their URLs to <span className="font-bold text-white">NEXT_PUBLIC_BRAND_SAME_AS</span> separated by commas so Organization schema points Google to the same brand entity.
+            FundedScope is building a consistent public presence for platform updates, market intelligence, broker research, prop-firm rule changes and trader education.
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {socialReservations.map((item) => (
-              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-sm font-bold text-white">
-                {item}
-              </div>
+            {socialLinks.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`Open FundedScope on ${item.label}`}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:border-violet/50 hover:bg-violet/10 hover:text-electric"
+              >
+                {item.label} →
+              </a>
             ))}
           </div>
         </GlassCard>

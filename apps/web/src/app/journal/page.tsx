@@ -1,7 +1,9 @@
 import { GlassCard } from "../../components/GlassCard";
+import { JournalEntryForm } from "../../components/JournalEntryForm";
+import { noindexMetadata } from "../../lib/seo";
 import { traderDnaProfile } from "../../lib/trader-dna";
 
-const journalFields = ["Entry", "Exit", "Risk", "Screenshot", "Emotion", "Mistake", "Lesson", "Chart notes"];
+export const metadata = noindexMetadata("Trading journal | FundedScope", "Private FundedScope trading journal and Trader DNA memory.", "/journal");
 
 const recentEntries = [
   ["XAUUSD London continuation", "Win", "Followed plan, exited before NY news."],
@@ -22,12 +24,7 @@ export default function JournalPage() {
         <GlassCard className="glow-border">
           <p className="text-sm uppercase tracking-[0.28em] text-electric">New journal entry</p>
           <h2 className="mt-2 text-2xl font-black text-white">Capture the trade. Train the memory.</h2>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {journalFields.map((field) => (
-              <input key={field} className="rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder={field} />
-            ))}
-          </div>
-          <button className="mt-5 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void">Save to Trader DNA</button>
+          <JournalEntryForm />
         </GlassCard>
 
         <GlassCard>

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const plans = [
   {
     name: "Free",
-    price: "$0",
+    price: "£0",
     audience: "For traders researching firms, brokers and markets.",
     promise: "Good enough to trust, simple enough to start.",
     cta: "Start free",
@@ -45,7 +45,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "$14.99",
+    price: "£14.99",
     badge: "Best starting upgrade",
     audience: "For active traders who want FundedScope in their daily routine.",
     promise: "Become better every month — not just better informed.",
@@ -66,7 +66,7 @@ const plans = [
   },
   {
     name: "Elite",
-    price: "$39.99",
+    price: "£39.99",
     audience: "For serious traders who want a personal AI coach and long-term trading memory.",
     promise: "Make cancelling feel like losing your trading operating system.",
     cta: "Go Elite",
@@ -123,7 +123,7 @@ const reasons = [
 
 const faqs = [
   ["Is the Free plan useful?", "Yes. Free users can research firms, compare basics and use calculators. Pro is for traders who want saved intelligence and alerts."],
-  ["Are spreads live?", "The platform is live-source ready. It ships with indicative baselines and connects to provider feeds as API keys are added."],
+  ["Are spreads source-backed?", "FundedScope separates research estimates from source-verified trading-cost figures. Exact broker or prop-firm spreads should always be checked inside the trading platform before execution."],
   ["Can firms pay for better scores?", "No. Featured placements and sponsorships must be disclosed separately from editorial scoring."],
   ["Why Pro instead of just Free?", "Pro is for traders who want daily intelligence: unlimited AI, Trade Readiness, journal analytics, saved dashboards and real-time alerts."],
   ["Who is Elite for?", "Elite is for traders who want FundedScope to learn their habits deeply through Trader DNA, AI coaching, monthly reports and trade replay."],

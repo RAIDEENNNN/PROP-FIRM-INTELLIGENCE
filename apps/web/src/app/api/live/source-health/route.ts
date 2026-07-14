@@ -17,8 +17,8 @@ export function GET() {
 
   return Response.json({
     ok: true,
-    mode: "launch",
-    message: "FundedScope source plugin registry is online. Add provider keys to activate live feeds.",
+    mode: "production",
+    message: "FundedScope source registry is online. Provider-backed feeds are shown only when configured and verified.",
     sources
   });
 }

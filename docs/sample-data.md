@@ -42,7 +42,7 @@ Example:
   "maxDrawdown": "10%",
   "dailyDrawdown": "5%",
   "profitTarget": "10% / 5%",
-  "challengeFee": "$155",
+  "challengeFee": "£155",
   "markets": ["Forex", "Indices", "Commodities", "Crypto"]
 }
 ```

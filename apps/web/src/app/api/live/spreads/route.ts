@@ -66,7 +66,7 @@ export async function GET(request: Request) {
     message:
       liveCryptoQuotes.length > 0
         ? "Crypto market quotes attached where public Binance symbols are available. Prop-firm-specific spreads remain provider/feed dependent."
-        : "Returning FundedScope indicative spread matrix. Add provider keys for firm/broker-specific live spreads.",
+        : "Returning FundedScope spread research matrix. Exact firm and broker spreads require source-backed verification.",
     count: records.length,
     records,
     liveCryptoQuotes

@@ -8,8 +8,8 @@ export function ScoreBreakdown({ firm, compact = false }: { firm: PropFirm; comp
     <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-electric">Why this score?</p>
-          <h3 className="mt-1 text-xl font-black text-white">{breakdown.total}/100 FundedScope Score explained</h3>
+          <p className="text-xs uppercase tracking-[0.22em] text-electric">Why this Confidence Score?</p>
+          <h3 className="mt-1 text-xl font-black text-white">{breakdown.total}/100 {breakdown.label} explained</h3>
         </div>
         <p className="text-sm font-bold text-slate-300">Weights add up to 100%</p>
       </div>

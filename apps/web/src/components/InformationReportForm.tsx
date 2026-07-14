@@ -19,7 +19,7 @@ export function InformationReportForm() {
     setStatus("");
 
     if (!hasPersistenceApi()) {
-      setStatus("The report queue is ready, but the production backend URL is not configured in Netlify yet.");
+      setStatus("Report submission is temporarily unavailable. Please email hello@myfundedscope.com with the page, issue and supporting source.");
       return;
     }
 

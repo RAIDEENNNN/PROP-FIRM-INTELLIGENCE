@@ -18,7 +18,7 @@ Our editorial process should prioritize accuracy, transparency and user protecti
 
 Where data is estimated, indicative, user-submitted or awaiting verification, FundedScope should label it clearly. Rule changes, payout disputes and user reviews may require manual editorial review before being published.
 
-Commercial relationships, affiliate arrangements or sponsorships should not directly determine FundedScope Scores.
+Commercial relationships, affiliate arrangements or sponsorships should not directly determine FundedScope Confidence Scores.
 
 ## Privacy Policy Summary
 

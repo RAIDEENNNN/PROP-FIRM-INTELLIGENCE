@@ -6,10 +6,10 @@ export default function SourcesPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
-      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Live source plugins</p>
-      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-4xl md:text-6xl">Built to plug into real market, news, review and payment sources.</h1>
+      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Data sources</p>
+      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-4xl md:text-6xl">How FundedScope protects data quality.</h1>
       <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-        FundedScope launches with a source registry: public crypto market data can attach immediately, while premium FX, synthetic, news, Stripe and moderation feeds activate as soon as keys/accounts are added.
+        FundedScope separates verified sources, editorial review and provider-backed market data so traders can see which information is confirmed, monitored or source-checked.
       </p>
 
       <div className="mt-8 grid gap-4 md:grid-cols-4">
@@ -18,11 +18,11 @@ export default function SourcesPage() {
           <p className="mt-2 text-3xl font-black text-white">{readiness.total}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-sm text-slate-400">Live-ready now</p>
+          <p className="text-sm text-slate-400">Active source types</p>
           <p className="mt-2 text-3xl font-black text-success">{readiness.connected}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-sm text-slate-400">Need keys</p>
+          <p className="text-sm text-slate-400">Provider-backed</p>
           <p className="mt-2 text-3xl font-black text-warning">{readiness.keyRequired}</p>
         </GlassCard>
         <GlassCard>
@@ -41,9 +41,9 @@ export default function SourcesPage() {
               </div>
               <span
                 className={`rounded-full px-3 py-1 text-xs ${
-                  source.status === "Live-ready" || source.status === "Connected"
+                  source.status === "Active" || source.status === "Connected"
                     ? "bg-success/15 text-success"
-                    : source.status === "Manual review"
+                    : source.status === "Editorial review"
                       ? "bg-violet/15 text-violet"
                       : "bg-warning/15 text-warning"
                 }`}
@@ -53,15 +53,9 @@ export default function SourcesPage() {
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-300">{source.description}</p>
             <p className="mt-4 text-sm leading-6 text-slate-400">{source.launchUse}</p>
-            {source.envKeys.length > 0 ? (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {source.envKeys.map((key) => (
-                  <code key={key} className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-electric">
-                    {key}
-                  </code>
-                ))}
-              </div>
-            ) : null}
+            <p className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-xs font-bold text-slate-300">
+              Source handling: {source.envKeys.length > 0 ? "provider-backed data source" : "editorial or public-source review"}
+            </p>
           </GlassCard>
         ))}
       </div>

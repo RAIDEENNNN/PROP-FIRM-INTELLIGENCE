@@ -248,7 +248,12 @@ Recommended production posture:
    - `npx supabase login`
    - `npx supabase link --project-ref <PROJECT_REF>`
    - `npx supabase db push`
-4. Deploy the Express backend.
+4. Deploy the Express backend to Railway using the confirmed monorepo configuration:
+   - Root Directory: `/`
+   - Build command: `npm install && npm run build:api`
+   - Start command: `npm run start:api`
+   - Health-check path: `/api/health`
+   The API listens on `process.env.PORT` and binds to `0.0.0.0`.
 5. Verify live backend health:
    - `GET /api/health`
    - Expected response: `{ "status": "ok", "service": "myfundedscope-api" }`

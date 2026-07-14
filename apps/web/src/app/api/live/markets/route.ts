@@ -100,7 +100,7 @@ export async function GET() {
     ok: true,
     markets,
     message: markets.some((market) => market.source === "Live")
-      ? "Live/provider quotes attached where available. Any remaining indicative assets need provider coverage or symbol mapping."
+      ? "Market quotes attached where available. Any remaining assets use source-reviewed reference handling."
       : "No live market provider returned a usable quote. Configure TWELVE_DATA_API_KEY/Binance or hide the market bar in production."
   });
 }

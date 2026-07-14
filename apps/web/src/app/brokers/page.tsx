@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import { BrokerConfidenceScore } from "../../components/BrokerConfidenceScore";
 import { BrokerLogo } from "../../components/BrokerLogo";
 import { GlassCard } from "../../components/GlassCard";
 import { brokerScoreWeights, brokers, brokerStats } from "../../lib/brokers";
 
 export const metadata: Metadata = {
   title: "Broker Intelligence & Comparison | FundedScope",
-  description: "Compare brokers by regulation, accounts, instruments, spreads, withdrawals, platforms, support and FundedScope Broker Score.",
+  description: "Compare brokers by regulation, accounts, instruments, spreads, withdrawals, platforms, support and the explainable FundedScope Confidence Score.",
   alternates: { canonical: "/brokers" },
   openGraph: {
     title: "Broker Intelligence & Comparison | FundedScope",
@@ -27,8 +28,8 @@ const topGold = brokers.slice(0, 6);
 const supportLeaders = brokers.slice(0, 4);
 const brokerFaqs = [
   {
-    question: "Are these live broker spreads?",
-    answer: "No. FundedScope only shows numeric live spreads after an official broker feed, API feed, or manually verified source is connected. Until then, rows are marked as pending."
+    question: "Are exact broker spreads shown on every broker?",
+    answer: "FundedScope publishes exact numeric spreads only when a broker source, trading platform check or approved feed supports the figure. Otherwise the row is labeled as source-checked so traders know to verify execution costs before trading."
   },
   {
     question: "Why compare brokers by instrument?",
@@ -36,11 +37,11 @@ const brokerFaqs = [
   },
   {
     question: "What makes a broker score high?",
-    answer: "Regulation, execution, spread transparency, withdrawal reliability, support quality, platform coverage and safety. Paid listings cannot buy a better Broker Score."
+    answer: "Withdrawal reliability, rule transparency, customer support, trading conditions, platform stability and community trust. Paid listings cannot buy a better FundedScope Confidence Score."
   },
   {
-    question: "Why do some fields say pending?",
-    answer: "Because accuracy beats fake confidence. If a field is not source-backed yet, FundedScope marks it as pending instead of pretending it has live data."
+    question: "Why do some fields require a source check?",
+    answer: "Because accuracy matters. If a field is time-sensitive or not source-backed, FundedScope labels it clearly instead of presenting an unsupported number."
   }
 ];
 
@@ -50,12 +51,12 @@ export default function BrokersPage() {
       <section className="overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_30%),radial-gradient(circle_at_80%_10%,rgba(139,92,246,0.18),transparent_34%),rgba(255,255,255,0.03)] p-5 sm:p-8">
         <div className="grid gap-8 lg:grid-cols-[0.58fr_0.42fr] lg:items-center">
           <div>
-            <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Broker Intelligence™ · 2026 build</p>
+            <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Broker Intelligence™</p>
             <h1 className="mt-3 max-w-5xl text-3xl font-black leading-tight text-white sm:text-5xl">
               Compare brokers by regulation, spreads, platforms and the markets you actually trade.
             </h1>
             <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300">
-              FundedScope broker pages are being built for live traders: instrument-level spread verification, withdrawals, regulation, execution, support, platforms and source history — not just lazy star ratings.
+              FundedScope broker pages are built for live traders: instrument-level spread policy, withdrawals, regulation, execution, support, platforms and source history — not just lazy star ratings.
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               <Stat label="Brokers tracked" value={brokerStats.brokers.toString()} />
@@ -76,9 +77,9 @@ export default function BrokersPage() {
                 ))}
               </div>
               <div className="mt-5 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-                <p className="text-sm font-black text-emerald-200">Why no live spread numbers yet?</p>
+                <p className="text-sm font-black text-emerald-200">Why some spread fields are source-checked</p>
                 <p className="mt-2 text-xs leading-5 text-emerald-100/80">
-                  We are not guessing. Live spread numbers will show only after a broker feed, API feed or manual source check confirms them.
+                  FundedScope only shows exact trading-cost figures when the value is backed by an official page, platform check or approved data source.
                 </p>
               </div>
             </div>
@@ -101,7 +102,7 @@ export default function BrokersPage() {
               </div>
               <div className="text-right">
                 <p className="text-3xl font-black text-electric">{broker.trustScore}</p>
-                <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">/100</p>
+                <p className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Confidence</p>
               </div>
             </div>
 
@@ -122,26 +123,30 @@ export default function BrokersPage() {
               <Mini label="Support" value={broker.supportHours} />
             </div>
 
-            <div className="mt-5 space-y-2">
-              <ScoreRow label="Regulation" value={broker.score.regulation} />
-              <ScoreRow label="Execution" value={broker.score.execution} />
-              <ScoreRow label="Spreads" value={broker.score.spreads} />
-              <ScoreRow label="Withdrawals" value={broker.score.withdrawals} />
+            <div className="mt-5">
+              <BrokerConfidenceScore broker={broker} compact />
             </div>
 
             <p className="mt-5 rounded-2xl border border-warning/20 bg-warning/10 p-3 text-xs leading-5 text-warning">
-              Spread check: not live yet. We will show numbers only when {broker.name} data is verified from an official source or live feed.
+              Spread policy: {broker.name} is listed for research. Exact executable spreads should be verified inside the broker platform unless a FundedScope source check is shown.
             </p>
+
+            <a
+              href={`/brokers/${broker.slug}`}
+              className="mt-5 block rounded-2xl border border-electric/25 bg-electric/10 px-5 py-3 text-center font-black text-electric transition hover:border-electric/50 hover:bg-electric/15"
+            >
+              View broker profile
+            </a>
           </GlassCard>
         ))}
       </section>
 
       <section className="mt-10 grid gap-6 lg:grid-cols-[0.42fr_0.58fr]">
         <GlassCard className="glow-border">
-          <p className="text-sm uppercase tracking-[0.28em] text-electric">FundedScope Broker Score™</p>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">FundedScope Confidence Score™</p>
           <h2 className="mt-2 text-3xl font-black text-white">Not stars. A score traders can inspect.</h2>
           <p className="mt-4 text-sm leading-7 text-slate-300">
-            Broker Score is designed around regulation, execution, spreads, withdrawals, support, platforms and transparency. Featured placements cannot buy a higher score.
+            The broker Confidence Score is designed around withdrawal reliability, rule transparency, customer support, trading conditions, platform stability and community trust. Featured placements cannot buy a higher score.
           </p>
         </GlassCard>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -165,7 +170,7 @@ export default function BrokersPage() {
             <p className="text-sm uppercase tracking-[0.28em] text-violet">Compare by instrument</p>
             <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">Gold traders should not see the same ranking as EURUSD traders.</h2>
           </div>
-          <p className="text-sm text-slate-400">Live values connect after provider/database verification.</p>
+          <p className="text-sm text-slate-400">Exact values appear only after source verification.</p>
         </div>
 
         <div className="mt-6 grid gap-3 md:hidden">
@@ -302,20 +307,6 @@ function Mini({ label, value }: { label: string; value: string }) {
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
       <p className="text-[11px] text-slate-500">{label}</p>
       <p className="mt-1 line-clamp-2 font-bold text-white">{value}</p>
-    </div>
-  );
-}
-
-function ScoreRow({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between gap-3 text-xs">
-        <span className="font-bold text-slate-300">{label}</span>
-        <span className="font-black text-electric">{value}/100</span>
-      </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-        <div className="h-full rounded-full bg-gradient-to-r from-electric to-violet" style={{ width: `${value}%` }} />
-      </div>
     </div>
   );
 }

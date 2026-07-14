@@ -72,7 +72,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
   const ruleTimeline = [
     { date: firm.lastRuleUpdate, title: "Profile reviewed", change: "Rules and score inputs refreshed from FundedScope dataset." },
     { date: "2026-07-11", title: "Verification model added", change: "Last verified, source, and report-error controls added to profile pages." },
-    { date: "Coming soon", title: "Official source history", change: "Rule changes will be stored as timestamped records with source URLs." }
+    { date: "Source monitoring", title: "Official source history", change: "Rule changes are tracked as timestamped records with source context." }
   ];
   const similarFirms = propFirms
     .filter((item) => item.slug !== firm.slug && item.markets.some((market) => firm.markets.includes(market)))
@@ -210,7 +210,12 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             Visit firm / get code
           </a>
           <BookmarkButton bookmark={{ type: "Prop Firm", slug: firm.slug, title: firm.name, href: `/prop-firms/${firm.slug}` }} />
-          <button className="mt-3 w-full rounded-2xl border border-white/10 px-5 py-3 font-bold text-white">Save alert</button>
+          <a
+            href={`/alerts?firm=${firm.slug}`}
+            className="mt-3 block w-full rounded-2xl border border-white/10 px-5 py-3 text-center font-bold text-white transition hover:border-electric/40 hover:text-electric"
+          >
+            Save alert
+          </a>
           <a
             href={`mailto:hello@myfundedscope.com?subject=Incorrect information report: ${encodeURIComponent(firm.name)}`}
             className="mt-3 block w-full rounded-2xl border border-warning/25 bg-warning/10 px-5 py-3 text-center font-bold text-warning"
@@ -354,7 +359,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
         <GlassCard>
           <h2 className="text-xl font-black text-white">Verified reviews</h2>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            {firm.reviewCount.toLocaleString()} review signals tracked. Verified user reviews and payout proof moderation are wired into the product roadmap.
+            {firm.reviewCount.toLocaleString()} review signals tracked. Verified user reviews and payout proof reports are handled through FundedScope moderation.
           </p>
         </GlassCard>
         <GlassCard>

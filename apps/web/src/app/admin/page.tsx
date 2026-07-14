@@ -4,25 +4,25 @@ const adminModules = [
   {
     title: "Prop firms",
     endpoint: "GET/POST /api/admin/firms",
-    state: "CRUD scaffold",
+    state: "Content operations",
     fields: "draft, under-review, published, archived"
   },
   {
     title: "Challenges",
     endpoint: "Supabase: prop_firm_challenges",
-    state: "Migration-ready",
+    state: "Data operations",
     fields: "pricing, targets, drawdown, platform, verification"
   },
   {
     title: "Rules",
     endpoint: "Supabase: prop_firm_rules",
-    state: "Migration-ready",
+    state: "Data operations",
     fields: "rule category, current value, source, last verified"
   },
   {
     title: "Rule-change history",
     endpoint: "Supabase: prop_firm_rule_history",
-    state: "Migration-ready",
+    state: "Source history",
     fields: "previous value, new value, source, verified by"
   },
   {
@@ -40,13 +40,13 @@ const adminModules = [
   {
     title: "Brokers",
     endpoint: "Supabase: brokers",
-    state: "Migration-ready",
+    state: "Data operations",
     fields: "accounts, instruments, regulations, availability"
   },
   {
     title: "Broker accounts",
     endpoint: "Supabase: broker_accounts",
-    state: "Migration-ready",
+    state: "Data operations",
     fields: "deposit, spread model, leverage, platforms"
   },
   {

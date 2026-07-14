@@ -13,6 +13,7 @@
     "dev:api": "npm run dev --workspace @fundedscope/api",
     "build:web": "npm run build --workspace @fundedscope/web",
     "build:api": "npm run build --workspace @fundedscope/api",
+    "start:api": "npm run start --workspace @fundedscope/api",
     "build": "npm run build --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "lint": "npm run lint --workspaces",

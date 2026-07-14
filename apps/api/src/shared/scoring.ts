@@ -1,10 +1,10 @@
 const scoreWeights = [
-  { key: "rules", label: "Rule fairness", max: 20, explanation: "Drawdown style, challenge structure, trading restrictions and rule clarity." },
-  { key: "payouts", label: "Payout quality", max: 20, explanation: "Payout speed, payout frequency and payout clarity." },
-  { key: "trust", label: "Trust & reviews", max: 25, explanation: "Rating, review volume, profile status and broad confidence signals." },
-  { key: "pricing", label: "Pricing/value", max: 15, explanation: "Challenge fee versus account size, refund positioning and accessibility." },
-  { key: "markets", label: "Markets & spreads", max: 10, explanation: "Market coverage and whether spread/rule data exists for the firm." },
-  { key: "freshness", label: "Transparency/freshness", max: 10, explanation: "How recently profile/rule data was updated." }
+  { key: "rules", label: "Rule transparency", max: 20, explanation: "Drawdown style, challenge structure, trading restrictions and rule clarity." },
+  { key: "payouts", label: "Payout reliability", max: 20, explanation: "Payout speed, payout frequency and payout clarity." },
+  { key: "trust", label: "Community trust", max: 25, explanation: "Rating, review volume, profile status and broad confidence signals." },
+  { key: "pricing", label: "Trading conditions", max: 15, explanation: "Challenge fee versus account size, refund positioning and practical account conditions." },
+  { key: "markets", label: "Platform stability", max: 10, explanation: "Market/platform coverage and whether spread/rule data exists for the firm." },
+  { key: "freshness", label: "Last reviewed", max: 10, explanation: "How recently profile/rule data was updated." }
 ] as const;
 
 type ScoreKey = (typeof scoreWeights)[number]["key"];
@@ -120,7 +120,8 @@ export function buildScoreBreakdown(firm: ScoreFirm) {
   return {
     total,
     max: 100,
-    formula: "Start from 100, then subtract weighted deductions across rules, payouts, trust, pricing, markets/spreads and freshness.",
+    label: "FundedScope Confidence Score™",
+    formula: "Start from 100, then subtract weighted deductions across rule transparency, payout reliability, community trust, trading conditions, platform stability and last-reviewed freshness.",
     weights: scoreWeights.map(({ key, label, max }) => ({ key, label, max })),
     rows
   };

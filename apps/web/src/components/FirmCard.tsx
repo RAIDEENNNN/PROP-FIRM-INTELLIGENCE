@@ -98,7 +98,7 @@ export function FirmCard({ firm }: { firm: PropFirm }) {
           </a>
         </div>
       </div>
-      <p className="mt-3 text-[11px] leading-5 text-slate-500">Affiliate links may be used. Scores remain editorial.</p>
+      <p className="mt-3 text-[11px] leading-5 text-slate-500">Affiliate links may be used. Confidence Scores remain editorial and explainable.</p>
     </article>
   );
 }

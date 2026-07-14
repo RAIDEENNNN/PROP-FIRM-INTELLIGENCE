@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
 import { ProfileDetailsForm } from "../../components/ProfileDetailsForm";
+import { noindexMetadata } from "../../lib/seo";
 import { traderDnaProfile } from "../../lib/trader-dna";
+
+export const metadata = noindexMetadata("My Trading Hub | FundedScope", "Private FundedScope profile and Trader DNA hub.", "/profile");
 
 const tradingStyles = ["Swing Trader", "Scalper", "Day Trader", "News Trader", "ICT", "SMC", "Price Action"];
 const markets = ["Gold", "Forex", "Crypto", "Indices", "Stocks", "Commodities"];
@@ -17,7 +20,7 @@ const achievements = [
   ["🏅", "Explorer", "Viewed 50 prop firms"],
   ["📊", "Researcher", "Compared 100 firms"],
   ["🏦", "Broker Expert", "Compared 20 brokers"],
-  ["🚀", "Founding Member", "Joined before public launch"]
+  ["🚀", "Founding Member", "Early FundedScope member"]
 ];
 const hubStats: Array<[string, string]> = [
   ["Profile Completion", `${traderDnaProfile.dnaScore}%`],
@@ -54,16 +57,16 @@ export default function ProfilePage() {
           <GlassCard className="glow-border">
             <div className="flex items-center gap-4">
               <div className="grid h-24 w-24 shrink-0 place-items-center rounded-[2rem] border border-electric/30 bg-gradient-to-br from-electric to-violet text-4xl font-black text-white shadow-glow">
-                AA
+                TP
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white">ALLIY AJADI</h2>
+                <h2 className="text-2xl font-black text-white">THE PĦILOSOPHER</h2>
                 <p className="mt-1 text-sm font-bold text-gold">⭐⭐ Premium Member</p>
                 <p className="mt-1 text-sm text-slate-400">United Kingdom 🇬🇧 · Trader since July 2026</p>
               </div>
             </div>
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Mini label="FundedScope Score" value="97" />
+              <Mini label="Confidence Score" value="97" />
               <Mini label="Verified Trader" value="✔ Active" />
               <Mini label="Level" value={traderDnaProfile.level} />
               <Mini label="Next level" value={traderDnaProfile.nextLevel} />
@@ -116,7 +119,9 @@ export default function ProfilePage() {
             <Mini label="Next billing" value="August 12" />
             <Mini label="Plan" value="Pro Trader" />
           </div>
-          <button className="mt-5 w-full rounded-2xl bg-white px-5 py-3 font-black text-void">Manage subscription</button>
+          <Link href="/pricing" className="mt-5 block w-full rounded-2xl bg-white px-5 py-3 text-center font-black text-void transition hover:scale-[1.01]">
+            Manage subscription
+          </Link>
         </GlassCard>
 
         <GlassCard>
@@ -179,7 +184,7 @@ export default function ProfilePage() {
         </GlassCard>
 
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-violet">Future Premium AI</p>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Premium AI insights</p>
           <h2 className="mt-2 text-3xl font-black text-white">Personal recommendations from your trading profile.</h2>
           <p className="mt-4 text-sm leading-7 text-slate-300">
             Your trading preferences suggest FTMO, The5ers and Exness are currently your best matches. You usually trade Gold during London, so FundedScope will prioritise broker spread/execution alerts for XAUUSD and major USD news.

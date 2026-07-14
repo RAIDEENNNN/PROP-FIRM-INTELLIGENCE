@@ -138,7 +138,7 @@ export function SpreadMatrix() {
               <h2 className="mt-2 text-2xl font-black text-white">Every tracked prop firm across forex, metals, indices, crypto and synthetic pairs</h2>
             </div>
             <p className="text-sm text-slate-400">
-              Showing {filteredRecords.length.toLocaleString()} rows · indicative until live feed is connected
+              Showing {filteredRecords.length.toLocaleString()} rows · source policy applied
             </p>
           </div>
         </div>

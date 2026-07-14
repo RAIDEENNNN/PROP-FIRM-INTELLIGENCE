@@ -13,7 +13,7 @@ export default function AffiliateProgramPage() {
         <p className="text-sm uppercase tracking-[0.28em] text-gold">Affiliate Program</p>
         <h1 className="mt-3 text-4xl font-black text-white sm:text-6xl">Commercial links must stay clearly labelled.</h1>
         <p className="mt-5 text-sm leading-7 text-slate-300">
-          FundedScope can earn affiliate commissions, but affiliate relationships cannot change the FundedScope Score, Trust Score or verification status.
+          FundedScope can earn affiliate commissions, but affiliate relationships cannot change the FundedScope Confidence Score, verification status or editorial methodology.
         </p>
         <a href="/legal/affiliate-disclosure" className="mt-8 block rounded-2xl bg-white px-6 py-4 text-center font-black text-void">
           Read affiliate disclosure

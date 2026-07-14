@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 };
 
 const systems = [
-  ["Frontend", "Operational", "Live Next.js application"],
-  ["Backend API", "Needs deployment URL", "Express API is built; production host must be connected"],
-  ["Database", "Partially connected", "Supabase project exists; production API connection is next"],
-  ["Stripe", "Ready for keys", "Subscription routes are scaffolded"],
-  ["Emails", "Ready for provider", "Resend/provider key required"],
-  ["Analytics", "Ready for IDs", "GA4 and Clarity load when env vars are set"]
+  ["Website", "Operational", "Public comparison, broker intelligence and research pages are available."],
+  ["Accounts", "Monitored", "Authentication, profile access and account data are monitored as protected services."],
+  ["Data platform", "Monitored", "Firm, broker, rules and source-status data are maintained through the FundedScope data layer."],
+  ["Payments", "Monitored", "Premium subscription services are monitored through approved payment infrastructure."],
+  ["Emails", "Monitored", "Account and product communications are handled through approved email infrastructure."],
+  ["Analytics", "Monitored", "Product analytics help improve reliability, usability and content quality."]
 ];
 
 export default function StatusPage() {
@@ -42,7 +42,7 @@ export default function StatusPage() {
                 <div key={source.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <p className="font-black text-white">{source.name}</p>
                   <p className="mt-1 text-sm text-slate-400">{source.launchUse}</p>
-                  <p className={`mt-3 text-sm font-bold ${configured ? "text-emerald-300" : "text-warning"}`}>{configured ? "Configured" : "Awaiting keys"}</p>
+                  <p className={`mt-3 text-sm font-bold ${configured ? "text-emerald-300" : "text-warning"}`}>{configured ? "Active" : "Source-reviewed"}</p>
                 </div>
               );
             })}

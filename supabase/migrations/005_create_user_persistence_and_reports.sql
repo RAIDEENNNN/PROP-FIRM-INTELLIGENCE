@@ -12,7 +12,19 @@ language plpgsql
 security definer
 set search_path = public
 as $$
+declare
+  metadata jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
+  metadata_markets text[] := '{}';
+  metadata_preferences jsonb := '{}'::jsonb;
 begin
+  if jsonb_typeof(metadata->'markets') = 'array' then
+    metadata_markets := array(select jsonb_array_elements_text(metadata->'markets'));
+  end if;
+
+  if metadata ? 'risk_tolerance' then
+    metadata_preferences := jsonb_build_object('riskTolerance', metadata->>'risk_tolerance');
+  end if;
+
   insert into public.profiles (
     id,
     email,
@@ -23,24 +35,36 @@ begin
     trader_type,
     experience_level,
     markets,
+    preferences,
     email_verified_at
   )
   values (
     new.id,
     new.email,
-    coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name'),
-    new.raw_user_meta_data->>'username',
-    new.raw_user_meta_data->>'country',
-    new.raw_user_meta_data->>'timezone',
-    new.raw_user_meta_data->>'trader_type',
-    new.raw_user_meta_data->>'experience_level',
-    coalesce(array(select jsonb_array_elements_text(new.raw_user_meta_data->'markets')), '{}'),
+    coalesce(metadata->>'full_name', metadata->>'name'),
+    metadata->>'username',
+    metadata->>'country',
+    metadata->>'timezone',
+    metadata->>'trader_type',
+    metadata->>'experience_level',
+    metadata_markets,
+    metadata_preferences,
     case when new.email_confirmed_at is null then null else new.email_confirmed_at end
   )
   on conflict (id) do update set
     email = excluded.email,
     full_name = coalesce(public.profiles.full_name, excluded.full_name),
     username = coalesce(public.profiles.username, excluded.username),
+    country = coalesce(public.profiles.country, excluded.country),
+    timezone = coalesce(public.profiles.timezone, excluded.timezone),
+    trader_type = coalesce(public.profiles.trader_type, excluded.trader_type),
+    experience_level = coalesce(public.profiles.experience_level, excluded.experience_level),
+    markets = case when cardinality(public.profiles.markets) = 0 then excluded.markets else public.profiles.markets end,
+    preferences = case
+      when public.profiles.preferences = '{}'::jsonb then excluded.preferences
+      else public.profiles.preferences || excluded.preferences
+    end,
+    email_verified_at = coalesce(public.profiles.email_verified_at, excluded.email_verified_at),
     updated_at = now();
 
   return new;
@@ -51,6 +75,37 @@ drop trigger if exists on_auth_user_created_create_profile on auth.users;
 create trigger on_auth_user_created_create_profile
   after insert on auth.users
   for each row execute function public.handle_new_user_profile();
+
+create or replace function public.sync_user_profile_from_auth_update()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.profiles
+  set
+    email = new.email,
+    email_verified_at = case
+      when new.email_confirmed_at is not null then new.email_confirmed_at
+      else public.profiles.email_verified_at
+    end,
+    updated_at = now()
+  where id = new.id;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_updated_sync_profile on auth.users;
+create trigger on_auth_user_updated_sync_profile
+  after update of email, email_confirmed_at on auth.users
+  for each row
+  when (
+    old.email is distinct from new.email
+    or old.email_confirmed_at is distinct from new.email_confirmed_at
+  )
+  execute function public.sync_user_profile_from_auth_update();
 
 create table if not exists public.bookmarks (
   id uuid primary key default gen_random_uuid(),

@@ -1,7 +1,7 @@
 export type LiveSource = {
   name: string;
   category: "News" | "Forex" | "Crypto" | "Synthetic" | "Rules" | "Reviews" | "Payments";
-  status: "Live-ready" | "Key required" | "Manual review" | "Connected";
+  status: "Active" | "Provider-backed" | "Editorial review" | "Connected";
   envKeys: string[];
   description: string;
   launchUse: string;
@@ -11,23 +11,23 @@ export const liveSources: LiveSource[] = [
   {
     name: "Binance public market data",
     category: "Crypto",
-    status: "Live-ready",
+    status: "Active",
     envKeys: ["BINANCE_MARKET_DATA_ENABLED"],
     description: "Public bid/ask market data for crypto symbols where available.",
-    launchUse: "Adds live market context beside crypto spread baselines."
+    launchUse: "Adds market context beside crypto spread research."
   },
   {
     name: "Twelve Data",
     category: "Forex",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["TWELVE_DATA_API_KEY"],
     description: "FX quote provider for forex pair bid/ask snapshots.",
-    launchUse: "Upgrades forex spreads from indicative baselines to provider snapshots."
+    launchUse: "Supports provider-backed forex quote validation."
   },
   {
     name: "Polygon.io",
     category: "Forex",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["POLYGON_API_KEY"],
     description: "Market data provider for FX, crypto and indices depending on plan.",
     launchUse: "Backup/secondary quote source for spread validation."
@@ -35,7 +35,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "Deriv",
     category: "Synthetic",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["DERIV_APP_ID"],
     description: "Synthetic/volatility instrument source where supported by Deriv APIs.",
     launchUse: "Feeds synthetic index quotes for volatility, boom/crash and range-style symbols."
@@ -43,7 +43,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "GNews",
     category: "News",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["GNEWS_API_KEY"],
     description: "News API for prop firm, broker, market and payout-related alerts.",
     launchUse: "Feeds the News Radar with fresh market and prop-firm headlines."
@@ -51,7 +51,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "NewsAPI",
     category: "News",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["NEWS_API_KEY"],
     description: "General news provider for financial headlines and watchlist topics.",
     launchUse: "Secondary news source for rule, payout and market-impact monitoring."
@@ -59,7 +59,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "Official firm websites",
     category: "Rules",
-    status: "Manual review",
+    status: "Editorial review",
     envKeys: [],
     description: "Rule changes should be collected from official pages, then reviewed before publishing.",
     launchUse: "Protects trust: no unverified rule-change claims go live without editorial approval."
@@ -67,7 +67,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "Verified user reviews",
     category: "Reviews",
-    status: "Manual review",
+    status: "Editorial review",
     envKeys: [],
     description: "User reviews and payout proofs require moderation before becoming public.",
     launchUse: "Builds Trustpilot-style credibility while preventing spam and fake proof."
@@ -75,17 +75,17 @@ export const liveSources: LiveSource[] = [
   {
     name: "Stripe",
     category: "Payments",
-    status: "Key required",
+    status: "Provider-backed",
     envKeys: ["STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"],
     description: "Subscriptions, featured listings, reports and business/API access billing.",
-    launchUse: "Turns FundedScope into a monetizable company website."
+    launchUse: "Supports subscriptions, commercial access and partner billing."
   }
 ];
 
 export function getSourceReadiness() {
-  const connected = liveSources.filter((source) => source.status === "Live-ready" || source.status === "Connected").length;
-  const keyRequired = liveSources.filter((source) => source.status === "Key required").length;
-  const manualReview = liveSources.filter((source) => source.status === "Manual review").length;
+  const connected = liveSources.filter((source) => source.status === "Active" || source.status === "Connected").length;
+  const keyRequired = liveSources.filter((source) => source.status === "Provider-backed").length;
+  const manualReview = liveSources.filter((source) => source.status === "Editorial review").length;
 
   return {
     total: liveSources.length,

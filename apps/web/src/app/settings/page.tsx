@@ -1,4 +1,7 @@
 import { GlassCard } from "../../components/GlassCard";
+import { noindexMetadata } from "../../lib/seo";
+
+export const metadata = noindexMetadata("Account settings | FundedScope", "Private FundedScope security, billing and notification settings.", "/settings");
 
 export default function SettingsPage() {
   return (

@@ -44,8 +44,8 @@ export function DecisionEngine() {
       firmVerifiedAt: firm.lastRuleUpdate,
       brokerVerifiedAt: broker.lastVerified,
       dataCompleteness:
-        broker.verifiedStatus === "Research queue" || broker.verifiedStatus === "Needs source review"
-          ? "Broker data is launch baseline and should be treated as incomplete until official/feed-backed verification is complete."
+        broker.verifiedStatus === "Source-reviewed" || broker.verifiedStatus === "Source check"
+          ? "Some broker fields are source-checked. Verify exact costs and availability with the official broker before opening an account."
           : "Core profile fields have a verification label, but users should still check official terms before acting.",
       warning:
         capitalValue < 300
@@ -64,8 +64,8 @@ export function DecisionEngine() {
               {countries.map((item) => <option key={item}>{item}</option>)}
             </select>
           </Field>
-          <Field label="Capital">
-            <input value={capital} onChange={(event) => setCapital(event.target.value)} className={inputClass} inputMode="numeric" />
+          <Field label="Capital (£)">
+            <input value={capital} onChange={(event) => setCapital(event.target.value)} className={inputClass} inputMode="numeric" placeholder="500" />
           </Field>
           <Field label="Experience">
             <select value={experience} onChange={(event) => setExperience(event.target.value)} className={inputClass}>

@@ -59,18 +59,6 @@ export function SignUpForm() {
 
       if (data.session?.access_token) {
         window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
-        await supabase.from("profiles").upsert({
-          id: data.user!.id,
-          full_name: name,
-          username,
-          email,
-          country,
-          timezone,
-          trader_type: traderType,
-          experience_level: experienceLevel,
-          markets: preferredMarkets,
-          preferences: { riskTolerance }
-        });
         router.push("/profile");
         return;
       }
@@ -87,7 +75,7 @@ export function SignUpForm() {
     <form onSubmit={submit} className="mt-6 grid gap-3 sm:grid-cols-2">
       <label className="text-sm text-slate-400">
         Full name
-        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Alliy Raiden" required />
+        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="THE PĦILOSOPHER" required />
       </label>
       <label className="text-sm text-slate-400">
         Username

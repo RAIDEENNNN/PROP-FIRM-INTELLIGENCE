@@ -9,7 +9,7 @@ export function getSupabaseBrowserClient() {
   const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!supabaseUrl || !publishableKey) {
-    throw new Error("Supabase frontend environment is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.");
+    throw new Error("Account sign-in is temporarily unavailable. Please try again shortly.");
   }
 
   browserClient ??= createClient(supabaseUrl, publishableKey, {
@@ -22,4 +22,3 @@ export function getSupabaseBrowserClient() {
 
   return browserClient;
 }
-
