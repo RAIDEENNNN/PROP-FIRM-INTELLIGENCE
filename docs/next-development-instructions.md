@@ -172,7 +172,7 @@ Admins should be able to:
 
 Nothing should be hard-coded. Everything should be manageable from the admin panel.
 
-The admin panel must support a `Verified by FundedScope` workflow. The badge should only appear after challenge rules, pricing, payouts, platforms, contact information and company details have been manually checked.
+The admin panel must support a `Public-info checked by FundedScope` workflow. The badge should only appear after challenge rules, pricing, payouts, platforms, contact information and company details have been manually checked.
 
 ## 6. External APIs
 

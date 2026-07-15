@@ -11,7 +11,7 @@ The database must support:
 - admin verification workflow;
 - user reviews;
 - instrument-level broker comparison;
-- public trust badges such as `Verified by FundedScope`.
+- public trust badges such as `Public-info checked by FundedScope`.
 
 Do not create these tables blindly in production. First pull and confirm the existing Supabase production schema. Then add new tables through versioned SQL migrations in dependency order.
 
@@ -255,7 +255,7 @@ verified_by
 created_at
 ```
 
-### Verified by FundedScope badge
+### Public-info checked by FundedScope badge
 
 Only show this when manually checked:
 
@@ -271,7 +271,7 @@ Only show this when manually checked:
 Public display:
 
 ```text
-✅ Verified by FundedScope
+✅ Public-info checked by FundedScope
 Last reviewed: 10 July 2026
 ```
 

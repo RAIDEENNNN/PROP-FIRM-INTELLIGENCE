@@ -71,7 +71,7 @@ FundedScope combines:
 ## 12-month vision
 
 - 200+ firm profiles
-- 10,000+ registered traders
+- registered trader growth target
 - Verified payout proof library
 - Live rule-change monitoring workflow
 - Provider-backed spread data

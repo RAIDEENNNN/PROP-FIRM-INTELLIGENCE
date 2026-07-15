@@ -49,7 +49,7 @@ export default function BrokerProfilePage({ params }: { params: { slug: string }
     .filter((item) => item.slug !== broker.slug && item.markets.some((market) => broker.markets.includes(market)))
     .sort((a, b) => b.trustScore - a.trustScore)
     .slice(0, 4);
-  const brokerReviewLabel = broker.verifiedStatus === "Verified profile" ? "Verified profile" : "Source-reviewed profile";
+  const brokerReviewLabel = broker.verifiedStatus === "Public-info checked" ? "Public-info checked" : "Source-reviewed profile";
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",

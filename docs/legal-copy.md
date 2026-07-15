@@ -14,7 +14,7 @@ Users should perform their own due diligence before purchasing any prop firm cha
 
 FundedScope publishes prop firm data, comparisons, scores, reviews, spread intelligence and rule-change information for educational and research purposes.
 
-Our editorial process should prioritize accuracy, transparency and user protection. Scores may consider firm rules, pricing, payout behavior, verified reviews, spread conditions, transparency, operational history and other risk signals.
+Our editorial process should prioritize accuracy, transparency and user protection. Scores may consider firm rules, pricing, payout behavior, moderated review signals, spread conditions, transparency, operational history and other risk signals.
 
 Where data is estimated, indicative, user-submitted or awaiting verification, FundedScope should label it clearly. Rule changes, payout disputes and user reviews may require manual editorial review before being published.
 

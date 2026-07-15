@@ -64,7 +64,7 @@ export function DecisionEngine() {
               {countries.map((item) => <option key={item}>{item}</option>)}
             </select>
           </Field>
-          <Field label="Capital (£)">
+          <Field label="Capital ($)">
             <input value={capital} onChange={(event) => setCapital(event.target.value)} className={inputClass} inputMode="numeric" placeholder="500" />
           </Field>
           <Field label="Experience">

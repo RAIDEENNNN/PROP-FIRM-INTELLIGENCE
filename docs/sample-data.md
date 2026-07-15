@@ -42,12 +42,12 @@ Example:
   "maxDrawdown": "10%",
   "dailyDrawdown": "5%",
   "profitTarget": "10% / 5%",
-  "challengeFee": "£155",
+  "challengeFee": "$199",
   "markets": ["Forex", "Indices", "Commodities", "Crypto"]
 }
 ```
 
-## Spread sample categories
+## Research spread estimate categories
 
 - Forex majors
 - Forex minors
@@ -84,7 +84,7 @@ Seed includes launch news events for:
 Until provider keys are connected, spread data must be labeled as:
 
 ```txt
-Indicative baseline
+FundedScope research estimate
 ```
 
 Do not present indicative values as broker-confirmed live spreads.

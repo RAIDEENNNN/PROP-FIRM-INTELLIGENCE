@@ -15,7 +15,7 @@ const columns = [
   {
     title: "Active Intelligence Work",
     tone: "text-electric",
-    items: ["Account profiles", "Verified reviews", "Rule change history", "Watchlists and alerts", "Broker spread verification"]
+    items: ["Account profiles", "Moderated review signals", "Rule change history", "Watchlists and alerts", "Broker spread verification"]
   },
   {
     title: "Priority Areas",

@@ -7,6 +7,7 @@ import { FirmLogo } from "./FirmLogo";
 import { GlassCard } from "./GlassCard";
 
 const categories: Array<"All" | InstrumentCategory> = ["All", "Forex", "Commodities", "Indices", "Crypto", "Synthetic"];
+const modelReviewDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(spreadStats.updatedAt));
 
 export function SpreadMatrix() {
   const [query, setQuery] = useState("");
@@ -39,7 +40,7 @@ export function SpreadMatrix() {
           <p className="mt-2 text-3xl font-black text-white">{spreadStats.instruments}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-sm text-slate-400">Spread records</p>
+          <p className="text-sm text-slate-400">Research estimate rows</p>
           <p className="mt-2 text-3xl font-black text-white">{spreadStats.records.toLocaleString()}</p>
         </GlassCard>
         <GlassCard>
@@ -74,7 +75,7 @@ export function SpreadMatrix() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.24em] text-electric">Data transparency</p>
-            <h2 className="mt-1 text-xl font-black text-white">Not sure what these spread numbers mean? Start here.</h2>
+            <h2 className="mt-1 text-xl font-black text-white">These are research estimates, not live spreads.</h2>
           </div>
           <button
             type="button"
@@ -89,7 +90,7 @@ export function SpreadMatrix() {
             <div className="rounded-3xl border border-electric/20 bg-electric/10 p-5">
               <p className="text-lg font-black text-white">Simple version</p>
               <p className="mt-2 max-w-4xl text-sm leading-7 text-slate-300">
-                These spreads are FundedScope estimates until a live broker/prop firm feed confirms them. Use them to compare which firms may be cheaper or more expensive for the same pair — not as a guaranteed live trading quote.
+                These numbers are FundedScope research estimates reviewed on {modelReviewDate}. Source: FundedScope baseline model using public firm profiles, instrument categories and risk adjustments. They are not live quotes and should never be used as executable spread values.
               </p>
             </div>
 
@@ -138,7 +139,7 @@ export function SpreadMatrix() {
               <h2 className="mt-2 text-2xl font-black text-white">Every tracked prop firm across forex, metals, indices, crypto and synthetic pairs</h2>
             </div>
             <p className="text-sm text-slate-400">
-              Showing {filteredRecords.length.toLocaleString()} rows · source policy applied
+              Showing {filteredRecords.length.toLocaleString()} estimate rows · model reviewed {modelReviewDate}
             </p>
           </div>
         </div>
@@ -174,11 +175,11 @@ export function SpreadMatrix() {
                     <p className="mt-1 text-xs text-slate-500">{record.instrumentName}</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 p-3">
-                    <p className="text-xs text-slate-500">Spread</p>
+                    <p className="text-xs text-slate-500">Research estimate</p>
                     <p className="mt-1 font-black text-electric">
-                      {record.spread} {record.quoteUnit}
+                      {record.spread} {record.quoteUnit} est.
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">{record.source}</p>
+                    <p className="mt-1 text-xs text-slate-500">{record.source} · {modelReviewDate}</p>
                   </div>
                 </div>
               </article>
@@ -192,7 +193,7 @@ export function SpreadMatrix() {
                 <th className="p-4">Prop firm</th>
                 <th className="p-4">Pair / Instrument</th>
                 <th className="p-4">Category</th>
-                <th className="p-4">Spread</th>
+                <th className="p-4">Research estimate</th>
                 <th className="p-4">Status</th>
                 <th className="p-4">Source</th>
               </tr>
@@ -216,7 +217,7 @@ export function SpreadMatrix() {
                       <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{record.category}</span>
                     </td>
                     <td className="p-4 font-black text-electric">
-                      {record.spread} {record.quoteUnit}
+                      {record.spread} {record.quoteUnit} est.
                     </td>
                     <td className="p-4">
                       <span
@@ -231,7 +232,7 @@ export function SpreadMatrix() {
                         {record.status}
                       </span>
                     </td>
-                    <td className="p-4 text-slate-400">{record.source}</td>
+                    <td className="p-4 text-slate-400">{record.source} · {modelReviewDate}</td>
                   </tr>
                 );
               })}

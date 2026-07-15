@@ -17,7 +17,7 @@ export function FirmCard({ firm }: { firm: PropFirm }) {
             <Link href={`/prop-firms/${firm.slug}`} className="text-xl font-bold text-white hover:text-electric">
               {firm.name}
             </Link>
-            <p className="truncate text-sm text-slate-400">{firm.country} · {firm.rating.toFixed(1)} ★ · {firm.reviewCount.toLocaleString()} reviews</p>
+            <p className="truncate text-sm text-slate-400">{firm.country} · {firm.rating.toFixed(1)} ★ · public review signal</p>
           </div>
         </div>
         <span className="w-fit rounded-2xl bg-white/10 px-3 py-2 text-sm font-bold text-electric">{firm.challengeFee}</span>

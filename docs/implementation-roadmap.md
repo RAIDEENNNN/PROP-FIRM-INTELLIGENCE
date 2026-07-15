@@ -30,7 +30,7 @@ For the branded scoring and intelligence systems, see [scoring-formulas.md](/doc
 - Build compare-any-five workflow.
 - Add firm profile SEO pages from database slugs.
 - Add rule-change history and admin-controlled rule updates.
-- Add verified reviews and payout proof moderation.
+- Add moderated review signals and payout proof moderation.
 
 ## Phase 3 — Trader dashboard
 

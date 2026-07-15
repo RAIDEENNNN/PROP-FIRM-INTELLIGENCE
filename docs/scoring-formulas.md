@@ -8,7 +8,7 @@ All scores should be shown as 0–100 unless explicitly stated otherwise. A scor
 - data confidence;
 - last verified date;
 - source status;
-- whether the profile is `Verified by FundedScope™`.
+- whether the profile is `Public-info checked by FundedScope™`.
 
 No affiliate, sponsorship or featured listing payment may directly increase a FundedScope Confidence Score or recommendation score.
 
@@ -51,7 +51,7 @@ FundedScope Confidence Score =
 FTMO
 92 / 100
 
-Verified by FundedScope™
+Public-info checked by FundedScope™
 Last checked: 10 July 2026
 ```
 
@@ -98,7 +98,7 @@ Community Trust          15/15
 
 The UI must explain why each score was earned.
 
-## 3. Verified by FundedScope™
+## 3. Public-info checked by FundedScope™
 
 Purpose: show users that FundedScope manually reviewed the profile.
 

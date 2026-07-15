@@ -26,7 +26,7 @@ export type Broker = {
   headquarters: string;
   regulators: string[];
   trustScore: number;
-  verifiedStatus: "Verified profile" | "Source-reviewed" | "Verification required";
+  verifiedStatus: "Public-info checked" | "Source-reviewed" | "Verification required";
   lastVerified: string;
   markets: string[];
   accountTypes: string[];
@@ -1081,9 +1081,9 @@ export function getBrokerConfidenceBreakdown(brokerItem: Broker): BrokerConfiden
     rows,
     lastReviewed: brokerItem.lastVerified,
     dataWarning:
-      brokerItem.verifiedStatus === "Verified profile"
-        ? "Baseline broker information has been verified by FundedScope."
-        : "This broker is in our research queue. Core profile details are shown, but exact live spreads and time-sensitive claims stay hidden until official-feed or manual verification is complete."
+      brokerItem.verifiedStatus === "Public-info checked"
+        ? "Public broker information has been checked against available sources by FundedScope. This does not mean the broker has endorsed the profile."
+        : "Core profile details are shown for research, but exact live spreads and time-sensitive claims stay hidden until official-feed or manual verification is complete."
   };
 }
 

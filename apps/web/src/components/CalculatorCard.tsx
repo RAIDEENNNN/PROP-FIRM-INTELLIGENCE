@@ -12,7 +12,7 @@ function money(value: number) {
   if (!Number.isFinite(value)) return "—";
   return new Intl.NumberFormat("en-GB", {
     style: "currency",
-    currency: "GBP",
+    currency: "USD",
     maximumFractionDigits: 2
   }).format(value);
 }

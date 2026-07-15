@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const plans = [
   {
     name: "Free",
-    price: "£0",
+    price: "$0",
     audience: "For traders researching firms, brokers and markets.",
     promise: "Good enough to trust, simple enough to start.",
     cta: "Start free",
@@ -45,7 +45,7 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "£14.99",
+    price: "$19",
     badge: "Best starting upgrade",
     audience: "For active traders who want FundedScope in their daily routine.",
     promise: "Become better every month — not just better informed.",
@@ -66,7 +66,7 @@ const plans = [
   },
   {
     name: "Elite",
-    price: "£39.99",
+    price: "$49.99",
     audience: "For serious traders who want a personal AI coach and long-term trading memory.",
     promise: "Make cancelling feel like losing your trading operating system.",
     cta: "Go Elite",

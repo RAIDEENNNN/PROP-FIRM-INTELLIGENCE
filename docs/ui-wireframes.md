@@ -83,7 +83,7 @@ Mobile: filters stack vertically; cards become single column.
 │ Fee | Target | Payout | Max DD                    │ Visit / Save alert │
 └───────────────────────────────────────────────────┴───────────────────┘
 ┌ Rules ┐ ┌ Reviews ┐ ┌ Payout proof ┐
-┌ Spread sample table/cards ┐
+┌ Research spread estimate table/cards ┐
 ```
 
 ## Compare

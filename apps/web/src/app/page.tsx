@@ -57,7 +57,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
-            Compare prop firms and brokers with transparent data, real reviews and powerful tools built to protect your capital and grow your edge.
+            Compare prop firms and brokers with transparent data, public review signals and powerful tools built to protect your capital and grow your edge.
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-2">

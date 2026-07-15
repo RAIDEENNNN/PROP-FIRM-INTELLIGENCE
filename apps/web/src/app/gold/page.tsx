@@ -41,6 +41,7 @@ const journalReminders = [
 ];
 
 export default function GoldPage() {
+  const spreadModelDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(spreadRecords[0]?.updatedAt ?? "2026-07-15T06:00:00.000Z"));
   const goldSpreads = spreadRecords
     .filter((record) => record.symbol === "XAUUSD")
     .sort((a, b) => a.spread - b.spread)
@@ -88,8 +89,9 @@ export default function GoldPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-electric">Best prop firm Gold spreads today</p>
-          <h2 className="mt-2 text-2xl font-black text-white">Lowest XAUUSD spread rows</h2>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Gold spread research estimates</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Lowest XAUUSD estimate rows</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-400">Reviewed {spreadModelDate}. These are not live spreads; verify executable XAUUSD costs inside your platform.</p>
           <div className="mt-5 space-y-3">
             {goldSpreads.map((record) => {
               const firm = propFirms.find((item) => item.slug === record.firmSlug);
@@ -99,12 +101,12 @@ export default function GoldPage() {
                     {firm ? <FirmLogo firm={firm} size="sm" /> : null}
                     <div className="min-w-0">
                       <p className="truncate font-black text-white">{record.firmName}</p>
-                      <p className="text-xs text-slate-500">{record.source}</p>
+                      <p className="text-xs text-slate-500">{record.source} · {spreadModelDate}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p className="font-black text-electric">
-                      {record.spread} {record.quoteUnit}
+                      {record.spread} {record.quoteUnit} est.
                     </p>
                     <p className="text-xs text-slate-500">{record.status}</p>
                   </div>

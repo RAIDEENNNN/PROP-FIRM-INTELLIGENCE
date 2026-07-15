@@ -19,7 +19,7 @@ export type SpreadRecord = {
   category: InstrumentCategory;
   spread: number;
   quoteUnit: Instrument["quoteUnit"];
-  source: "Indicative baseline" | "Live feed ready";
+  source: "FundedScope research estimate" | "Provider-verified feed";
   status: "Normal" | "Medium" | "Wide";
   updatedAt: string;
 };
@@ -216,7 +216,7 @@ function statusFor(spread: number, baseline: number): SpreadRecord["status"] {
 }
 
 export function buildSpreadRecords() {
-  const updatedAt = "2026-07-06T06:00:00.000Z";
+  const updatedAt = "2026-07-15T06:00:00.000Z";
 
   return propFirms.flatMap((firm) =>
     instruments.map((instrument) => {
@@ -242,7 +242,7 @@ export function buildSpreadRecords() {
         category: instrument.category,
         spread,
         quoteUnit: instrument.quoteUnit,
-        source: "Indicative baseline" as const,
+        source: "FundedScope research estimate" as const,
         status: statusFor(spread, instrument.baseline),
         updatedAt
       };
@@ -256,6 +256,7 @@ export const spreadStats = {
   firms: propFirms.length,
   instruments: instruments.length,
   records: spreadRecords.length,
+  updatedAt: spreadRecords[0]?.updatedAt ?? "2026-07-15T06:00:00.000Z",
   forexPairs: instruments.filter((item) => item.category === "Forex").length,
   commodityPairs: instruments.filter((item) => item.category === "Commodities").length,
   indexPairs: instruments.filter((item) => item.category === "Indices").length,

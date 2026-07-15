@@ -46,7 +46,7 @@ Goal: prove FundedScope is a real, trusted trader intelligence product.
 
 - Public scoring explanation.
 - Early Confidence Score logic.
-- Verified by FundedScope™ concept.
+- Public-info checked by FundedScope™ concept.
 - Rule History™ concept.
 - Trader DNA™ onboarding concept.
 
@@ -87,7 +87,7 @@ Goal: move from static product to database-backed intelligence platform.
   - last verified;
   - verified by;
   - publish/unpublish.
-- Verified by FundedScope™ badge live.
+- Public-info checked by FundedScope™ badge live.
 - Rule History™ table and UI.
 - Reviews MVP with moderation.
 - Watchlist/saved firms MVP.
@@ -123,7 +123,7 @@ Goal: create the secret sauce that separates FundedScope from normal comparison 
 
 - FundedScope Confidence Score™ for prop firms live.
 - FundedScope Confidence Score™ for brokers live.
-- Verified by FundedScope™ workflow live.
+- Public-info checked by FundedScope™ workflow live.
 - Rule History™ live.
 - Broker Intelligence™ live.
 - Trader DNA™ recommendations live.

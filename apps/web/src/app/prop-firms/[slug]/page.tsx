@@ -48,6 +48,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
 export default function FirmProfilePage({ params }: { params: { slug: string } }) {
   const firm = propFirms.find((item) => item.slug === params.slug) ?? propFirms[0];
   const trust = firm ? getFirmTrust(firm) : null;
+  const spreadModelDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(spreadRecords[0]?.updatedAt ?? "2026-07-15T06:00:00.000Z"));
   const prioritySymbols = ["XAUUSD", "XAGUSD", "NAS100", "US30", "EURUSD", "GBPUSD", "BTCUSD", "ETHUSD"];
   const firmSpreads = spreadRecords
     .filter((record) => record.firmSlug === firm?.slug)
@@ -150,7 +151,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             <div>
               <h1 className="text-3xl font-black text-white sm:text-5xl">{firm.name}</h1>
               <p className="mt-2 text-sm leading-6 text-slate-400 sm:text-base">
-                {firm.country} · {firm.rating.toFixed(1)} ★ · {firm.reviewCount.toLocaleString()} tracked reviews · {firm.verified ? "Verified profile" : "Needs editorial verification"}
+                {firm.country} · {firm.rating.toFixed(1)} ★ public review signal · {firm.verified ? "Public-info checked profile" : "Editorial verification required"}
               </p>
             </div>
           </div>
@@ -166,7 +167,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Last checked {trust.lastChecked}</span>
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">Source: {trust.sourceLabel}</span>
             <span className="rounded-full border border-electric/20 bg-electric/10 px-3 py-1 text-xs font-bold text-electric">
-              Verified by FundedScope
+              Public information checked by FundedScope
             </span>
           </div>
           <div className="mt-8 grid gap-4 md:grid-cols-4">
@@ -357,9 +358,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           </div>
         </GlassCard>
         <GlassCard>
-          <h2 className="text-xl font-black text-white">Verified reviews</h2>
+          <h2 className="text-xl font-black text-white">Review signals</h2>
           <p className="mt-3 text-sm leading-6 text-slate-400">
-            {firm.reviewCount.toLocaleString()} review signals tracked. Verified user reviews and payout proof reports are handled through FundedScope moderation.
+            Review signal is a public-research indicator, not a live count. FundedScope uses it as one comparison input until verified user reviews and payout proof reports are processed through moderation.
           </p>
         </GlassCard>
         <GlassCard>
@@ -369,8 +370,8 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
       </div>
       <GlassCard className="mt-6 overflow-hidden p-0">
         <div className="border-b border-white/10 p-5">
-          <h2 className="text-xl font-black text-white">Spread sample for {firm.name}</h2>
-          <p className="mt-2 text-sm text-slate-400">First rows from the firm × instrument spread matrix. Full searchable matrix lives under Spreads.</p>
+          <h2 className="text-xl font-black text-white">Research spread estimates for {firm.name}</h2>
+          <p className="mt-2 text-sm text-slate-400">These rows are FundedScope research estimates reviewed on {spreadModelDate}. They are not live quotes. Confirm executable spreads inside the trading platform.</p>
         </div>
         <div className="grid gap-3 p-4 md:hidden">
           {firmSpreads.map((record) => (
@@ -383,9 +384,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                 <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">{record.category}</span>
               </div>
               <div className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 p-3">
-                <span className="text-xs text-slate-500">Spread</span>
+                <span className="text-xs text-slate-500">Research estimate</span>
                 <span className="font-black text-electric">
-                  {record.spread} {record.quoteUnit}
+                  {record.spread} {record.quoteUnit} est.
                 </span>
               </div>
             </article>
@@ -398,8 +399,9 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                 <th className="p-4">Pair</th>
                 <th className="p-4">Name</th>
                 <th className="p-4">Category</th>
-                <th className="p-4">Spread</th>
+                <th className="p-4">Research estimate</th>
                 <th className="p-4">Status</th>
+                <th className="p-4">Source</th>
               </tr>
             </thead>
             <tbody>
@@ -409,9 +411,10 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
                   <td className="p-4 text-slate-300">{record.instrumentName}</td>
                   <td className="p-4">{record.category}</td>
                   <td className="p-4 text-electric">
-                    {record.spread} {record.quoteUnit}
+                    {record.spread} {record.quoteUnit} est.
                   </td>
                   <td className="p-4">{record.status}</td>
+                  <td className="p-4 text-slate-400">{record.source} · {spreadModelDate}</td>
                 </tr>
               ))}
             </tbody>

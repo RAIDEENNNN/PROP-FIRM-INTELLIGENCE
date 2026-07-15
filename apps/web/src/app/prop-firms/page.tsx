@@ -39,6 +39,9 @@ export default function PropFirmsPage() {
           <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-slate-300 sm:text-lg sm:leading-8">
             Research challenge fees, rules, payouts, drawdown, markets, trust signals and FundedScope confidence scores before choosing your next evaluation.
           </p>
+          <p className="mx-auto mt-3 max-w-3xl rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-xs leading-5 text-slate-400 sm:text-sm">
+            Coverage note: FundedScope currently publishes {propFirms.length} reviewed prop-firm profiles. New firms are added after source review so the directory grows without filling the site with unverified listings.
+          </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {[
               [String(propFirms.length), "published firm profiles"],

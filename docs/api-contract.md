@@ -218,7 +218,7 @@ Response includes:
 - firm
 - accounts
 - rules
-- verified reviews
+- moderated review signals
 - scoreBreakdown
 
 ### `GET /firms/:slug/score`
@@ -436,7 +436,7 @@ Request:
 ```json
 {
   "firmId": "firm_id",
-  "notes": "Interested in £100k challenge"
+  "notes": "Interested in k challenge"
 }
 ```
 

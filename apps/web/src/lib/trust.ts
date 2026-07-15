@@ -66,7 +66,7 @@ function scoreWeaknesses(firm: PropFirm): Record<ScoreKey, number> {
       (firm.verified ? 0.08 : 0.5) +
       (firm.rating >= 4.6 ? 0.04 : firm.rating >= 4.2 ? 0.16 : 0.3) +
       (firm.reviewCount >= 9000 ? 0.04 : firm.reviewCount >= 3500 ? 0.12 : 0.24),
-    pricing: feeWeakness + (/scaling|£4M/i.test(`${firm.maxAccount} ${firm.tags.join(" ")}`) ? -0.08 : 0),
+    pricing: feeWeakness + (/scaling|\$4M/i.test(`${firm.maxAccount} ${firm.tags.join(" ")}`) ? -0.08 : 0),
     markets: marketCount >= 4 ? 0.08 : marketCount === 3 ? 0.18 : marketCount === 2 ? 0.32 : 0.46,
     freshness: !firm.verified ? 0.45 : checkedAge <= 21 ? 0.08 : checkedAge <= 45 ? 0.18 : checkedAge <= 75 ? 0.3 : 0.45
   };
@@ -123,7 +123,7 @@ export function getFirmTrust(firm: PropFirm) {
   const hasCrypto = firm.markets.includes("Crypto");
   const hasFutures = firm.markets.includes("Futures");
   const hasCommodities = firm.markets.includes("Commodities");
-  const hasScaling = firm.tags.some((tag) => /scaling/i.test(tag)) || /scaling|£4M/i.test(firm.maxAccount);
+  const hasScaling = firm.tags.some((tag) => /scaling/i.test(tag)) || /scaling|\$4M/i.test(firm.maxAccount);
   const lowEntry = fee !== null && fee <= 79;
   const localMarket = /Nigeria/i.test(firm.country) || firm.tags.some((tag) => /Nigeria|Local/i.test(tag));
 

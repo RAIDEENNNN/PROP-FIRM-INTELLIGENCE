@@ -32,6 +32,7 @@ const calendar = [
 ];
 
 export default function DashboardPage() {
+  const spreadModelDate = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" }).format(new Date(spreadRecords[0]?.updatedAt ?? "2026-07-15T06:00:00.000Z"));
   const goldRows = spreadRecords
     .filter((record) => record.symbol === "XAUUSD")
     .sort((a, b) => a.spread - b.spread)
@@ -103,8 +104,9 @@ export default function DashboardPage() {
 
       <section className="mt-6 grid gap-6 lg:grid-cols-3">
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-warning">Gold spreads</p>
-          <h2 className="mt-2 text-2xl font-black text-white">Best XAUUSD rows</h2>
+          <p className="text-sm uppercase tracking-[0.28em] text-warning">Gold spread estimates</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Lowest XAUUSD estimate rows</h2>
+          <p className="mt-2 text-xs leading-5 text-slate-500">Research estimates reviewed {spreadModelDate}; not live quotes.</p>
           <div className="mt-5 space-y-3">
             {goldRows.map((record) => {
               const firm = featuredFirms.find((item) => item.slug === record.firmSlug);
@@ -115,7 +117,7 @@ export default function DashboardPage() {
                     <p className="truncate text-sm font-bold text-white">{record.firmName}</p>
                   </div>
                   <p className="text-sm font-black text-electric">
-                    {record.spread} {record.quoteUnit}
+                    {record.spread} {record.quoteUnit} est.
                   </p>
                 </div>
               );
