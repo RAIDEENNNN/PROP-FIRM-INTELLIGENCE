@@ -100,7 +100,7 @@ export async function GET() {
     ok: true,
     markets,
     message: markets.some((market) => market.source === "Live")
-      ? "Market quotes attached where available. Any remaining assets use source-reviewed reference handling."
-      : "No live market provider returned a usable quote. Configure TWELVE_DATA_API_KEY/Binance or hide the market bar in production."
+      ? "Market quotes attached where available. Always verify executable prices inside your trading platform."
+      : "Market data is temporarily unavailable. Verify executable prices inside your broker or trading platform."
   });
 }

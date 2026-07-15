@@ -41,9 +41,9 @@ export default function PropFirmsPage() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {[
-              ["60+", "tracked firms"],
-              ["1,500+", "challenge references"],
-              ["24/7", "source monitoring"],
+              [String(propFirms.length), "published firm profiles"],
+              ["Explainable", "confidence scores"],
+              ["Public", "source policy"],
               ["2026", "research standard"]
             ].map(([value, label]) => (
               <span key={label} className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm font-bold text-slate-200">

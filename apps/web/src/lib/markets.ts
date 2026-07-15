@@ -4,14 +4,14 @@ export type MarketSnapshot = {
   price: string;
   change: string;
   tone: "up" | "down" | "flat";
-  source: "Live" | "Reference";
+  source: "Live" | "Unavailable";
 };
 
 export const fallbackMarkets: MarketSnapshot[] = [
-  { symbol: "XAUUSD", label: "Gold", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" },
-  { symbol: "BTCUSD", label: "BTC", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" },
-  { symbol: "EURUSD", label: "EUR/USD", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" },
-  { symbol: "GBPUSD", label: "GBP/USD", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" },
-  { symbol: "NAS100", label: "NASDAQ", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" },
-  { symbol: "DXY", label: "DXY", price: "Source check", change: "Verify quote", tone: "flat", source: "Reference" }
+  { symbol: "XAUUSD", label: "Gold", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "BTCUSD", label: "BTC", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "EURUSD", label: "EUR/USD", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "GBPUSD", label: "GBP/USD", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "NAS100", label: "NASDAQ", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "DXY", label: "DXY", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" }
 ];

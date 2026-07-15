@@ -5,7 +5,7 @@ import { fallbackMarkets, type MarketSnapshot } from "../lib/markets";
 
 export function LiveMarketBar() {
   const [markets, setMarkets] = useState<MarketSnapshot[]>(fallbackMarkets);
-  const [message, setMessage] = useState("Market reference bar. Always verify executable quotes inside your trading platform before placing trades.");
+  const [message, setMessage] = useState("Market data is temporarily unavailable. Verify executable prices inside your trading platform before placing trades.");
 
   useEffect(() => {
     let cancelled = false;
@@ -20,7 +20,7 @@ export function LiveMarketBar() {
           setMessage(payload.message ?? "Market data loaded.");
         }
       } catch {
-        if (!cancelled) setMessage("Market reference bar. Verify executable quotes inside your broker or prop-firm platform.");
+        if (!cancelled) setMessage("Market data is temporarily unavailable. Verify executable quotes inside your broker or prop-firm platform.");
       }
     }
 
@@ -32,11 +32,13 @@ export function LiveMarketBar() {
     };
   }, []);
 
+  const hasLiveQuotes = markets.some((market) => market.source === "Live");
+
   return (
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-5">
-        <div className="z-10 shrink-0 rounded-full border border-electric/30 bg-void px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-electric">
-          Market bar
+        <div className={`z-10 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] ${hasLiveQuotes ? "border-electric/30 bg-void text-electric" : "border-warning/30 bg-warning/10 text-warning"}`}>
+          {hasLiveQuotes ? "Market bar" : "Market data unavailable"}
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">
           <div className="market-marquee flex items-center gap-4">
@@ -44,10 +46,12 @@ export function LiveMarketBar() {
               <div key={`${market.symbol}-${index}`} className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-void/70 px-4 py-2">
                 <span className="text-xs font-bold text-slate-400">{market.label}</span>
                 <span className="text-sm font-black text-white">{market.price}</span>
-                <span className={`text-xs font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
-                  {market.change}
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{market.source}</span>
+                {market.change ? (
+                  <span className={`text-xs font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
+                    {market.change}
+                  </span>
+                ) : null}
+                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{hasLiveQuotes ? market.source : "Disabled"}</span>
               </div>
             ))}
             <p className="min-w-[360px] shrink-0 text-xs text-slate-500">{message}</p>

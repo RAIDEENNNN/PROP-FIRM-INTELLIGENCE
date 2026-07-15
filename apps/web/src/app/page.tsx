@@ -9,10 +9,10 @@ import { featuredFirms, newsEvents, propFirms } from "../lib/data";
 import { spreadRecords } from "../lib/spreads";
 
 const stats = [
-  { label: "Active Traders", value: "10,000+", icon: "♟" },
-  { label: "Prop Firms", value: "100+", icon: "🏛" },
-  { label: "Brokers", value: String(brokers.length), icon: "▣" },
-  { label: "Updates", value: "24/7", icon: "◷" }
+  { label: "Prop Firm Profiles", value: String(propFirms.length), icon: "♟" },
+  { label: "Broker Profiles", value: String(brokers.length), icon: "▣" },
+  { label: "Research Areas", value: "3", icon: "🏛" },
+  { label: "Source Policy", value: "Public", icon: "◷" }
 ];
 
 const popularSearches = ["FTMO", "FundedNext", "The 5%ers", "Exness", "IC Markets"];
@@ -46,7 +46,7 @@ export default function HomePage() {
         <div>
           <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#0b0b14]/80 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.9)]" />
-            Trusted by 10,000+ traders worldwide
+            Independent trader research platform
           </div>
 
           <h1 className="mt-8 max-w-2xl text-5xl font-black leading-[0.96] tracking-[-0.05em] text-white sm:text-6xl md:text-7xl">
@@ -276,10 +276,10 @@ function HeroDashboard({ firms, brokers }: { firms: typeof featuredFirms; broker
               title="Market Overview"
               href="/gold"
               items={[
-                { name: "Gold (XAU/USD)", value: "Source check", href: "/gold" },
-                { name: "EUR/USD", value: "Source check", href: "/spreads" },
-                { name: "GBP/USD", value: "Source check", href: "/spreads" },
-                { name: "BTC/USD", value: "Source check", href: "/spreads" }
+                { name: "Gold (XAU/USD)", value: "Unavailable", href: "/gold" },
+                { name: "EUR/USD", value: "Unavailable", href: "/spreads" },
+                { name: "GBP/USD", value: "Unavailable", href: "/spreads" },
+                { name: "BTC/USD", value: "Unavailable", href: "/spreads" }
               ]}
             />
           </div>

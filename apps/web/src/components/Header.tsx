@@ -36,7 +36,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05050a]/92 backdrop-blur-2xl">
       <div className="border-b border-white/10 bg-violet/25">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 px-4 py-2 text-center text-xs font-bold text-purple-100 sm:px-5">
-          <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">● LIVE</span>
+          <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">● TODAY</span>
           <span>FundedScope market intelligence desk</span>
           <span className="hidden text-slate-300 sm:inline">| London & New York session focus</span>
           <Link href="/gold" className="rounded-full border border-fuchsia-300/40 px-3 py-1 text-white transition hover:bg-white/10">

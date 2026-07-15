@@ -44,7 +44,7 @@ export function DecisionEngine() {
       firmVerifiedAt: firm.lastRuleUpdate,
       brokerVerifiedAt: broker.lastVerified,
       dataCompleteness:
-        broker.verifiedStatus === "Source-reviewed" || broker.verifiedStatus === "Source check"
+        broker.verifiedStatus === "Source-reviewed" || broker.verifiedStatus === "Verification required"
           ? "Some broker fields are source-checked. Verify exact costs and availability with the official broker before opening an account."
           : "Core profile fields have a verification label, but users should still check official terms before acting.",
       warning:

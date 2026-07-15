@@ -26,7 +26,7 @@ export type Broker = {
   headquarters: string;
   regulators: string[];
   trustScore: number;
-  verifiedStatus: "Verified profile" | "Source-reviewed" | "Source check";
+  verifiedStatus: "Verified profile" | "Source-reviewed" | "Verification required";
   lastVerified: string;
   markets: string[];
   accountTypes: string[];
@@ -62,9 +62,9 @@ export type BrokerConfidenceBreakdown = {
 };
 
 const defaultInstruments: BrokerInstrument[] = [
-  { symbol: "XAUUSD", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
-  { symbol: "EURUSD", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
-  { symbol: "NAS100", averageSpread: "Source check", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" }
+  { symbol: "XAUUSD", averageSpread: "Not published", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
+  { symbol: "EURUSD", averageSpread: "Not published", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" },
+  { symbol: "NAS100", averageSpread: "Not published", minimumSpread: "Official source required", commission: "Account based", leverage: "Region based" }
 ];
 
 function broker(domain: string, data: Omit<Broker, "domain" | "logoUrl" | "instruments"> & { instruments?: BrokerInstrument[] }): Broker {
