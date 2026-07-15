@@ -34,6 +34,7 @@ const routeOverrides = new Map<string, { priority: number; changeFrequency: Site
   ["/spreads", { priority: 0.85, changeFrequency: "daily" }],
   ["/gold", { priority: 0.8, changeFrequency: "daily" }],
   ["/news-radar", { priority: 0.8, changeFrequency: "daily" }],
+  ["/calculators", { priority: 0.75, changeFrequency: "weekly" }],
   ["/tools", { priority: 0.75, changeFrequency: "weekly" }],
   ["/pricing", { priority: 0.75, changeFrequency: "weekly" }],
   ["/articles", { priority: 0.75, changeFrequency: "weekly" }],
