@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { noindexMetadata } from "../../lib/seo";
+
+export const metadata = noindexMetadata("Profile saved | FundedScope", "Private FundedScope onboarding confirmation.", "/onboarding-complete");
 
 export default function OnboardingCompletePage() {
   return (

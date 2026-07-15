@@ -131,7 +131,7 @@ export default function HomePage() {
 
         <GlassCard>
           <div className="flex items-center justify-between gap-4">
-            <h2 className="text-2xl font-black text-white">Latest News & Updates</h2>
+            <h2 className="text-2xl font-black text-white">Research Radar</h2>
             <Link href="/news-radar" className="text-sm font-black text-purple-300">View All →</Link>
           </div>
           <div className="mt-5 space-y-4">
@@ -206,13 +206,13 @@ function HeroDashboard({ firms, brokers }: { firms: typeof featuredFirms; broker
     { label: "Brokers", href: "/brokers" },
     { label: "Compare", href: "/compare" },
     { label: "News", href: "/news-radar" },
-    { label: "Tools", href: "/tools" }
+    { label: "Calculators", href: "/calculators" }
   ];
   const metrics = [
     { label: "Prop Firms", value: String(propFirms.length), href: "/prop-firms" },
     { label: "Brokers", value: String(brokers.length), href: "/brokers" },
-    { label: "News Updates", value: "247", href: "/news-radar" },
-    { label: "Watchlist", value: "12", href: "/dashboard" }
+    { label: "Source Policy", value: "Public", href: "/sources" },
+    { label: "Trader Tools", value: "Ready", href: "/calculators" }
   ];
 
   return (

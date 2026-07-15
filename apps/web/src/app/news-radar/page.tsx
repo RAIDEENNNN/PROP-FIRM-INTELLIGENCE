@@ -6,13 +6,13 @@ import { newsEvents } from "../../lib/data";
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
 
 export const metadata: Metadata = {
-  title: "Live Prop Firm & Market News Radar | FundedScope",
-  description: "Track prop firm rule changes, payout news, Gold volatility, high-impact market events and trader decision context inside FundedScope.",
+  title: "Prop Firm & Market News Radar | FundedScope",
+  description: "Review prop firm rule changes, payout news, Gold volatility, high-impact market events and trader decision context inside FundedScope.",
   alternates: {
     canonical: "/news-radar"
   },
   openGraph: {
-    title: "Live Prop Firm & Market News Radar | FundedScope",
+    title: "Prop Firm & Market News Radar | FundedScope",
     description: "Prop firm and market news with decision context for modern traders.",
     url: "/news-radar",
     siteName: "MyFundedScope",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Live Prop Firm & Market News Radar | FundedScope",
+    title: "Prop Firm & Market News Radar | FundedScope",
     description: "Prop firm and market news with decision context for modern traders.",
     images: ["/brand/fundedscope-logo.png"]
   }
@@ -31,10 +31,10 @@ const enrichedNews = newsEvents.map((event, index) => ({
   ...event,
   summary:
     index === 0
-      ? "Rule tightening can change whether a challenge is still a good fit. Traders should re-check daily loss and consistency rules before purchase."
+      ? "Rule changes can affect whether a challenge is still a good fit. Traders should re-check daily loss, consistency and payout rules before purchase."
       : index === 1
-        ? "Gold spread expansion often appears around New York open or USD news. Reduce size or wait for spread normalization."
-        : "Rising payout proof can support trust, but payout proof should still be moderated and tied to account type.",
+        ? "Gold volatility often expands around session opens or USD news. Use your own broker platform for executable prices and spread confirmation."
+        : "Payout proof can support trust, but it should be source-reviewed, time-stamped and tied to the correct company or account type.",
   assets: index === 1 ? ["XAUUSD", "DXY", "USD pairs"] : index === 0 ? ["Prop firms", "Challenges"] : ["Payouts", "Reviews"],
   bias: index === 1 ? "Volatility risk" : index === 0 ? "Rules risk" : "Trust signal",
   volatility: index === 1 ? 86 : index === 0 ? 72 : 44
@@ -97,7 +97,7 @@ export default function NewsRadarPage() {
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">News radar</p>
       <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Market and prop firm news with decision context.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
-        FundedScope news is designed to explain what changed, which assets or firms are affected, and what traders should check before risking capital.
+        FundedScope news radar is designed to explain what may matter, which assets or firms are affected, and what traders should verify before risking capital.
       </p>
       <div className="mt-8 grid gap-4">
         {enrichedNews.map((event) => (

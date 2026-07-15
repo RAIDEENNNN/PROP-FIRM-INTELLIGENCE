@@ -10,7 +10,7 @@ const navRoutes = [
   { href: "/brokers", label: "Brokers" },
   { href: "/compare", label: "Compare" },
   { href: "/news-radar", label: "News" },
-  { href: "/tools", label: "Tools" },
+  { href: "/calculators", label: "Calculators" },
   { href: "/articles", label: "Education" },
   { href: "/about", label: "About" }
 ];

@@ -632,27 +632,27 @@ export const propFirms: PropFirm[] = [
 export const featuredFirms = propFirms.slice(0, 8);
 
 export const dashboardMetrics = [
-  { label: "Tracked firms", value: String(propFirms.length), delta: "+ global firms seeded" },
-  { label: "Rule changes", value: "37", delta: "12 high impact" },
-  { label: "Avg payout speed", value: "9.4d", delta: "-1.2d vs last month" },
-  { label: "Saved alerts", value: "16", delta: "4 triggered today" }
+  { label: "Published firms", value: String(propFirms.length), delta: "Source-reviewed profiles" },
+  { label: "Broker profiles", value: "40+", delta: "Public-info checked" },
+  { label: "Market data", value: "Unavailable", delta: "Provider feed required" },
+  { label: "User alerts", value: "Account-only", delta: "Saved after sign-in" }
 ];
 
 export const newsEvents = [
   {
-    title: "Two-step accounts tighten daily loss rules",
+    title: "Rule changes to review before buying a challenge",
     impact: "High",
-    time: "14m ago"
+    time: "Research watch"
   },
   {
-    title: "Gold spread spike detected during New York open",
+    title: "Gold volatility windows traders should respect",
     impact: "Medium",
-    time: "42m ago"
+    time: "Market context"
   },
   {
-    title: "Instant funding payout proof volume rises",
+    title: "How payout proof should be checked before trusting claims",
     impact: "Low",
-    time: "2h ago"
+    time: "Trust framework"
   }
 ];
 

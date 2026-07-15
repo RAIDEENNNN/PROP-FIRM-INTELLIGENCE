@@ -16,6 +16,7 @@ const footerGroups = [
     links: [
       { label: "All Brokers", href: "/brokers" },
       { label: "Spreads", href: "/spreads" },
+      { label: "Calculators", href: "/calculators" },
       { label: "Gold Dashboard", href: "/gold" },
       { label: "Decision Engine", href: "/decision-engine" },
       { label: "Data Sources", href: "/sources" }

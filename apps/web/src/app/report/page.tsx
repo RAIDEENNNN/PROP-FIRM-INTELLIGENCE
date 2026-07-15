@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { InformationReportForm } from "../../components/InformationReportForm";
+import { noindexMetadata } from "../../lib/seo";
 
-export const metadata: Metadata = {
-  title: "Report Incorrect Information | FundedScope",
-  description: "Report incorrect prop firm, broker, spread, rule, payout or platform information to FundedScope."
-};
+export const metadata = noindexMetadata(
+  "Report Incorrect Information | FundedScope",
+  "Report incorrect prop firm, broker, spread, rule, payout or platform information to FundedScope.",
+  "/report"
+);
 
 export default function ReportPage() {
   return (

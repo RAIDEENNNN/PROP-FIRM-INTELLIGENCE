@@ -24,11 +24,11 @@ const achievements = [
 ];
 const hubStats: Array<[string, string]> = [
   ["Profile Completion", `${traderDnaProfile.dnaScore}%`],
-  ["Prop Firms Viewed", "126"],
-  ["Broker Comparisons", "39"],
-  ["Reviews Written", "11"],
-  ["Watchlist", "8"],
-  ["Alerts Active", "4"]
+  ["Prop Firms Viewed", "Connect account"],
+  ["Broker Comparisons", "Connect account"],
+  ["Reviews Written", "Not submitted"],
+  ["Watchlist", "Saved after sign-in"],
+  ["Alerts Active", "Saved after sign-in"]
 ];
 
 export default function ProfilePage() {
