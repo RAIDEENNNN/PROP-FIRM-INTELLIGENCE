@@ -199,9 +199,9 @@ export default function HomePage() {
   );
 }
 
-function HeroDashboard({ firms, brokers }: { firms: typeof featuredFirms; brokers: typeof import("../lib/brokers").brokers }) {
+function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featuredFirms; brokers: typeof import("../lib/brokers").brokers }) {
   const previewRoutes = [
-    { label: "Dashboard", href: "/dashboard" },
+    { label: "Dashboard Preview", href: "/dashboard" },
     { label: "Prop Firms", href: "/prop-firms" },
     { label: "Brokers", href: "/brokers" },
     { label: "Compare", href: "/compare" },
@@ -238,21 +238,26 @@ function HeroDashboard({ firms, brokers }: { firms: typeof featuredFirms; broker
             </Link>
           ))}
           <Link href="/trader-dna" className="mt-8 block rounded-2xl bg-violet/15 p-3 transition hover:bg-violet/25">
-            <p className="text-[10px] font-black uppercase text-purple-200">Trader DNA™</p>
+            <p className="text-[10px] font-black uppercase text-purple-200">Trader DNA™ Preview</p>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-              <div className="h-full w-[70%] rounded-full bg-violet" />
+              <div className="h-full w-[55%] rounded-full bg-violet" />
             </div>
-            <p className="mt-2 text-xs text-slate-400">70%</p>
+            <p className="mt-2 text-xs text-slate-400">Personalized after sign-in</p>
           </Link>
         </aside>
 
         <div className="rounded-2xl border border-white/10 bg-[#0d0d18]/90 p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-xl font-black text-white">Welcome back, Trader 👋</h2>
-              <p className="mt-1 text-sm text-slate-400">Your trading intelligence dashboard</p>
+              <span className="rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-purple-200">
+                Product preview
+              </span>
+              <h2 className="mt-3 text-xl font-black text-white">See how FundedScope works</h2>
+              <p className="mt-1 text-sm text-slate-400">A public preview of the trading intelligence dashboard.</p>
             </div>
-            <div className="grid h-16 w-16 place-items-center rounded-full border-4 border-violet/50 text-sm font-black text-purple-200">70%</div>
+            <Link href="/sign-up" className="hidden rounded-full border border-violet/40 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-violet/15 sm:inline-flex">
+              Personalize yours
+            </Link>
           </div>
 
           <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -270,7 +275,7 @@ function HeroDashboard({ firms, brokers }: { firms: typeof featuredFirms; broker
             <DashboardList
               title="Top Brokers"
               href="/brokers"
-              items={brokers.slice(0, 5).map((broker) => ({ name: broker.name, value: `${(broker.trustScore / 20).toFixed(1)} ★`, href: `/brokers/${broker.slug}` }))}
+              items={previewBrokers.slice(0, 5).map((broker) => ({ name: broker.name, value: `${(broker.trustScore / 20).toFixed(1)} ★`, href: `/brokers/${broker.slug}` }))}
             />
             <DashboardList
               title="Market Overview"

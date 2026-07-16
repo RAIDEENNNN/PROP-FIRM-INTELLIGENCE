@@ -1,3 +1,5 @@
+import { brokers } from "./brokers";
+
 const favicon = (domain: string) => `https://logo.clearbit.com/${domain}`;
 
 export type PropFirm = {
@@ -633,7 +635,7 @@ export const featuredFirms = propFirms.slice(0, 8);
 
 export const dashboardMetrics = [
   { label: "Published firms", value: String(propFirms.length), delta: "Source-reviewed profiles" },
-  { label: "Broker profiles", value: "40+", delta: "Public-info checked" },
+  { label: "Broker profiles", value: String(brokers.length), delta: "Public-info checked" },
   { label: "Market data", value: "Unavailable", delta: "Provider feed required" },
   { label: "User alerts", value: "Account-only", delta: "Saved after sign-in" }
 ];
