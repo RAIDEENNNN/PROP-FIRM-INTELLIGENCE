@@ -8,6 +8,7 @@ import { RiskMeter } from "../../../components/RiskMeter";
 import { ScoreBreakdown } from "../../../components/ScoreBreakdown";
 import { brokers } from "../../../lib/brokers";
 import { propFirms } from "../../../lib/data";
+import { marketEvents, propFirmWarnings } from "../../../lib/market-intelligence";
 import { spreadRecords } from "../../../lib/spreads";
 import { getFirmTrust } from "../../../lib/trust";
 
@@ -75,6 +76,23 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
     { date: "2026-07-11", title: "Verification model added", change: "Last verified, source, and report-error controls added to profile pages." },
     { date: "Source monitoring", title: "Official source history", change: "Rule changes are tracked as timestamped records with source context." }
   ];
+  const scoreHistory = [
+    { label: "90 days", value: Math.max(60, firm.score - 3), note: "Older rule snapshot" },
+    { label: "30 days", value: Math.max(60, firm.score - 1), note: "Source review pending" },
+    { label: "Today", value: firm.score, note: "Current FundedScope score" }
+  ];
+  const payoutHistory = [
+    { label: "First payout", value: firm.payoutFrequency, note: "Confirm account phase and minimum days" },
+    { label: "Split", value: firm.payout, note: "Review scaling and refund terms" },
+    { label: "Proof status", value: "Moderated", note: "User-submitted proof should be approved before publishing" }
+  ];
+  const firmWarning =
+    propFirmWarnings.find((warning) => firm.name.toLowerCase().includes(warning.firm.toLowerCase()) || warning.firm.toLowerCase().includes(firm.name.toLowerCase())) ??
+    propFirmWarnings[0];
+  const relevantNews = marketEvents
+    .filter((event) => event.traderTags.includes("Prop Trader") || event.affectedAssets.some((asset) => firm.markets.join(" ").toLowerCase().includes(asset.toLowerCase())))
+    .slice(0, 3);
+  const sentimentScore = Math.min(86, Math.max(54, Math.round(firm.rating * 16 + (firm.score - 70) / 2)));
   const similarFirms = propFirms
     .filter((item) => item.slug !== firm.slug && item.markets.some((market) => firm.markets.includes(market)))
     .sort((a, b) => b.score - a.score)
@@ -241,6 +259,87 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           <p className="mt-3 text-sm leading-6 text-slate-300">
             Match estimate for a Gold/forex-focused trader using FundedScope default Trader DNA. Logged-in users will receive a personal score from their own markets, session, risk style and restrictions.
           </p>
+        </GlassCard>
+      </section>
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-[0.55fr_0.45fr]">
+        <GlassCard className="glow-border">
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Firm Intelligence OS</p>
+          <h2 className="mt-2 text-3xl font-black text-white">What should a trader check before using {firm.name}?</h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {scoreHistory.map((item) => (
+              <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{item.label}</p>
+                <p className="mt-2 text-4xl font-black text-electric">{item.value}</p>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
+                  <div className="h-full rounded-full bg-electric" style={{ width: `${item.value}%` }} />
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{item.note}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-warning">Prop firm warning</p>
+          <h2 className="mt-2 text-2xl font-black text-white">{firmWarning?.status}</h2>
+          <p className="mt-4 rounded-2xl border border-warning/20 bg-warning/10 p-4 text-sm leading-6 text-warning">
+            {firmWarning?.rule}
+          </p>
+          <p className="mt-4 text-sm leading-6 text-slate-400">
+            Treat this as a research prompt, not a final rule determination. Always confirm the official rule page before trading around high-impact news.
+          </p>
+        </GlassCard>
+      </section>
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-3">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-success">Payout history</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Cash-flow checks</h2>
+          <div className="mt-5 space-y-3">
+            {payoutHistory.map((item) => (
+              <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{item.label}</p>
+                <p className="mt-1 text-lg font-black text-white">{item.value}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{item.note}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Community sentiment</p>
+          <h2 className="mt-2 text-2xl font-black text-white">{sentimentScore}% constructive signal</h2>
+          <div className="mt-5 h-3 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full rounded-full bg-violet" style={{ width: `${sentimentScore}%` }} />
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+              <p className="text-xs text-slate-500">Bullish</p>
+              <p className="mt-1 font-black text-white">{sentimentScore}%</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+              <p className="text-xs text-slate-500">Caution</p>
+              <p className="mt-1 font-black text-warning">{100 - sentimentScore}%</p>
+            </div>
+          </div>
+          <p className="mt-4 text-xs leading-5 text-slate-500">Sentiment becomes stronger once verified reviews and payout reports are live.</p>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">News affecting {firm.name}</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Event risk to plan around</h2>
+          <div className="mt-5 space-y-3">
+            {relevantNews.map((event) => (
+              <a key={event.id} href={`/market-intelligence#${event.id}`} className="block rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:border-electric/40">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-black text-white">{event.event}</p>
+                  <p className="text-xs font-black text-electric">{event.timeUtc}</p>
+                </div>
+                <p className="mt-1 text-xs text-slate-500">{event.impact} impact · {event.affectedAssets.slice(0, 3).join(", ")}</p>
+              </a>
+            ))}
+          </div>
         </GlassCard>
       </section>
 

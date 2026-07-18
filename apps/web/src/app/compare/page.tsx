@@ -42,6 +42,12 @@ const decisionChecklist = [
   "Is the profile recently checked and source-labeled?"
 ];
 
+const traderFitLabels = [
+  ["Best for scalpers", "Low spread sensitivity, clear intraday rules and payout speed matter most."],
+  ["Best for swing traders", "Weekend holding, drawdown style and news exposure become the deciding factors."],
+  ["Best payout path", "Payout frequency, split, refund policy and first payout timing carry more weight than headline funding."]
+];
+
 export default function ComparePage() {
   const comparedFirms = propFirms.slice(0, 5).map((firm) => ({
     firm,
@@ -112,6 +118,52 @@ export default function ComparePage() {
           <p className="mt-5 text-sm leading-6 text-slate-400">
             Explanations are generated from the same score categories, source labels and fit notes shown on each profile. Paid placement cannot override this explanation.
           </p>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-[0.46fr_0.54fr]">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Trader-fit shortcuts</p>
+          <h2 className="mt-2 text-2xl font-black text-white">The fastest way to narrow the list</h2>
+          <div className="mt-5 space-y-3">
+            {traderFitLabels.map(([title, copy], index) => {
+              const pick = comparedFirms[index % comparedFirms.length];
+              return (
+                <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="font-black text-white">{title}</p>
+                    <Link href={`/prop-firms/${pick?.firm.slug}`} className="text-sm font-black text-electric">
+                      {pick?.firm.name}
+                    </Link>
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-slate-400">{copy}</p>
+                </div>
+              );
+            })}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Rule differences highlighted</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Where firms separate from each other</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {comparedFirms.slice(0, 4).map(({ firm, trust }) => (
+              <Link key={firm.slug} href={`/prop-firms/${firm.slug}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-violet/40 hover:bg-violet/10">
+                <div className="flex items-center gap-3">
+                  <FirmLogo firm={firm} size="sm" />
+                  <div className="min-w-0">
+                    <p className="truncate font-black text-white">{firm.name}</p>
+                    <p className="text-xs text-slate-500">{trust.sourceLabel}</p>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+                  <Metric label="Drawdown" value={firm.maxDrawdown} />
+                  <Metric label="Payout" value={firm.payoutFrequency} />
+                </div>
+                <p className="mt-3 text-xs leading-5 text-warning">{trust.cautions[0] ?? "Verify rules before purchase."}</p>
+              </Link>
+            ))}
+          </div>
         </GlassCard>
       </section>
 
@@ -197,6 +249,36 @@ export default function ComparePage() {
             <p className="mt-5 text-xs leading-5 text-slate-500">Source: {trust.sourceLabel}</p>
           </article>
         ))}
+      </section>
+
+      <section className="mt-8">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Score radar</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Animated breakdown without hiding the inputs</h2>
+          <div className="mt-6 grid gap-5 lg:grid-cols-2">
+            {comparedFirms.slice(0, 4).map(({ firm, score }) => (
+              <div key={`${firm.slug}-radar`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-black text-white">{firm.name}</p>
+                  <p className="text-xl font-black text-electric">{firm.score}</p>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {score.rows.slice(0, 5).map((row) => (
+                    <div key={`${firm.slug}-${row.key}`}>
+                      <div className="mb-1 flex justify-between gap-3 text-xs">
+                        <span className="truncate text-slate-400">{row.label}</span>
+                        <span className="font-bold text-white">{row.percent}%</span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                        <div className="h-full rounded-full bg-gradient-to-r from-electric to-violet" style={{ width: `${row.percent}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[0.45fr_0.55fr]">

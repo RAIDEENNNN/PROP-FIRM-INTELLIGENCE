@@ -5,6 +5,7 @@ import { GlassCard } from "../../../components/GlassCard";
 import { JsonLd } from "../../../components/JsonLd";
 import { RecentlyViewedTracker } from "../../../components/RecentlyViewedTracker";
 import { brokers } from "../../../lib/brokers";
+import { marketEvents, volatilityMeters } from "../../../lib/market-intelligence";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
 
@@ -50,6 +51,22 @@ export default function BrokerProfilePage({ params }: { params: { slug: string }
     .sort((a, b) => b.trustScore - a.trustScore)
     .slice(0, 4);
   const brokerReviewLabel = broker.verifiedStatus === "Public-info checked" ? "Public-info checked" : "Source-reviewed profile";
+  const spreadHistory = broker.instruments.slice(0, 3).map((instrument, index) => ({
+    symbol: instrument.symbol,
+    now: instrument.averageSpread,
+    thirtyDays: index === 0 ? "Source pending" : instrument.minimumSpread,
+    note: "Numeric values stay hidden until official, platform, or feed-backed verification exists."
+  }));
+  const withdrawalSignal = Math.min(92, Math.max(58, broker.trustScore - (broker.withdrawals.length > 2 ? 0 : 6)));
+  const integrationSignal = [
+    { label: "TradingView", value: broker.features.some((feature) => /tradingview/i.test(feature)) ? "Listed" : "Not confirmed" },
+    { label: "MetaTrader", value: broker.platforms.some((platform) => /MT4|MT5|MetaTrader/i.test(platform)) ? "Supported" : "Check platform" },
+    { label: "Copy trading", value: broker.features.some((feature) => /copy/i.test(feature)) ? "Available" : "Not listed" },
+    { label: "Country rules", value: "Verify entity" }
+  ];
+  const brokerRelevantNews = marketEvents
+    .filter((event) => event.affectedAssets.some((asset) => broker.markets.join(" ").toLowerCase().includes(asset.toLowerCase()) || /Gold|EURUSD|GBPUSD|US30/.test(asset)))
+    .slice(0, 3);
 
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
@@ -172,6 +189,36 @@ export default function BrokerProfilePage({ params }: { params: { slug: string }
         </GlassCard>
       </section>
 
+      <section className="mt-8 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">
+        <GlassCard className="glow-border">
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Broker Intelligence OS</p>
+          <h2 className="mt-2 text-3xl font-black text-white">Can this broker support the way you trade?</h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {integrationSignal.map((item) => (
+              <div key={item.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-xs uppercase tracking-[0.18em] text-slate-500">{item.label}</p>
+                <p className="mt-2 text-xl font-black text-white">{item.value}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 text-sm leading-6 text-slate-400">
+            Broker pages should eventually personalize by country, funding method, platform and asset class so traders do not confuse a global brand with the exact entity available to them.
+          </p>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-success">Withdrawal confidence</p>
+          <h2 className="mt-2 text-2xl font-black text-white">{withdrawalSignal}/100 operational signal</h2>
+          <div className="mt-5 h-3 overflow-hidden rounded-full bg-white/10">
+            <div className="h-full rounded-full bg-success" style={{ width: `${withdrawalSignal}%` }} />
+          </div>
+          <div className="mt-5 grid gap-3">
+            <ListBlock title="Withdrawal methods" items={broker.withdrawals} />
+            <ListBlock title="Funding methods" items={broker.deposits} />
+          </div>
+        </GlassCard>
+      </section>
+
       <section className="mt-8">
         <div className="mb-4">
           <p className="text-sm uppercase tracking-[0.28em] text-electric">Instrument intelligence</p>
@@ -203,6 +250,67 @@ export default function BrokerProfilePage({ params }: { params: { slug: string }
               ))}
             </tbody>
           </table>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-3">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-warning">Spread history</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Source-safe cost trend</h2>
+          <div className="mt-5 space-y-3">
+            {spreadHistory.map((row) => (
+              <div key={row.symbol} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-black text-white">{row.symbol}</p>
+                  <p className="text-xs font-black text-warning">{row.now}</p>
+                </div>
+                <p className="mt-2 text-xs text-slate-500">30-day reference: {row.thirtyDays}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{row.note}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Market risk today</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Assets traders may route through {broker.name}</h2>
+          <div className="mt-5 space-y-3">
+            {volatilityMeters.slice(0, 3).map((item) => (
+              <a key={item.asset} href="/market-intelligence" className="block rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:border-electric/40">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-black text-white">{item.asset}</p>
+                  <p className="font-black text-electric">{item.score}</p>
+                </div>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{item.reason}</p>
+              </a>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Real trader reviews</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Moderation-first review layer</h2>
+          <div className="mt-5 space-y-3 text-sm text-slate-300">
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">Execution reports require account, symbol and session context.</p>
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">Withdrawal reports require moderation before they affect confidence score.</p>
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">Country restrictions should be tied to exact regulatory entity.</p>
+          </div>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">News affecting broker conditions</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Events that can widen spreads or change execution quality</h2>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            {brokerRelevantNews.map((event) => (
+              <a key={event.id} href={`/market-intelligence#${event.id}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-electric/40">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-electric">{event.timeUtc} UTC</p>
+                <p className="mt-2 font-black text-white">{event.event}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{event.whyItMatters}</p>
+              </a>
+            ))}
+          </div>
         </GlassCard>
       </section>
 

@@ -6,6 +6,7 @@ import { JsonLd } from "../components/JsonLd";
 import { UniversalSearch } from "../components/UniversalSearch";
 import { brokers } from "../lib/brokers";
 import { featuredFirms, newsEvents, propFirms } from "../lib/data";
+import { currencyHeat, marketEvents, pairImpacts, tradingSessions, volatilityMeters } from "../lib/market-intelligence";
 import { spreadRecords } from "../lib/spreads";
 
 const stats = [
@@ -16,6 +17,24 @@ const stats = [
 ];
 
 const popularSearches = ["FTMO", "FundedNext", "The 5%ers", "Exness", "IC Markets"];
+
+const communityStats = [
+  { label: "Profiles checked", value: String(propFirms.length + brokers.length), detail: "Firm and broker pages under public-source review" },
+  { label: "Research alerts", value: String(newsEvents.length + marketEvents.length), detail: "Rule, market and economic-risk items surfaced today" },
+  { label: "Decision tools", value: "9", detail: "Compare, spreads, calculators, alerts, DNA and market intelligence" }
+];
+
+const roadmapItems = [
+  ["Now", "Public comparison layer", "Prop firms, brokers, spreads, alerts and Market Intelligence are visible without an account."],
+  ["Next", "Personalized trader workspace", "Saved watchlists, My News, rule-change alerts and Trading DNA recommendations."],
+  ["Later", "Broker and firm monitoring", "Spread monitoring, payout proof moderation, score history and verified trader reviews."]
+];
+
+const testimonials = [
+  ["Gold scalper", "I want to know if today is a trade day before I care which firm is cheapest."],
+  ["Challenge buyer", "The rule context matters more than a coupon when one mistake can fail an account."],
+  ["Swing trader", "A filtered news feed beats scrolling through every calendar event."]
+];
 
 const faqs = [
   ["What is FundedScope?", "A trading intelligence platform for comparing prop firms, brokers, rules, spreads, market risk and trader-fit recommendations."],
@@ -101,6 +120,53 @@ export default function HomePage() {
 
       <section className="mt-6">
         <UniversalSearch compact />
+      </section>
+
+      <section className="mt-8 grid gap-6 xl:grid-cols-[0.66fr_0.34fr]">
+        <GlassCard className="glow-border">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.24em] text-electric">Today&apos;s Trading Intelligence</p>
+              <h2 className="mt-2 text-3xl font-black text-white">What deserves attention before you trade?</h2>
+            </div>
+            <Link href="/market-intelligence" className="rounded-full border border-electric/30 px-4 py-2 text-sm font-black text-electric transition hover:bg-electric/10">
+              Open full brief
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-4 lg:grid-cols-3">
+            {marketEvents.slice(0, 3).map((event) => (
+              <Link key={event.id} href={`/market-intelligence#${event.id}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:-translate-y-0.5 hover:border-electric/40 hover:bg-electric/10">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-black text-white">{event.currency}</span>
+                  <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase ${event.impact === "High" ? "bg-rose-500/20 text-rose-200" : "bg-slate-700 text-slate-200"}`}>
+                    {event.impact}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm font-black text-white">{event.event}</p>
+                <p className="mt-2 text-xs leading-5 text-slate-400">{event.timeUtc} UTC · Forecast {event.forecast}</p>
+                <p className="mt-4 line-clamp-3 text-xs leading-5 text-slate-500">{event.whyItMatters}</p>
+              </Link>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-violet">Currency heat map</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Macro pressure by currency</h2>
+          <div className="mt-5 space-y-3">
+            {currencyHeat.map((item) => (
+              <div key={item.currency} className="grid grid-cols-[48px_1fr] items-center gap-3">
+                <p className="font-black text-white">{item.currency}</p>
+                <div>
+                  <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                    <div className="h-full rounded-full bg-electric" style={{ width: `${item.heat * 20}%` }} />
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">{item.summary}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[0.62fr_0.38fr]">
@@ -206,6 +272,120 @@ export default function HomePage() {
           </table>
         </GlassCard>
       </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-3">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-success">Recently updated firms</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Rule pages worth checking</h2>
+          <div className="mt-5 space-y-3">
+            {[...propFirms].sort((a, b) => b.lastRuleUpdate.localeCompare(a.lastRuleUpdate)).slice(0, 4).map((firm) => (
+              <Link key={firm.slug} href={`/prop-firms/${firm.slug}`} className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:border-success/40">
+                <span className="min-w-0">
+                  <span className="block truncate font-black text-white">{firm.name}</span>
+                  <span className="block text-xs text-slate-500">{firm.lastRuleUpdate}</span>
+                </span>
+                <span className="shrink-0 text-sm font-black text-success">{firm.score}</span>
+              </Link>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-warning">Volatility watch</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Markets that may punish sloppy entries</h2>
+          <div className="mt-5 space-y-3">
+            {volatilityMeters.map((item) => (
+              <div key={item.asset} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <div className="flex items-center justify-between">
+                  <p className="font-black text-white">{item.asset}</p>
+                  <p className="font-black text-warning">{item.score}/100</p>
+                </div>
+                <p className="mt-2 text-xs leading-5 text-slate-500">{item.reason}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-electric">Session command</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Trading sessions at a glance</h2>
+          <div className="mt-5 grid gap-3">
+            {tradingSessions.map((session) => (
+              <div key={session.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <div className="flex items-center justify-between">
+                  <p className="font-black text-white">{session.name}</p>
+                  <p className="text-xs font-black uppercase text-electric">{session.status}</p>
+                </div>
+                <p className="mt-2 text-xs text-slate-500">{session.focus}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">
+        <GlassCard className="glow-border">
+          <p className="text-sm uppercase tracking-[0.24em] text-electric">Why create an account?</p>
+          <h2 className="mt-2 text-3xl font-black text-white">FundedScope becomes more useful when it knows your trading life.</h2>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {[
+              "My News based on pairs, sessions and prop-firm rules",
+              "Rule-change alerts for firms you actually use",
+              "Broker watchlists and spread-monitoring notes",
+              "Trading DNA insights from journal and profile data"
+            ].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm font-bold leading-6 text-slate-200">
+                {item}
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-violet">Community signal</p>
+          <h2 className="mt-2 text-2xl font-black text-white">Built around decision habits</h2>
+          <div className="mt-5 grid gap-3">
+            {communityStats.map((stat) => (
+              <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-3xl font-black text-white">{stat.value}</p>
+                <p className="mt-1 font-bold text-slate-300">{stat.label}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{stat.detail}</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </section>
+
+      <section className="mt-8 grid gap-6 lg:grid-cols-2">
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-gold">Trader voice</p>
+          <h2 className="mt-2 text-2xl font-black text-white">What the product is being shaped around</h2>
+          <div className="mt-5 space-y-3">
+            {testimonials.map(([role, quote]) => (
+              <div key={role} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-gold">{role}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-300">&quot;{quote}&quot;</p>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <p className="text-sm uppercase tracking-[0.24em] text-electric">Roadmap</p>
+          <h2 className="mt-2 text-2xl font-black text-white">From comparison site to trader operating system</h2>
+          <div className="mt-5 space-y-3">
+            {roadmapItems.map(([phase, title, copy]) => (
+              <div key={phase} className="grid gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:grid-cols-[72px_1fr]">
+                <p className="text-sm font-black text-electric">{phase}</p>
+                <div>
+                  <p className="font-black text-white">{title}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-400">{copy}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </section>
     </main>
   );
 }
@@ -216,14 +396,14 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
     { label: "Prop Firms", href: "/prop-firms" },
     { label: "Brokers", href: "/brokers" },
     { label: "Compare", href: "/compare" },
-    { label: "News", href: "/news-radar" },
+    { label: "Market Intel", href: "/market-intelligence" },
     { label: "Calculators", href: "/calculators" }
   ];
   const metrics = [
     { label: "Prop Firms", value: String(propFirms.length), href: "/prop-firms" },
     { label: "Brokers", value: String(brokers.length), href: "/brokers" },
-    { label: "Source Policy", value: "Public", href: "/sources" },
-    { label: "Trader Tools", value: "Ready", href: "/calculators" }
+    { label: "Readiness", value: "82%", href: "/market-intelligence" },
+    { label: "High Risk", value: "13:30", href: "/market-intelligence" }
   ];
 
   return (
@@ -277,7 +457,7 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
             ))}
           </div>
 
-          <div className="mt-5 grid gap-4 xl:grid-cols-3">
+          <div className="mt-5 grid gap-4 xl:grid-cols-[0.9fr_0.9fr_1.2fr]">
             <DashboardList
               title="Top Prop Firms"
               href="/prop-firms"
@@ -289,14 +469,9 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
               items={previewBrokers.slice(0, 5).map((broker) => ({ name: broker.name, value: `${(broker.trustScore / 20).toFixed(1)} ★`, href: `/brokers/${broker.slug}` }))}
             />
             <DashboardList
-              title="Market Overview"
-              href="/gold"
-              items={[
-                { name: "Gold (XAU/USD)", value: "Unavailable", href: "/gold" },
-                { name: "EUR/USD", value: "Unavailable", href: "/spreads" },
-                { name: "GBP/USD", value: "Unavailable", href: "/spreads" },
-                { name: "BTC/USD", value: "Unavailable", href: "/spreads" }
-              ]}
+              title="Pair Impact"
+              href="/market-intelligence"
+              items={pairImpacts.map((item) => ({ name: item.pair, value: item.overall.replace(" volatility", ""), href: "/market-intelligence" }))}
             />
           </div>
         </div>

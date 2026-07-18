@@ -1,48 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { PropFirm } from "../lib/data";
 
-export function FirmLogo({ firm, size = "md" }: { firm: Pick<PropFirm, "name" | "logoUrl" | "logoFallback" | "accent">; size?: "sm" | "md" | "lg" }) {
-  const domain = firm.logoUrl.includes("logo.clearbit.com/") ? firm.logoUrl.split("logo.clearbit.com/")[1] : "";
-  const sources = [
-    firm.logoUrl,
-    domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=256` : "",
-    domain ? `https://www.google.com/s2/favicons?domain_url=https://${domain}&sz=256` : "",
-    domain ? `https://icons.duckduckgo.com/ip3/${domain}.ico` : "",
-    domain ? `https://icon.horse/icon/${domain}` : ""
-  ].filter(Boolean);
+export function FirmLogo({ firm, size = "md" }: { firm: Pick<PropFirm, "name" | "domain" | "logoUrl" | "logoFallback" | "accent">; size?: "sm" | "md" | "lg" }) {
+  const sources = useMemo(
+    () =>
+      [
+        firm.logoUrl,
+        `https://www.google.com/s2/favicons?domain=${firm.domain}&sz=256`,
+        `https://www.google.com/s2/favicons?domain_url=https://${firm.domain}&sz=256`,
+        `https://icons.duckduckgo.com/ip3/${firm.domain}.ico`,
+        `https://icon.horse/icon/${firm.domain}`
+      ].filter(Boolean),
+    [firm.domain, firm.logoUrl]
+  );
   const [sourceIndex, setSourceIndex] = useState(0);
-  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const dimensions = size === "lg" ? "h-16 w-16 text-xl" : size === "sm" ? "h-9 w-9 text-xs" : "h-12 w-12 text-sm";
+  const currentSource = sources[sourceIndex] ?? firm.logoUrl;
 
   return (
-    <div className={`${dimensions} shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br ${firm.accent} p-[2px] shadow-glow`}>
-      <div className="grid h-full w-full place-items-center overflow-hidden rounded-[0.9rem] bg-[radial-gradient(circle_at_28%_22%,#ffffff_0%,#f8fafc_43%,#0f172a_72%,#020617_100%)]">
-        {!failed ? (
-          <img
-            src={sources[sourceIndex] ?? firm.logoUrl}
-            alt={`${firm.name} logo`}
-            width={64}
-            height={64}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-contain p-1.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]"
-            referrerPolicy="no-referrer"
-            onError={() => {
-              if (sourceIndex < sources.length - 1) {
-                setSourceIndex((current) => current + 1);
-                return;
-              }
-
-              setFailed(true);
-            }}
-          />
-        ) : (
-          <span className="grid h-full w-full place-items-center bg-gradient-to-br from-electric to-violet font-black tracking-tight text-white">
-            {firm.logoFallback}
-          </span>
-        )}
+    <div className={`${dimensions} shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br ${firm.accent} p-[2px] shadow-glow`} title={firm.name}>
+      <div className="relative grid h-full w-full place-items-center overflow-hidden rounded-[0.9rem] bg-slate-950">
+        <span className={`absolute inset-0 grid place-items-center bg-gradient-to-br ${firm.accent} font-black tracking-tight text-white`}>
+          {firm.logoFallback}
+        </span>
+        <img
+          key={currentSource}
+          src={currentSource}
+          alt={`${firm.name} logo`}
+          width={64}
+          height={64}
+          loading="lazy"
+          decoding="async"
+          className={`relative h-full w-full bg-white object-contain p-1.5 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] transition-opacity duration-200 ${loaded ? "opacity-100" : "opacity-0"}`}
+          referrerPolicy="no-referrer"
+          onLoad={(event) => {
+            const image = event.currentTarget;
+            if (image.naturalWidth > 1 && image.naturalHeight > 1) {
+              setLoaded(true);
+            }
+          }}
+          onError={() => {
+            setLoaded(false);
+            setSourceIndex((current) => (current < sources.length - 1 ? current + 1 : current));
+          }}
+        />
       </div>
     </div>
   );
