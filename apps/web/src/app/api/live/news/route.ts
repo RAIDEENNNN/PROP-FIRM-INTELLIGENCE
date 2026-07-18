@@ -47,7 +47,8 @@ export async function GET() {
     articles: newsEvents.map((event) => ({
       title: event.title,
       impact: event.impact,
-      publishedAt: event.time
+      publishedAt: event.time,
+      url: event.href
     }))
   });
 }

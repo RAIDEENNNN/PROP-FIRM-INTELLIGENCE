@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
 import { JsonLd } from "../../components/JsonLd";
+import { NewsRadarHashScroller } from "../../components/NewsRadarHashScroller";
 import { newsEvents } from "../../lib/data";
 
 const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://myfundedscope.com").replace(/\/$/, "");
@@ -91,17 +93,21 @@ export default function NewsRadarPage() {
   };
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+    <main className="mx-auto max-w-7xl px-4 pb-80 pt-10 sm:px-5 sm:pb-96 sm:pt-12">
       <JsonLd id="news-radar-articles-jsonld" data={articleJsonLd} />
       <JsonLd id="news-radar-breadcrumb-jsonld" data={breadcrumbJsonLd} />
+      <NewsRadarHashScroller />
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">News radar</p>
       <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Market and prop firm news with decision context.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
         FundedScope news radar is designed to explain what may matter, which assets or firms are affected, and what traders should verify before risking capital.
       </p>
+      <Link href="/market-intelligence" className="mt-6 inline-flex rounded-2xl bg-electric px-5 py-3 text-sm font-black text-void transition hover:scale-[1.01]">
+        Open Market Intelligence™
+      </Link>
       <div className="mt-8 grid gap-4">
         {enrichedNews.map((event) => (
-          <GlassCard key={event.title}>
+          <GlassCard key={event.title} id={event.href.replace("/news-radar#", "")} className="radar-target scroll-mt-40 transition">
             <div className="grid gap-5 lg:grid-cols-[0.7fr_0.3fr]">
               <div>
                 <div className="flex flex-wrap items-center gap-2">

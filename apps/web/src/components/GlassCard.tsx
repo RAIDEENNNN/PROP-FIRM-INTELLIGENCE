@@ -1,5 +1,13 @@
-import type { ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 
-export function GlassCard({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`glass rounded-3xl p-6 ${className}`}>{children}</section>;
+type GlassCardProps = HTMLAttributes<HTMLElement> & {
+  children: ReactNode;
+};
+
+export function GlassCard({ children, className = "", ...props }: GlassCardProps) {
+  return (
+    <section {...props} className={`glass rounded-3xl p-6 ${className}`}>
+      {children}
+    </section>
+  );
 }

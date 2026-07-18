@@ -60,7 +60,10 @@ export default function HomePage() {
             Compare prop firms and brokers with transparent data, public review signals and powerful tools built to protect your capital and grow your edge.
           </p>
 
-          <div className="mt-8 grid gap-3 sm:grid-cols-2">
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <Link href="/market-intelligence" className="rounded-xl bg-electric px-6 py-4 text-center font-black text-void shadow-[0_0_32px_rgba(53,211,255,0.22)] transition hover:scale-[1.01]">
+              Market Intel
+            </Link>
             <Link href="/prop-firms" className="rounded-xl bg-violet px-6 py-4 text-center font-black text-white shadow-[0_0_32px_rgba(124,58,237,0.36)] transition hover:scale-[1.01]">
               ⚖ Compare Prop Firms
             </Link>
@@ -132,11 +135,16 @@ export default function HomePage() {
         <GlassCard>
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl font-black text-white">Research Radar</h2>
-            <Link href="/news-radar" className="text-sm font-black text-purple-300">View All →</Link>
+            <Link href="/news-radar" className="text-sm font-black text-purple-300 transition hover:text-electric focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric">View All →</Link>
           </div>
           <div className="mt-5 space-y-4">
             {newsEvents.map((event, index) => (
-              <div key={event.title} className="grid grid-cols-[56px_1fr_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+              <Link
+                key={event.title}
+                href={event.href}
+                aria-label={`Open research item: ${event.title}`}
+                className="group grid grid-cols-[56px_minmax(0,1fr)_auto_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:-translate-y-0.5 hover:border-electric/30 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric"
+              >
                 <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-violet/80 to-[#172554]" />
                 <div>
                   <p className="text-sm font-bold text-white">{event.title}</p>
@@ -145,7 +153,10 @@ export default function HomePage() {
                 <span className={`rounded-lg px-2 py-1 text-[10px] font-black uppercase ${index === 1 ? "bg-slate-700 text-slate-200" : "bg-violet/30 text-purple-100"}`}>
                   {event.impact}
                 </span>
-              </div>
+                <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 text-slate-400 transition group-hover:border-electric/40 group-hover:text-electric">
+                  →
+                </span>
+              </Link>
             ))}
           </div>
         </GlassCard>

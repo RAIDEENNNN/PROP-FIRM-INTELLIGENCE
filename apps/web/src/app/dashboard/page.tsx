@@ -202,13 +202,21 @@ export default function DashboardPage() {
           <h2 className="mt-2 text-2xl font-black text-white">Signals that move risk</h2>
           <div className="mt-5 space-y-3">
             {newsEvents.map((event) => (
-              <div key={event.title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <Link
+                key={event.title}
+                href={event.href}
+                aria-label={`Open research item: ${event.title}`}
+                className="group block rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:-translate-y-0.5 hover:border-electric/30 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric"
+              >
                 <div className="flex items-center justify-between gap-3">
                   <span className="rounded-full bg-electric/10 px-3 py-1 text-xs text-electric">{event.impact}</span>
                   <span className="text-xs text-slate-500">{event.time}</span>
                 </div>
-                <p className="mt-3 text-sm font-semibold text-white">{event.title}</p>
-              </div>
+                <p className="mt-3 flex items-center justify-between gap-3 text-sm font-semibold text-white">
+                  <span>{event.title}</span>
+                  <span aria-hidden="true" className="text-slate-500 transition group-hover:text-electric">→</span>
+                </p>
+              </Link>
             ))}
           </div>
         </GlassCard>

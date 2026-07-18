@@ -644,17 +644,20 @@ export const newsEvents = [
   {
     title: "Rule changes to review before buying a challenge",
     impact: "High",
-    time: "Research watch"
+    time: "Research watch",
+    href: "/news-radar#rule-changes"
   },
   {
     title: "Gold volatility windows traders should respect",
     impact: "Medium",
-    time: "Market context"
+    time: "Market context",
+    href: "/news-radar#gold-volatility"
   },
   {
     title: "How payout proof should be checked before trusting claims",
     impact: "Low",
-    time: "Trust framework"
+    time: "Trust framework",
+    href: "/news-radar#payout-proof"
   }
 ];
 
@@ -664,6 +667,7 @@ export const routes = [
   { href: "/prop-firms", label: "Prop Firms" },
   { href: "/brokers", label: "Brokers" },
   { href: "/compare", label: "Compare" },
+  { href: "/market-intelligence", label: "Market Intelligence" },
   { href: "/decision-engine", label: "Decision Engine" },
   { href: "/ai", label: "AI" },
   { href: "/spreads", label: "Spreads" },

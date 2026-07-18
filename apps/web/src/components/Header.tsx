@@ -9,7 +9,7 @@ const navRoutes = [
   { href: "/prop-firms", label: "Prop Firms" },
   { href: "/brokers", label: "Brokers" },
   { href: "/compare", label: "Compare" },
-  { href: "/news-radar", label: "News" },
+  { href: "/market-intelligence", label: "Market Intel" },
   { href: "/calculators", label: "Calculators" },
   { href: "/articles", label: "Education" },
   { href: "/about", label: "About" }
@@ -39,7 +39,7 @@ export function Header() {
           <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">● TODAY</span>
           <span>FundedScope market intelligence desk</span>
           <span className="hidden text-slate-300 sm:inline">| London & New York session focus</span>
-          <Link href="/gold" className="rounded-full border border-fuchsia-300/40 px-3 py-1 text-white transition hover:bg-white/10">
+          <Link href="/market-intelligence" className="rounded-full border border-fuchsia-300/40 px-3 py-1 text-white transition hover:bg-white/10">
             View Today’s Edge →
           </Link>
         </div>
@@ -67,8 +67,22 @@ export function Header() {
           <button
             type="button"
             onClick={() => setSearchOpen((value) => !value)}
+            className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/[0.03] text-slate-300 transition hover:text-white md:hidden"
+            aria-label="Open search"
+            aria-expanded={searchOpen}
+            aria-controls="site-search-panel"
+          >
+            <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={() => setSearchOpen((value) => !value)}
             className="hidden rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300 transition hover:text-white md:inline-block"
             aria-expanded={searchOpen}
+            aria-controls="site-search-panel"
           >
             Search
           </button>
@@ -108,6 +122,9 @@ export function Header() {
           <Link href="/decision-engine" className="rounded-full border border-fuchsia-400/35 px-4 py-1.5 font-black text-fuchsia-200 hover:bg-fuchsia-400/10">
             Decision Engine™
           </Link>
+          <Link href="/market-intelligence" className="rounded-full border border-electric/35 px-4 py-1.5 font-black text-electric hover:bg-electric/10">
+            Market Intelligence™
+          </Link>
           <Link href="/spreads" className="rounded-full border border-white/10 px-4 py-1.5 hover:border-electric/40 hover:text-electric">
             Spreads
           </Link>
@@ -118,7 +135,7 @@ export function Header() {
       </div>
 
       {searchOpen ? (
-        <div className="border-t border-white/10 bg-midnight/95 px-4 py-4 shadow-glow">
+        <div id="site-search-panel" className="border-t border-white/10 bg-midnight/95 px-4 py-4 shadow-glow">
           <div className="mx-auto max-w-3xl">
             <UniversalSearch compact />
           </div>

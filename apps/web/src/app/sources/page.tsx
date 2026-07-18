@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { GlassCard } from "../../components/GlassCard";
 import { getSourceReadiness, liveSources } from "../../lib/live-sources";
+
+export const metadata: Metadata = {
+  title: "Data Sources & Verification Policy | FundedScope",
+  description: "See how FundedScope separates provider-backed data, editorial review, public sources and source readiness across trading intelligence pages."
+};
 
 export default function SourcesPage() {
   const readiness = getSourceReadiness();

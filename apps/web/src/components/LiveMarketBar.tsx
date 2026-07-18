@@ -41,7 +41,8 @@ export function LiveMarketBar() {
           {hasLiveQuotes ? "Market bar" : "Market data unavailable"}
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">
-          <div className="market-marquee flex items-center gap-4">
+          <p className="truncate text-xs font-semibold text-slate-400 sm:hidden">{message}</p>
+          <div className="market-marquee hidden items-center gap-4 sm:flex">
             {[...markets, ...markets].map((market, index) => (
               <div key={`${market.symbol}-${index}`} className="flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-void/70 px-4 py-2">
                 <span className="text-xs font-bold text-slate-400">{market.label}</span>
@@ -54,8 +55,8 @@ export function LiveMarketBar() {
                 <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{hasLiveQuotes ? market.source : "Disabled"}</span>
               </div>
             ))}
-            <p className="min-w-[360px] shrink-0 text-xs text-slate-500">{message}</p>
-            <p className="min-w-[360px] shrink-0 text-xs text-slate-500">{message}</p>
+            <p className="w-[min(360px,80vw)] shrink-0 text-xs text-slate-500">{message}</p>
+            <p className="w-[min(360px,80vw)] shrink-0 text-xs text-slate-500">{message}</p>
           </div>
         </div>
       </div>

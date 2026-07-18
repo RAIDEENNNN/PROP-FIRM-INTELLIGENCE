@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { brandArticles } from "../lib/articles";
 import { brokers } from "../lib/brokers";
 import { newsEvents, propFirms, routes } from "../lib/data";
+import { marketEvents, pairImpacts } from "../lib/market-intelligence";
 
 type Result = {
   title: string;
@@ -39,9 +40,23 @@ const searchIndex: Result[] = [
   ...newsEvents.map((event) => ({
     title: event.title,
     category: "News",
-    href: "/news-radar",
+    href: event.href,
     detail: `${event.impact} impact · ${event.time}`,
     keywords: `${event.title} ${event.impact} news rule spread payout gold`
+  })),
+  ...marketEvents.map((event) => ({
+    title: event.event,
+    category: "Market Intel",
+    href: "/market-intelligence#calendar",
+    detail: `${event.timeUtc} UTC · ${event.currency} · ${event.impact} impact`,
+    keywords: `${event.event} ${event.currency} ${event.affectedAssets.join(" ")} ${event.traderTags.join(" ")} calendar volatility CPI FOMC news`
+  })),
+  ...pairImpacts.map((pair) => ({
+    title: `${pair.pair} news impact`,
+    category: "Market Intel",
+    href: "/market-intelligence#calendar",
+    detail: pair.overall,
+    keywords: `${pair.pair} ${pair.events.join(" ")} volatility readiness news impact`
   })),
   ...routes.map((route) => ({
     title: route.label,
