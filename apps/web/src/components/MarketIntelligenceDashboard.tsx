@@ -40,10 +40,10 @@ export function MarketIntelligenceDashboard() {
         <GlassCard className="overflow-hidden">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-electric">Morning Brief</p>
-              <h2 className="mt-2 text-3xl font-black text-white">Today’s key risks, compressed.</h2>
+              <p className="text-sm uppercase tracking-[0.24em] text-electric">Market Intelligence Preview</p>
+              <h2 className="mt-2 text-3xl font-black text-white">Risk context for today’s trading decisions.</h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-                US CPI is the dominant event. Gold, EURUSD, DXY and US indices are the main assets to treat carefully. BOE commentary adds extra two-way risk for GBP pairs.
+                Curated market context highlights the assets, sessions and rule conditions traders should verify before opening or holding positions. Live news and calendar feeds appear here once provider APIs are configured.
               </p>
             </div>
             <div className="rounded-3xl border border-electric/25 bg-electric/10 p-4 text-center">
@@ -83,7 +83,7 @@ export function MarketIntelligenceDashboard() {
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <p className="text-sm text-slate-400">Filtered events</p>
             <p className="mt-1 text-3xl font-black text-white">{events.length}</p>
-            <p className="mt-2 text-sm leading-6 text-slate-400">This mimics a future profile-aware feed using strategy, assets and prop-firm context.</p>
+            <p className="mt-2 text-sm leading-6 text-slate-400">Preview of a profile-aware feed using strategy, asset and prop-firm context. Live provider headlines require configured API keys.</p>
           </div>
         </GlassCard>
       </section>
@@ -92,8 +92,8 @@ export function MarketIntelligenceDashboard() {
         <GlassCard>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-electric">Economic calendar</p>
-              <h2 className="mt-2 text-2xl font-black text-white">Events with FundedScope Insight™</h2>
+            <p className="text-sm uppercase tracking-[0.24em] text-electric">Economic calendar</p>
+            <h2 className="mt-2 text-2xl font-black text-white">Curated events with FundedScope Insight™</h2>
             </div>
             <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-bold text-slate-300">Educational, not financial advice</span>
           </div>
@@ -108,8 +108,9 @@ export function MarketIntelligenceDashboard() {
           <p className="text-sm uppercase tracking-[0.24em] text-danger">Before news</p>
           <h2 className="mt-2 text-2xl font-black text-white">{selectedEvent.event}</h2>
           <div className="mt-5 rounded-3xl border border-danger/25 bg-danger/10 p-5 text-center">
-            <p className="text-xs uppercase tracking-[0.2em] text-danger">Starts in</p>
-            <p className="mt-2 font-mono text-4xl font-black text-white">00:18:42</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-danger">Source status</p>
+            <p className="mt-2 text-2xl font-black text-white">Live calendar pending</p>
+            <p className="mt-2 text-xs leading-5 text-slate-300">Connect a verified calendar/news provider before displaying real-time countdowns.</p>
           </div>
           <p className="mt-5 text-sm font-black text-white">Why it matters</p>
           <p className="mt-2 text-sm leading-6 text-slate-300">{selectedEvent.whyItMatters}</p>

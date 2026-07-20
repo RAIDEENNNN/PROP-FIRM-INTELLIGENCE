@@ -50,7 +50,7 @@ export function DecisionEngine() {
       warning:
         capitalValue < 300
           ? "Smaller capital makes spreads and position sizing more important. Research lower-volatility majors before focusing only on Gold."
-          : "Use this as research guidance, not a promise of profit or financial advice."
+          : "For research and risk review only. This is not investment advice, a trade recommendation or a guarantee of outcome."
     };
   }, [capital, platform, risk, style]);
 

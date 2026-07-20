@@ -21,9 +21,9 @@ export function FirmLogo({ firm, size = "md" }: { firm: Pick<PropFirm, "name" | 
   const currentSource = sources[sourceIndex] ?? firm.logoUrl;
 
   return (
-    <div className={`${dimensions} shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br ${firm.accent} p-[2px] shadow-glow`} title={firm.name}>
-      <div className="relative grid h-full w-full place-items-center overflow-hidden rounded-[0.9rem] bg-slate-950">
-        <span className={`absolute inset-0 grid place-items-center bg-gradient-to-br ${firm.accent} font-black tracking-tight text-white`}>
+    <div className={`${dimensions} shrink-0 overflow-hidden rounded-2xl border border-[#d9b96f]/20 bg-gradient-to-br from-[#d9b96f]/45 via-white/10 to-slate-700/30 p-[2px] shadow-[0_14px_34px_rgba(0,0,0,0.32)]`} title={firm.name}>
+      <div className="relative grid h-full w-full place-items-center overflow-hidden rounded-[0.9rem] bg-[#080a10]">
+        <span className="absolute inset-0 grid place-items-center bg-gradient-to-br from-slate-800 via-slate-950 to-black font-black tracking-tight text-[#d9b96f]">
           {firm.logoFallback}
         </span>
         <img

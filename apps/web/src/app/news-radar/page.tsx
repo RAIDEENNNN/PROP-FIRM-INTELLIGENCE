@@ -33,10 +33,10 @@ const enrichedNews = newsEvents.map((event, index) => ({
   ...event,
   summary:
     index === 0
-      ? "Rule changes can affect whether a challenge is still a good fit. Traders should re-check daily loss, consistency and payout rules before purchase."
+      ? "Challenge terms can change the real risk profile of an account. Review drawdown, consistency, news-trading and payout conditions before committing capital."
       : index === 1
-        ? "Gold volatility often expands around session opens or USD news. Use your own broker platform for executable prices and spread confirmation."
-        : "Payout proof can support trust, but it should be source-reviewed, time-stamped and tied to the correct company or account type.",
+        ? "Gold liquidity and spreads can shift quickly around session opens and USD releases. Confirm executable pricing in your trading platform before entering."
+        : "Payout evidence is only useful when it is source-reviewed, time-stamped and matched to the correct firm, model and account type.",
   assets: index === 1 ? ["XAUUSD", "DXY", "USD pairs"] : index === 0 ? ["Prop firms", "Challenges"] : ["Payouts", "Reviews"],
   bias: index === 1 ? "Volatility risk" : index === 0 ? "Rules risk" : "Trust signal",
   volatility: index === 1 ? 86 : index === 0 ? 72 : 44
@@ -98,10 +98,13 @@ export default function NewsRadarPage() {
       <JsonLd id="news-radar-breadcrumb-jsonld" data={breadcrumbJsonLd} />
       <NewsRadarHashScroller />
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">News radar</p>
-      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Market and prop firm news with decision context.</h1>
+      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Market and prop-firm intelligence with source context.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
-        FundedScope news radar is designed to explain what may matter, which assets or firms are affected, and what traders should verify before risking capital.
+        FundedScope separates curated research from live provider headlines. When news APIs are configured, fresh headlines can be attached; until then, this page shows editorial intelligence and the checks traders should complete before taking risk.
       </p>
+      <div className="mt-5 max-w-3xl rounded-3xl border border-[#d9b96f]/20 bg-[#d9b96f]/10 p-4 text-sm leading-6 text-[#f0d99f]">
+        Source status: curated preview. Connect `GNEWS_API_KEY` or `NEWS_API_KEY` to publish provider-backed live news.
+      </div>
       <Link href="/market-intelligence" className="mt-6 inline-flex rounded-2xl bg-electric px-5 py-3 text-sm font-black text-void transition hover:scale-[1.01]">
         Open Market Intelligence™
       </Link>

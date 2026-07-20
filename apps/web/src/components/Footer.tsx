@@ -103,7 +103,7 @@ export function Footer() {
 
         <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 md:flex-row md:items-center md:justify-between">
           <p>© {new Date().getFullYear()} MyFundedScope. All rights reserved.</p>
-          <p className="text-xs text-slate-500">Educational comparison tools, not financial advice.</p>
+          <p className="text-xs text-slate-500">Independent research, comparison data and decision-support tools. Not financial advice.</p>
         </div>
       </div>
     </footer>

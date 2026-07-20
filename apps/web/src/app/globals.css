@@ -4,8 +4,8 @@
 
 :root {
   color-scheme: dark;
-  background: #050711;
-  color: #eef6ff;
+  background: #07080d;
+  color: #f4f5f7;
   overflow-x: clip;
 }
 
@@ -18,9 +18,9 @@ body {
   min-height: 100vh;
   overflow-x: clip;
   background:
-    radial-gradient(circle at top left, rgba(53, 211, 255, 0.18), transparent 30rem),
-    radial-gradient(circle at top right, rgba(139, 92, 246, 0.2), transparent 26rem),
-    #050711;
+    radial-gradient(circle at 18% 0%, rgba(224, 178, 83, 0.12), transparent 30rem),
+    radial-gradient(circle at 84% 4%, rgba(80, 93, 116, 0.14), transparent 28rem),
+    linear-gradient(180deg, #080910 0%, #05060a 56%, #07080d 100%);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -30,9 +30,9 @@ a {
 }
 
 .glass {
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(145deg, rgba(13, 22, 39, 0.82), rgba(8, 14, 28, 0.58));
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  border: 1px solid rgba(214, 196, 158, 0.14);
+  background: linear-gradient(145deg, rgba(18, 20, 29, 0.92), rgba(10, 12, 19, 0.72));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
   backdrop-filter: blur(18px);
 }
 
@@ -46,7 +46,7 @@ a {
   inset: -1px;
   z-index: -1;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(53, 211, 255, 0.55), rgba(139, 92, 246, 0.2), rgba(217, 70, 239, 0.35));
+  background: linear-gradient(135deg, rgba(224, 178, 83, 0.38), rgba(255, 255, 255, 0.06), rgba(82, 95, 116, 0.22));
 }
 
 .noise {
@@ -104,10 +104,33 @@ a {
 }
 
 .radar-target[data-active="true"] {
-  border-color: rgba(53, 211, 255, 0.5);
+  border-color: rgba(224, 178, 83, 0.42);
   box-shadow:
-    0 0 48px rgba(53, 211, 255, 0.18),
+    0 0 42px rgba(224, 178, 83, 0.12),
     0 24px 80px rgba(0, 0, 0, 0.32);
+}
+
+.professional-panel {
+  border-color: rgba(214, 196, 158, 0.16) !important;
+  background:
+    linear-gradient(145deg, rgba(18, 20, 29, 0.96), rgba(8, 10, 16, 0.9)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035), 0 28px 80px rgba(0, 0, 0, 0.34);
+}
+
+.professional-card {
+  border-color: rgba(214, 196, 158, 0.12) !important;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)) !important;
+}
+
+.professional-accent {
+  color: #d9b96f !important;
+}
+
+.professional-pill {
+  border-color: rgba(217, 185, 111, 0.32) !important;
+  color: #d9b96f !important;
+  background: rgba(217, 185, 111, 0.055);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -18,10 +18,10 @@ export function SignUpForm() {
       return "";
     }
   });
-  const [traderType, setTraderType] = useState("Prop Trader");
-  const [experienceLevel, setExperienceLevel] = useState("Beginner");
-  const [preferredMarkets, setPreferredMarkets] = useState<string[]>(["Gold", "Forex"]);
-  const [riskTolerance, setRiskTolerance] = useState("MEDIUM");
+  const [traderType, setTraderType] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("");
+  const [preferredMarkets, setPreferredMarkets] = useState<string[]>([]);
+  const [riskTolerance, setRiskTolerance] = useState("");
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -73,13 +73,19 @@ export function SignUpForm() {
 
   return (
     <form onSubmit={submit} className="mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="sm:col-span-2 rounded-3xl border border-electric/20 bg-electric/10 p-4">
+        <p className="text-sm font-black text-electric">Start blank</p>
+        <p className="mt-2 text-sm leading-6 text-slate-300">
+          A new trader can create an account with only email and password. Everything else is optional and can be added later inside Trading DNA.
+        </p>
+      </div>
       <label className="text-sm text-slate-400">
-        Full name
-        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="THE PĦILOSOPHER" required />
+        Full name <span className="text-slate-600">(optional)</span>
+        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Add later" />
       </label>
       <label className="text-sm text-slate-400">
-        Username
-        <input value={username} onChange={(event) => setUsername(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="alliygold" required />
+        Username <span className="text-slate-600">(optional)</span>
+        <input value={username} onChange={(event) => setUsername(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Choose later" />
       </label>
       <label className="text-sm text-slate-400">
         Email
@@ -90,24 +96,26 @@ export function SignUpForm() {
         <input value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Minimum 10 characters" type="password" required minLength={10} />
       </label>
       <label className="text-sm text-slate-400">
-        Country
-        <input value={country} onChange={(event) => setCountry(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Nigeria" />
+        Country <span className="text-slate-600">(optional)</span>
+        <input value={country} onChange={(event) => setCountry(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Add later" />
       </label>
       <label className="text-sm text-slate-400">
         Timezone
         <input value={timezone} onChange={(event) => setTimezone(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Africa/Lagos" />
       </label>
       <label className="text-sm text-slate-400">
-        Trader type
+        Trader type <span className="text-slate-600">(optional)</span>
         <select value={traderType} onChange={(event) => setTraderType(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
+          <option value="">Choose later</option>
           <option>Prop Trader</option>
           <option>Live Trader</option>
           <option>Both</option>
         </select>
       </label>
       <label className="text-sm text-slate-400">
-        Experience
+        Experience <span className="text-slate-600">(optional)</span>
         <select value={experienceLevel} onChange={(event) => setExperienceLevel(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
+          <option value="">Choose later</option>
           <option>Beginner</option>
           <option>Intermediate</option>
           <option>Advanced</option>
@@ -115,7 +123,7 @@ export function SignUpForm() {
         </select>
       </label>
       <div className="sm:col-span-2 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-        <p className="text-sm font-bold text-white">Markets you trade</p>
+        <p className="text-sm font-bold text-white">Markets you trade <span className="text-slate-600">(optional)</span></p>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {marketOptions.map((market) => (
             <label key={market} className="flex items-center gap-2 rounded-2xl border border-white/10 bg-void/70 p-3 text-sm text-slate-300">
@@ -126,13 +134,14 @@ export function SignUpForm() {
         </div>
       </div>
       <select value={riskTolerance} onChange={(event) => setRiskTolerance(event.target.value)} className="sm:col-span-2 rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
+        <option value="">Choose risk tolerance later</option>
         <option value="LOW">Low risk tolerance</option>
         <option value="MEDIUM">Medium risk tolerance</option>
         <option value="HIGH">High risk tolerance</option>
         <option value="EXTREME">Extreme risk tolerance</option>
       </select>
       <button disabled={loading} className="sm:col-span-2 mt-3 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void disabled:opacity-60">
-        {loading ? "Creating My Trading DNA..." : "Create My Trading DNA"}
+        {loading ? "Creating account..." : "Create blank account"}
       </button>
       {status ? <p className="sm:col-span-2 rounded-2xl border border-danger/30 bg-danger/10 p-3 text-sm text-danger">{status}</p> : null}
     </form>

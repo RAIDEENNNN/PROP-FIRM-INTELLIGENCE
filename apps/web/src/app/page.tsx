@@ -201,25 +201,30 @@ export default function HomePage() {
         <GlassCard>
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-2xl font-black text-white">Research Radar</h2>
-            <Link href="/news-radar" className="text-sm font-black text-purple-300 transition hover:text-electric focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric">View All →</Link>
+            <Link href="/news-radar" className="text-sm font-black text-[#d9b96f] transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d9b96f]">View all →</Link>
           </div>
+          <p className="mt-2 text-xs leading-5 text-slate-400">
+            Curated intelligence preview. Live provider headlines appear here once the news API is configured and verified.
+          </p>
           <div className="mt-5 space-y-4">
             {newsEvents.map((event, index) => (
               <Link
                 key={event.title}
                 href={event.href}
                 aria-label={`Open research item: ${event.title}`}
-                className="group grid grid-cols-[56px_minmax(0,1fr)_auto_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:-translate-y-0.5 hover:border-electric/30 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric"
+                className="group grid grid-cols-[56px_minmax(0,1fr)_auto_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 transition hover:-translate-y-0.5 hover:border-[#d9b96f]/35 hover:bg-white/[0.06] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d9b96f]"
               >
-                <div className="h-14 w-14 rounded-xl bg-gradient-to-br from-violet/80 to-[#172554]" />
+                <div className="grid h-14 w-14 place-items-center rounded-xl border border-[#d9b96f]/20 bg-gradient-to-br from-[#d9b96f]/20 via-white/[0.04] to-slate-950 text-sm font-black text-[#d9b96f] shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+                  {index === 0 ? "RC" : index === 1 ? "GV" : "PP"}
+                </div>
                 <div>
                   <p className="text-sm font-bold text-white">{event.title}</p>
                   <p className="mt-1 text-xs text-slate-500">{event.time}</p>
                 </div>
-                <span className={`rounded-lg px-2 py-1 text-[10px] font-black uppercase ${index === 1 ? "bg-slate-700 text-slate-200" : "bg-violet/30 text-purple-100"}`}>
+                <span className={`rounded-lg px-2 py-1 text-[10px] font-black uppercase ${index === 1 ? "bg-slate-700 text-slate-200" : "bg-[#d9b96f]/15 text-[#f3d68f]"}`}>
                   {event.impact}
                 </span>
-                <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 text-slate-400 transition group-hover:border-electric/40 group-hover:text-electric">
+                <span aria-hidden="true" className="grid h-8 w-8 place-items-center rounded-full border border-white/10 text-slate-400 transition group-hover:border-[#d9b96f]/40 group-hover:text-[#d9b96f]">
                   →
                 </span>
               </Link>

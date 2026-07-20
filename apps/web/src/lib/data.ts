@@ -642,19 +642,19 @@ export const dashboardMetrics = [
 
 export const newsEvents = [
   {
-    title: "Rule changes to review before buying a challenge",
+    title: "Rule-policy checks before selecting a challenge",
     impact: "High",
-    time: "Research watch",
+    time: "Curated intelligence",
     href: "/news-radar#rule-changes"
   },
   {
-    title: "Gold volatility windows traders should respect",
+    title: "Gold volatility windows requiring stricter risk controls",
     impact: "Medium",
-    time: "Market context",
+    time: "Market-risk context",
     href: "/news-radar#gold-volatility"
   },
   {
-    title: "How payout proof should be checked before trusting claims",
+    title: "Payout-proof standards for assessing firm credibility",
     impact: "Low",
     time: "Trust framework",
     href: "/news-radar#payout-proof"

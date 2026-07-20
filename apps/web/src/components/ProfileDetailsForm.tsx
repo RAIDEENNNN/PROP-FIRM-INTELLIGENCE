@@ -38,34 +38,34 @@ export function ProfileDetailsForm() {
   const [country, setCountry] = useState("");
   const [timezone, setTimezone] = useState("");
   const [profilePictureUrl, setProfilePictureUrl] = useState("");
-  const [traderType, setTraderType] = useState("Both");
-  const [experienceLevel, setExperienceLevel] = useState("Intermediate");
-  const [preferredMarkets, setPreferredMarkets] = useState<string[]>(["Gold", "Forex"]);
-  const [brokers, setBrokers] = useState<string[]>(["Exness"]);
-  const [propFirms, setPropFirms] = useState<string[]>(["FTMO"]);
+  const [traderType, setTraderType] = useState("");
+  const [experienceLevel, setExperienceLevel] = useState("");
+  const [preferredMarkets, setPreferredMarkets] = useState<string[]>([]);
+  const [brokers, setBrokers] = useState<string[]>([]);
+  const [propFirms, setPropFirms] = useState<string[]>([]);
   const [liveAccountSize, setLiveAccountSize] = useState("");
   const [propAccountSize, setPropAccountSize] = useState("");
   const [challengeSize, setChallengeSize] = useState("");
-  const [tradingStyle, setTradingStyle] = useState("Day Trader");
-  const [strategy, setStrategy] = useState("Gold London session");
-  const [riskTolerance, setRiskTolerance] = useState("MEDIUM");
-  const [goals, setGoals] = useState<string[]>(["Pass Prop Challenge", "Consistency"]);
+  const [tradingStyle, setTradingStyle] = useState("");
+  const [strategy, setStrategy] = useState("");
+  const [riskTolerance, setRiskTolerance] = useState("");
+  const [goals, setGoals] = useState<string[]>([]);
   const [targetMonthlyPercent, setTargetMonthlyPercent] = useState("");
   const [targetMonthlyProfit, setTargetMonthlyProfit] = useState("");
   const [targetWinRate, setTargetWinRate] = useState("");
   const [maxDailyDrawdown, setMaxDailyDrawdown] = useState("");
   const [maxTotalDrawdown, setMaxTotalDrawdown] = useState("");
-  const [sessions, setSessions] = useState<string[]>(["London", "New York"]);
-  const [favoriteAssets, setFavoriteAssets] = useState<string[]>(["Gold", "NAS100"]);
+  const [sessions, setSessions] = useState<string[]>([]);
+  const [favoriteAssets, setFavoriteAssets] = useState<string[]>([]);
   const [yearsExperience, setYearsExperience] = useState("");
   const [propChallenges, setPropChallenges] = useState("");
   const [fundedBefore, setFundedBefore] = useState(false);
   const [largestAccount, setLargestAccount] = useState("");
-  const [psychologyWeaknesses, setPsychologyWeaknesses] = useState<string[]>(["FOMO"]);
-  const [personality, setPersonality] = useState<Personality>({ patience: 6, emotionalControl: 5, planDiscipline: 6, confidence: 6 });
-  const [notifications, setNotifications] = useState(true);
-  const [newsAlerts, setNewsAlerts] = useState(true);
-  const [spreadAlerts, setSpreadAlerts] = useState(true);
+  const [psychologyWeaknesses, setPsychologyWeaknesses] = useState<string[]>([]);
+  const [personality, setPersonality] = useState<Personality>({ patience: 1, emotionalControl: 1, planDiscipline: 1, confidence: 1 });
+  const [notifications, setNotifications] = useState(false);
+  const [newsAlerts, setNewsAlerts] = useState(false);
+  const [spreadAlerts, setSpreadAlerts] = useState(false);
   const [telegramConnected, setTelegramConnected] = useState(false);
   const [discordConnected, setDiscordConnected] = useState(false);
   const [status, setStatus] = useState("");
@@ -75,7 +75,7 @@ export function ProfileDetailsForm() {
     try {
       setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
     } catch {
-      setTimezone("Africa/Lagos");
+      setTimezone("");
     }
   }, []);
 
@@ -216,14 +216,15 @@ export function ProfileDetailsForm() {
 
       <Section title="Personal information" subtitle="Who owns this Trading DNA?">
         <Field label="Username"><input value={username} onChange={(event) => setUsername(event.target.value)} className={inputClass} placeholder="alliygold" /></Field>
-        <Field label="Country"><input value={country} onChange={(event) => setCountry(event.target.value)} className={inputClass} placeholder="Nigeria" /></Field>
-        <Field label="Timezone"><input value={timezone} onChange={(event) => setTimezone(event.target.value)} className={inputClass} placeholder="Africa/Lagos" /></Field>
+        <Field label="Country"><input value={country} onChange={(event) => setCountry(event.target.value)} className={inputClass} placeholder="Add when ready" /></Field>
+        <Field label="Timezone"><input value={timezone} onChange={(event) => setTimezone(event.target.value)} className={inputClass} placeholder="Detected when available" /></Field>
         <Field label="Profile picture URL"><input value={profilePictureUrl} onChange={(event) => setProfilePictureUrl(event.target.value)} className={inputClass} placeholder="https://..." /></Field>
       </Section>
 
       <Section title="Trader information" subtitle="FundedScope uses this to personalize firms, brokers and dashboards.">
         <Field label="Trader type">
           <select value={traderType} onChange={(event) => setTraderType(event.target.value)} className={inputClass}>
+            <option value="">Choose later</option>
             <option>Prop Trader</option>
             <option>Live Trader</option>
             <option>Both</option>
@@ -231,6 +232,7 @@ export function ProfileDetailsForm() {
         </Field>
         <Field label="Experience">
           <select value={experienceLevel} onChange={(event) => setExperienceLevel(event.target.value)} className={inputClass}>
+            <option value="">Choose later</option>
             <option>Beginner</option>
             <option>Intermediate</option>
             <option>Advanced</option>
@@ -239,6 +241,7 @@ export function ProfileDetailsForm() {
         </Field>
         <Field label="Trading style">
           <select value={tradingStyle} onChange={(event) => setTradingStyle(event.target.value)} className={inputClass}>
+            <option value="">Choose later</option>
             <option>Scalper</option>
             <option>Day Trader</option>
             <option>Swing Trader</option>
@@ -269,6 +272,7 @@ export function ProfileDetailsForm() {
         <Field label="Max daily drawdown"><input value={maxDailyDrawdown} onChange={(event) => setMaxDailyDrawdown(event.target.value)} className={inputClass} inputMode="decimal" placeholder="2" /></Field>
         <Field label="Risk per trade">
           <select value={riskTolerance} onChange={(event) => setRiskTolerance(event.target.value)} className={inputClass}>
+            <option value="">Choose later</option>
             <option value="LOW">0.25% / Low</option>
             <option value="MEDIUM">0.5% / Medium</option>
             <option value="HIGH">1% / High</option>

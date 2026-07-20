@@ -73,13 +73,13 @@ export default function PropFirmsPage() {
           </div>
 
           <div className="grid gap-4 lg:grid-cols-[0.62fr_0.38fr]">
-            <div className="rounded-[1.5rem] border border-electric/25 bg-[#07111d]/80 p-4">
+            <div className="professional-panel rounded-[1.5rem] border p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-electric">Today&apos;s shortlist</p>
+                  <p className="professional-accent text-xs uppercase tracking-[0.22em]">Today&apos;s shortlist</p>
                   <h2 className="mt-1 text-2xl font-black text-white">Decision picks</h2>
                 </div>
-                <Link href="/market-intelligence" className="rounded-full border border-electric/30 px-4 py-2 text-xs font-black text-electric">
+                <Link href="/market-intelligence" className="professional-pill rounded-full border px-4 py-2 text-xs font-black">
                   News risk
                 </Link>
               </div>
@@ -91,9 +91,9 @@ export default function PropFirmsPage() {
                 ].map(([label, firm]) => {
                   const item = firm as (typeof propFirms)[number];
                   return (
-                    <Link key={`${label}-${item.slug}`} href={`/prop-firms/${item.slug}`} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 transition hover:-translate-y-0.5 hover:border-electric/40">
+                    <Link key={`${label}-${item.slug}`} href={`/prop-firms/${item.slug}`} className="professional-card rounded-2xl border p-4 transition hover:-translate-y-0.5 hover:border-[#d9b96f]/35">
                       <FirmLogo firm={item} size="sm" />
-                      <p className="mt-3 text-xs font-black uppercase tracking-[0.16em] text-electric">{label as string}</p>
+                      <p className="professional-accent mt-3 text-xs font-black uppercase tracking-[0.16em]">{label as string}</p>
                       <p className="mt-1 truncate text-lg font-black text-white">{item.name}</p>
                       <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
                         <Mini label="Score" value={`${item.score}`} />
