@@ -4,7 +4,7 @@ import type { Dispatch, FormEvent, ReactNode, SetStateAction } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase/client";
 
-const marketOptions = ["Forex", "Gold", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
+const marketOptions = ["Forex", "Metals", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
 const brokerOptions = ["Exness", "IC Markets", "Pepperstone", "Vantage", "JustMarkets", "Other"];
 const firmOptions = ["FTMO", "FundingPips", "The5ers", "E8 Markets", "FundedNext", "None"];
 const goalOptions = ["Pass Prop Challenge", "Consistency", "Full-time Income", "Grow Capital", "Learn", "Build Wealth"];

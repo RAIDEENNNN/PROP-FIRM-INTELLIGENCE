@@ -96,6 +96,60 @@ function cleanText(value: string | undefined) {
   return value?.replace(/[<>]/g, "").trim() || null;
 }
 
+function isMissingTableError(error: unknown) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    return error.code === "P2021" || (error.code === "P2010" && String(error.meta?.code ?? "") === "42P01");
+  }
+  return false;
+}
+
+async function optionalCount(count: () => Promise<number>) {
+  try {
+    return await count();
+  } catch (error) {
+    if (isMissingTableError(error)) return 0;
+    throw error;
+  }
+}
+
+async function optionalRawCount(query: Prisma.Sql) {
+  try {
+    const rows = await prisma.$queryRaw<Array<{ count: number }>>(query);
+    return Number(rows[0]?.count ?? 0);
+  } catch (error) {
+    if (isMissingTableError(error)) return 0;
+    throw error;
+  }
+}
+
+async function publicColumnExists(tableName: string, columnName: string) {
+  const rows = await prisma.$queryRaw<Array<{ exists: boolean }>>`
+    select exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = ${tableName}
+        and column_name = ${columnName}
+    ) as exists
+  `;
+  return Boolean(rows[0]?.exists);
+}
+
+async function optionalReviewsPendingCount() {
+  try {
+    if (await publicColumnExists("reviews", "status")) {
+      return optionalRawCount(Prisma.sql`select count(*)::int as count from public.reviews where upper(status::text) = 'PENDING'`);
+    }
+    if (await publicColumnExists("reviews", "moderation_status")) {
+      return optionalRawCount(Prisma.sql`select count(*)::int as count from public.reviews where lower(moderation_status::text) = 'pending'`);
+    }
+    return 0;
+  } catch (error) {
+    if (isMissingTableError(error)) return 0;
+    throw error;
+  }
+}
+
 async function recordAuditLog(data: {
   actorUserId?: string;
   action: string;
@@ -126,11 +180,11 @@ adminRouter.get(
     const [users, firms, reviewsPending, alerts, subscriptions, newsEvents, spreadRecords] = await Promise.all([
       prisma.user.count(),
       prisma.propFirm.count(),
-      prisma.review.count({ where: { status: "PENDING" } }),
-      prisma.alert.count({ where: { enabled: true } }),
-      prisma.subscription.count({ where: { status: "ACTIVE" } }),
-      prisma.newsEvent.count(),
-      prisma.spreadRecord.count()
+      optionalReviewsPendingCount(),
+      optionalCount(() => prisma.alert.count({ where: { enabled: true } })),
+      optionalRawCount(Prisma.sql`select count(*)::int as count from public.subscriptions where upper(status::text) = 'ACTIVE'`),
+      optionalCount(() => prisma.newsEvent.count()),
+      optionalCount(() => prisma.spreadRecord.count())
     ]);
 
     return sendOk(res, {
@@ -243,11 +297,28 @@ adminRouter.get(
 adminRouter.get(
   "/audit-logs",
   asyncHandler(async (_req, res) => {
-    const logs = await prisma.auditLog.findMany({
-      include: { actor: { select: { id: true, email: true, name: true } }, firm: true },
-      orderBy: { createdAt: "desc" },
-      take: 200
-    });
+    let logs: unknown[] = [];
+    try {
+      logs = await prisma.$queryRaw`
+        select
+          audit_logs.id::text,
+          audit_logs.actor_user_id::text,
+          audit_logs.firm_id::text,
+          audit_logs.action,
+          audit_logs.entity_type,
+          audit_logs.entity_id,
+          audit_logs.metadata,
+          audit_logs.created_at,
+          profiles.email as actor_email,
+          profiles.full_name as actor_name
+        from public.audit_logs
+        left join public.profiles on profiles.id = audit_logs.actor_user_id
+        order by audit_logs.created_at desc
+        limit 200
+      `;
+    } catch (error) {
+      if (!isMissingTableError(error)) throw error;
+    }
 
     return sendOk(res, { logs });
   })
@@ -266,19 +337,19 @@ adminRouter.post(
         slug,
         logo_url,
         website_url,
-        official_url,
         source_url,
-        country,
-        score,
+        headquarters_country,
+        trust_score,
         confidence_score,
         rating,
         review_count,
         payout_frequency,
-        summary,
+        description,
         platforms,
         markets,
         challenge_types,
         tags,
+        is_verified,
         public_source_name,
         last_verified_at,
         content_status,
@@ -291,7 +362,6 @@ adminRouter.post(
         ${slug},
         ${input.logoUrl ?? null},
         ${input.websiteUrl ?? input.officialUrl ?? null},
-        ${input.officialUrl ?? input.websiteUrl ?? null},
         ${input.sourceUrl ?? null},
         ${cleanText(input.country)},
         ${input.trustScore},
@@ -304,6 +374,7 @@ adminRouter.post(
         ${input.markets},
         ${input.challengeTypes},
         ${input.tags},
+        ${input.contentStatus === "published"},
         ${cleanText(input.publicSourceName)},
         ${input.lastVerifiedAt ? new Date(input.lastVerifiedAt) : null},
         ${input.contentStatus}::public.content_status,
@@ -316,19 +387,19 @@ adminRouter.post(
         name = excluded.name,
         logo_url = excluded.logo_url,
         website_url = excluded.website_url,
-        official_url = excluded.official_url,
         source_url = excluded.source_url,
-        country = excluded.country,
-        score = excluded.score,
+        headquarters_country = excluded.headquarters_country,
+        trust_score = excluded.trust_score,
         confidence_score = excluded.confidence_score,
         rating = excluded.rating,
         review_count = excluded.review_count,
         payout_frequency = excluded.payout_frequency,
-        summary = excluded.summary,
+        description = excluded.description,
         platforms = excluded.platforms,
         markets = excluded.markets,
         challenge_types = excluded.challenge_types,
         tags = excluded.tags,
+        is_verified = excluded.is_verified,
         public_source_name = excluded.public_source_name,
         last_verified_at = excluded.last_verified_at,
         content_status = excluded.content_status,
@@ -357,7 +428,7 @@ adminRouter.get(
     const query = adminListSchema.parse(req.query);
     const search = query.q ? `%${query.q}%` : null;
     const rows = await prisma.$queryRaw`
-      select id::text, name, slug, status, content_status::text, score, rating, featured, public_source_name, last_verified_at, updated_at
+      select id::text, name, slug, status, content_status::text, trust_score, rating, featured, public_source_name, last_verified_at, updated_at
       from public.prop_firms
       where (${search}::text is null or name ilike ${search} or slug ilike ${search})
         and (${query.status ?? null}::text is null or status = ${query.status ?? null})
@@ -408,7 +479,7 @@ adminRouter.delete(
     const slug = normalizeSlug(params.slug);
     const rows = await prisma.$queryRaw<Array<{ id: string; slug: string }>>`
       update public.prop_firms
-      set status = 'archived', content_status = 'archived', updated_at = now()
+      set status = 'inactive', content_status = 'archived', updated_at = now()
       where slug = ${slug}
       returning id::text, slug
     `;
@@ -458,17 +529,16 @@ adminRouter.post(
         slug,
         logo_url,
         website_url,
-        official_url,
         source_url,
         founded_year,
-        headquarters,
-        countries,
+        headquarters_country,
+        supported_countries,
         platforms,
         funding_methods,
         withdrawal_methods,
         minimum_deposit,
         trust_score,
-        public_summary,
+        description,
         spread_summary,
         commission_summary,
         swap_summary,
@@ -483,7 +553,6 @@ adminRouter.post(
         ${slug},
         ${input.logoUrl ?? null},
         ${input.websiteUrl ?? input.officialUrl ?? null},
-        ${input.officialUrl ?? input.websiteUrl ?? null},
         ${input.sourceUrl ?? null},
         ${input.foundedYear ?? null},
         ${cleanText(input.headquarters)},
@@ -508,17 +577,16 @@ adminRouter.post(
         name = excluded.name,
         logo_url = excluded.logo_url,
         website_url = excluded.website_url,
-        official_url = excluded.official_url,
         source_url = excluded.source_url,
         founded_year = excluded.founded_year,
-        headquarters = excluded.headquarters,
-        countries = excluded.countries,
+        headquarters_country = excluded.headquarters_country,
+        supported_countries = excluded.supported_countries,
         platforms = excluded.platforms,
         funding_methods = excluded.funding_methods,
         withdrawal_methods = excluded.withdrawal_methods,
         minimum_deposit = excluded.minimum_deposit,
         trust_score = excluded.trust_score,
-        public_summary = excluded.public_summary,
+        description = excluded.description,
         spread_summary = excluded.spread_summary,
         commission_summary = excluded.commission_summary,
         swap_summary = excluded.swap_summary,

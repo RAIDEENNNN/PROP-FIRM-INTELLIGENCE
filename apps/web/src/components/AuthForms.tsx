@@ -2,7 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { friendlyAuthMessage } from "../lib/auth-errors";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
+
+const maxAvatarPreviewBytes = 750_000;
+
+function initialsFromName(name: string, email: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
+  if (parts[0]) return parts[0].slice(0, 2).toUpperCase();
+  return email.slice(0, 2).toUpperCase();
+}
 
 export function SignUpForm() {
   const router = useRouter();
@@ -23,18 +33,58 @@ export function SignUpForm() {
   const [preferredMarkets, setPreferredMarkets] = useState<string[]>([]);
   const [riskTolerance, setRiskTolerance] = useState("");
   const [status, setStatus] = useState("");
+  const [statusTone, setStatusTone] = useState<"success" | "error" | "info">("info");
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const marketOptions = ["Forex", "Gold", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
+  const marketOptions = ["Forex", "Metals", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
 
   function toggleMarket(market: string) {
     setPreferredMarkets((current) => (current.includes(market) ? current.filter((item) => item !== market) : [...current, market]));
+  }
+
+  function savePendingSignup() {
+    window.localStorage.setItem(
+      "fundedscope_pending_signup",
+      JSON.stringify({
+        name,
+        username,
+        email,
+        avatarPreview,
+        createdAt: new Date().toISOString()
+      })
+    );
+  }
+
+  function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setAvatarPreview("");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setStatusTone("error");
+      setStatus("Choose an image file for your profile picture.");
+      return;
+    }
+
+    if (file.size > maxAvatarPreviewBytes) {
+      setStatusTone("error");
+      setStatus("Choose an image under 750KB for now. You can upload a larger profile picture later.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setAvatarPreview(typeof reader.result === "string" ? reader.result : "");
+    reader.readAsDataURL(file);
   }
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
     setStatus("");
+    setStatusTone("info");
 
     try {
       const supabase = getSupabaseBrowserClient();
@@ -57,16 +107,19 @@ export function SignUpForm() {
       });
       if (error) throw error;
 
+      savePendingSignup();
       if (data.session?.access_token) {
         window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
         if (data.session.refresh_token) window.localStorage.setItem("fundedscope_refresh_token", data.session.refresh_token);
-        router.push("/profile");
+        router.push("/welcome");
         return;
       }
 
-      setStatus("Account created. Check your email to verify your address, then sign in.");
+      setStatusTone("success");
+      router.push("/welcome?verify=1");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Unable to create account");
+      setStatusTone("error");
+      setStatus(friendlyAuthMessage(error, "We couldn't create your account. Please check your details and try again."));
     } finally {
       setLoading(false);
     }
@@ -79,6 +132,24 @@ export function SignUpForm() {
         <p className="mt-2 text-sm leading-6 text-slate-300">
           A new trader can create an account with only email and password. Everything else is optional and can be added later inside Trading DNA.
         </p>
+      </div>
+      <div className="sm:col-span-2 flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:flex-row sm:items-center">
+        <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-3xl border border-electric/20 bg-electric/10 text-xl font-black text-electric">
+          {avatarPreview ? <img src={avatarPreview} alt="" className="h-full w-full object-cover" /> : initialsFromName(name, email || "FS")}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black text-white">Profile picture <span className="text-slate-600">(optional)</span></p>
+          <p className="mt-1 text-sm leading-6 text-slate-400">Upload one now or skip it. If you skip, FundedScope will use your initials.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <label className="cursor-pointer rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-200 transition hover:border-electric/30 hover:text-white">
+              Upload image
+              <input type="file" accept="image/*" onChange={handleAvatarChange} className="sr-only" />
+            </label>
+            <button type="button" onClick={() => setAvatarPreview("")} className="rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-400 transition hover:border-white/20 hover:text-white">
+              Skip for now
+            </button>
+          </div>
+        </div>
       </div>
       <label className="text-sm text-slate-400">
         Full name <span className="text-slate-600">(optional)</span>
@@ -142,9 +213,21 @@ export function SignUpForm() {
         <option value="EXTREME">Extreme risk tolerance</option>
       </select>
       <button disabled={loading} className="sm:col-span-2 mt-3 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void disabled:opacity-60">
-        {loading ? "Creating account..." : "Create blank account"}
+        {loading ? "Creating account..." : "Create account"}
       </button>
-      {status ? <p className="sm:col-span-2 rounded-2xl border border-danger/30 bg-danger/10 p-3 text-sm text-danger">{status}</p> : null}
+      {status ? (
+        <p
+          className={`sm:col-span-2 rounded-2xl border p-3 text-sm font-bold ${
+            statusTone === "success"
+              ? "border-success/30 bg-success/10 text-success"
+              : statusTone === "error"
+                ? "border-danger/30 bg-danger/10 text-danger"
+                : "border-white/10 bg-white/[0.03] text-slate-300"
+          }`}
+        >
+          {status}
+        </p>
+      ) : null}
     </form>
   );
 }
@@ -171,7 +254,7 @@ export function SignInForm() {
       const next = new URLSearchParams(window.location.search).get("next");
       router.push(next && next.startsWith("/") ? next : "/dashboard");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Unable to sign in");
+      setStatus(friendlyAuthMessage(error, "We couldn't sign you in. Please check your details and try again."));
     } finally {
       setLoading(false);
     }
@@ -198,7 +281,7 @@ export function SignInForm() {
             if (error) throw error;
             setStatus("Password reset email sent if the address exists.");
           } catch (error) {
-            setStatus(error instanceof Error ? error.message : "Unable to send password reset email");
+            setStatus(friendlyAuthMessage(error, "We couldn't send the password reset email. Please try again shortly."));
           }
         }}
         className="w-full rounded-2xl border border-white/10 px-4 py-3 font-bold text-white"
@@ -236,7 +319,7 @@ export function ResetPasswordForm() {
         router.push("/settings");
       }
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Unable to update password");
+      setStatus(friendlyAuthMessage(error, "We couldn't update your password. Please try again."));
     } finally {
       setLoading(false);
     }

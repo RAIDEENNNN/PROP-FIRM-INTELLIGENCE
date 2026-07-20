@@ -84,6 +84,8 @@ Recommended:
 
 - Prefer `SUPABASE_JWKS_URL` + `SUPABASE_JWT_ISSUER` when the Supabase project uses asymmetric signing keys.
 - Keep `SUPABASE_JWT_SECRET` only as the legacy HS256 fallback.
+- `JWT_ACCESS_SECRET` is optional legacy/internal-token support. Supabase JWT validation should be the production auth path.
+- `JWT_REFRESH_SECRET` is legacy and is not required for the current Supabase-auth frontend flow.
 - Keep `SUPABASE_SERVICE_ROLE_KEY` backend-only and add it only when a route genuinely needs privileged service-role operations.
 
 Later variables:

@@ -7,6 +7,8 @@
   background: #07080d;
   color: #f4f5f7;
   overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 * {
@@ -15,7 +17,7 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: clip;
   background:
     radial-gradient(circle at 18% 0%, rgba(224, 178, 83, 0.12), transparent 30rem),
@@ -50,10 +52,26 @@ a {
 }
 
 .noise {
+  min-height: 100dvh;
   background-image:
     linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
   background-size: 48px 48px;
+}
+
+.noise > main {
+  animation: page-enter 180ms ease-out both;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes market-marquee {
@@ -139,7 +157,8 @@ a {
   }
 
   .fundedscope-pulse,
-  .progress-sweep {
+  .progress-sweep,
+  .noise > main {
     animation: none;
   }
 }

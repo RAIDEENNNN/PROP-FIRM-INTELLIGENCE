@@ -114,7 +114,7 @@ function ruleDto(row: RuleRow) {
     previousValue: row.previous_value,
     impactLevel: row.impact_level.toUpperCase(),
     sourceUrl: row.source_url,
-    officialUrl: row.official_url,
+    officialUrl: row.source_url,
     effectiveAt: row.effective_at,
     updatedAt: row.updated_at
   };
@@ -175,17 +175,17 @@ async function publishedChallenges(firmIds: string[]) {
       id::text,
       prop_firm_id::text,
       name,
-      challenge_type,
+      evaluation_type as challenge_type,
       account_size,
       challenge_fee,
       currency,
-      profit_target_phase_one,
-      profit_target_phase_two,
+      phase_one_target as profit_target_phase_one,
+      phase_two_target as profit_target_phase_two,
       daily_drawdown,
-      max_drawdown,
-      payout_split,
+      maximum_drawdown as max_drawdown,
+      initial_profit_split as payout_split,
       minimum_trading_days,
-      max_trading_days,
+      maximum_trading_days as max_trading_days,
       refundable_fee,
       platforms,
       payout_details,
@@ -193,7 +193,7 @@ async function publishedChallenges(firmIds: string[]) {
       fee_notes
     from public.prop_firm_challenges
     where prop_firm_id::text = any(${firmIds})
-      and status = 'active'
+      and is_active = true
       and content_status = 'published'
     order by account_size asc nulls last, challenge_fee asc nulls last
   `;
@@ -211,10 +211,10 @@ async function publishedRules(firmIds: string[]) {
       previous_value,
       impact_level,
       source_url,
-      official_url,
+      source_url as official_url,
       effective_at,
       updated_at
-    from public.prop_firm_rules
+    from public.prop_firm_rule_details
     where prop_firm_id::text = any(${firmIds})
       and status = 'active'
       and content_status = 'published'
@@ -237,10 +237,10 @@ firmsRouter.get(
         slug,
         logo_url,
         website_url,
-        official_url,
-        country,
-        summary,
-        score,
+        website_url as official_url,
+        headquarters_country as country,
+        description as summary,
+        trust_score as score,
         confidence_score,
         rating,
         review_count,
@@ -248,7 +248,7 @@ firmsRouter.get(
         markets,
         challenge_types,
         platforms,
-        verified,
+        is_verified as verified,
         featured,
         status,
         verification_status,
@@ -260,22 +260,22 @@ firmsRouter.get(
       where status = 'active'
         and content_status = 'published'
         and (${query.featured ?? null}::boolean is null or featured = ${query.featured ?? null})
-        and (${country}::text is null or country ilike ${country})
-        and (${search}::text is null or name ilike ${search} or slug ilike ${search} or coalesce(summary, '') ilike ${search})
+        and (${country}::text is null or headquarters_country ilike ${country})
+        and (${search}::text is null or name ilike ${search} or slug ilike ${search} or coalesce(description, '') ilike ${search})
         and (
           ${market}::text is null
           or exists (select 1 from unnest(markets) value where value ilike ${market})
           or exists (select 1 from unnest(platforms) value where value ilike ${market})
           or exists (
             select 1
-            from public.prop_firm_rules r
+            from public.prop_firm_rule_details r
             where r.prop_firm_id = public.prop_firms.id
               and r.status = 'active'
               and r.content_status = 'published'
               and (r.category ilike ${market} or r.current_value ilike ${market})
           )
         )
-      order by featured desc, coalesce(confidence_score, score) desc, rating desc, name asc
+      order by featured desc, coalesce(confidence_score, trust_score) desc, rating desc, name asc
       limit ${query.limit}
       offset ${query.offset}
     `;
@@ -309,10 +309,10 @@ firmsRouter.get(
         slug,
         logo_url,
         website_url,
-        official_url,
-        country,
-        summary,
-        score,
+        website_url as official_url,
+        headquarters_country as country,
+        description as summary,
+        trust_score as score,
         confidence_score,
         rating,
         review_count,
@@ -320,7 +320,7 @@ firmsRouter.get(
         markets,
         challenge_types,
         platforms,
-        verified,
+        is_verified as verified,
         featured,
         status,
         verification_status,
@@ -354,10 +354,10 @@ firmsRouter.get(
         slug,
         logo_url,
         website_url,
-        official_url,
-        country,
-        summary,
-        score,
+        website_url as official_url,
+        headquarters_country as country,
+        description as summary,
+        trust_score as score,
         confidence_score,
         rating,
         review_count,
@@ -365,7 +365,7 @@ firmsRouter.get(
         markets,
         challenge_types,
         platforms,
-        verified,
+        is_verified as verified,
         featured,
         status,
         verification_status,

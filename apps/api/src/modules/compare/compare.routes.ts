@@ -131,13 +131,13 @@ async function loadPublicFirmData(slugs?: string[], limit = 50) {
       name,
       slug,
       logo_url,
-      country,
-      score,
+      headquarters_country as country,
+      trust_score as score,
       confidence_score,
       rating,
       review_count,
       payout_frequency,
-      summary,
+      description as summary,
       markets,
       platforms,
       updated_at
@@ -145,7 +145,7 @@ async function loadPublicFirmData(slugs?: string[], limit = 50) {
     where status = 'active'
       and content_status = 'published'
       and (${normalizedSlugs}::text[] is null or lower(slug) = any(${normalizedSlugs}))
-    order by coalesce(confidence_score, score) desc, rating desc, name asc
+    order by coalesce(confidence_score, trust_score) desc, rating desc, name asc
     limit ${limit}
   `;
 
@@ -154,15 +154,26 @@ async function loadPublicFirmData(slugs?: string[], limit = 50) {
 
   const [challenges, rules] = await Promise.all([
     prisma.$queryRaw<ChallengeRow[]>`
-      select prop_firm_id::text, name, challenge_type, account_size, challenge_fee, profit_target_phase_one, profit_target_phase_two, daily_drawdown, max_drawdown, payout_split, refundable_fee
+      select
+        prop_firm_id::text,
+        name,
+        evaluation_type as challenge_type,
+        account_size,
+        challenge_fee,
+        phase_one_target as profit_target_phase_one,
+        phase_two_target as profit_target_phase_two,
+        daily_drawdown,
+        maximum_drawdown as max_drawdown,
+        initial_profit_split as payout_split,
+        refundable_fee
       from public.prop_firm_challenges
       where prop_firm_id::text = any(${firmIds})
-        and status = 'active'
+        and is_active = true
         and content_status = 'published'
     `,
     prisma.$queryRaw<RuleRow[]>`
       select prop_firm_id::text, category, title, current_value, previous_value, impact_level, effective_at
-      from public.prop_firm_rules
+      from public.prop_firm_rule_details
       where prop_firm_id::text = any(${firmIds})
         and status = 'active'
         and content_status = 'published'

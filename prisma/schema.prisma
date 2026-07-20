@@ -57,13 +57,6 @@ enum ReviewStatus {
   REJECTED
 }
 
-enum ChallengeType {
-  ONE_STEP
-  TWO_STEP
-  THREE_STEP
-  INSTANT_FUNDING
-}
-
 enum InstrumentCategory {
   FOREX
   CRYPTO
@@ -80,321 +73,561 @@ enum TradingSession {
 }
 
 model User {
-  id                    String               @id @default(cuid())
-  email                 String               @unique
-  passwordHash          String
-  name                  String?
-  avatarUrl             String?
-  role                  Role                 @default(TRADER)
-  subscriptionStatus    SubscriptionStatus   @default(FREE)
-  emailVerifiedAt       DateTime?
-  lastLoginAt           DateTime?
-  refreshTokenHash      String?
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
+  id              String    @id @db.Uuid
+  firstName       String?   @map("first_name")
+  lastName        String?   @map("last_name")
+  email           String?
+  name            String?   @map("full_name")
+  username        String?   @unique
+  country         String?
+  timezone        String?
+  avatarUrl       String?   @map("avatar_url")
+  role            String    @default("user") @map("account_role")
+  emailVerifiedAt DateTime? @map("email_verified_at") @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  traderProfile         TraderProfile?
-  watchlists            Watchlist[]
-  alerts                Alert[]
-  reviews               Review[]
-  subscriptions         Subscription[]
-  kycVerifications      KycVerification[]
-  auditLogs             AuditLog[]
-  journalEntries        JournalEntry[]
-  notifications         Notification[]
-  savedToolResults      SavedToolResult[]
-}
-
-model TraderProfile {
-  id                    String       @id @default(cuid())
-  userId                String       @unique
-  username              String?
-  country               String?
-  timezone              String?
-  profilePictureUrl     String?
-  traderType            String?
-  experienceLevel       String?
-  strategy              String?
-  preferredMarkets      String[]
-  brokers               String[]
-  propFirms             String[]
-  liveAccountSize       Int?
-  propAccountSize       Int?
-  challengeSize         Int?
-  tradingStyle          String?
-  goals                 String[]
-  targetMonthlyPercent  Decimal?
-  targetMonthlyProfit   Decimal?
-  targetWinRate         Decimal?
-  maxDailyDrawdown      Decimal?
-  maxTotalDrawdown      Decimal?
-  preferredAccountSize  Int?
-  sessions              String[]
-  favoriteAssets        String[]
-  yearsExperience       Decimal?
-  propChallenges        Int?
-  fundedBefore          Boolean      @default(false)
-  largestAccount        Int?
-  psychologyWeaknesses  String[]
-  personality           Json?
-  preferences           Json?
-  connectedAccounts     Json?
-  performance           Json?
-  riskTolerance         RiskLevel    @default(MEDIUM)
-  payoutPriority        Boolean      @default(false)
-  swingTrading          Boolean      @default(false)
-  newsTrading           Boolean      @default(false)
-  eaTrading             Boolean      @default(false)
-  createdAt             DateTime     @default(now())
-  updatedAt             DateTime     @updatedAt
-
-  user                  User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("profiles")
 }
 
 model PropFirm {
-  id                    String              @id @default(cuid())
-  name                  String
-  slug                  String              @unique
-  logoUrl               String?
-  websiteUrl            String?
-  affiliateUrl          String?
-  country               String?
-  trustScore            Decimal             @default(0)
-  rating                Decimal             @default(0)
-  reviewCount           Int                 @default(0)
-  foundedYear           Int?
-  payoutFrequency       String?
-  status                String              @default("active")
-  editorSummary         String?
-  seoTitle              String?
-  seoDescription        String?
-  featured              Boolean             @default(false)
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  id                     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                   String
+  slug                   String    @unique
+  logoUrl                String?   @map("logo_url")
+  websiteUrl             String?   @map("website_url")
+  affiliateUrl           String?   @map("affiliate_url")
+  country                String?   @map("headquarters_country")
+  foundedYear            Int?      @map("founded_year")
+  trustScore             Decimal   @default(0) @map("trust_score")
+  confidenceScore        Decimal?  @map("confidence_score")
+  rating                 Decimal   @default(0)
+  reviewCount            Int       @default(0) @map("review_count")
+  payoutFrequency        String?   @map("payout_frequency")
+  maxDrawdown            String?   @map("max_drawdown")
+  dailyDrawdown          String?   @map("daily_drawdown")
+  profitTarget           String?   @map("profit_target")
+  challengeFee           String?   @map("challenge_fee")
+  maxAccount             String?   @map("max_account")
+  editorSummary          String?   @map("description")
+  markets                String[]  @default([])
+  challengeTypes         String[]  @default([]) @map("challenge_types")
+  platforms              String[]  @default([])
+  tags                   String[]  @default([])
+  payoutDetails          Json      @default("{}") @map("payout_details")
+  restrictions           Json      @default("{}")
+  feeNotes               String?   @map("fee_notes")
+  confidenceScoreDetails Json      @default("{}") @map("confidence_score_details")
+  verified               Boolean   @default(false) @map("is_verified")
+  featured               Boolean   @default(false)
+  status                 String    @default("active")
+  contentStatus          String    @default("draft") @map("content_status")
+  verificationStatus     String    @default("unverified") @map("verification_status")
+  publicSourceName       String?   @map("public_source_name")
+  lastVerifiedAt         DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  lastRuleUpdate         DateTime? @map("last_rule_update") @db.Date
+  sourceUrl              String?   @map("source_url")
+  publishedAt            DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  accounts              PropFirmAccount[]
-  rules                 PropFirmRule[]
-  reviews               Review[]
-  watchlists            Watchlist[]
-  alerts                Alert[]
-  auditLogs             AuditLog[]
+  accounts  PropFirmAccount[]
+  rules     PropFirmRule[]
+  reviews   Review[]
+  alerts    Alert[]
+  auditLogs AuditLog[]
+
+  @@index([status, contentStatus, featured, trustScore])
+  @@map("prop_firms")
 }
 
 model PropFirmAccount {
-  id                    String          @id @default(cuid())
-  firmId                String
-  name                  String
-  challengeType         ChallengeType
-  accountSize           Int
-  challengeFee          Decimal
-  profitTargetPhaseOne  Decimal?
-  profitTargetPhaseTwo  Decimal?
-  dailyDrawdown         Decimal?
-  maxDrawdown           Decimal?
-  profitSplit           Decimal?
-  minimumTradingDays    Int?
-  maxTradingDays        Int?
-  refundableFee         Boolean         @default(false)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firmId               String    @map("prop_firm_id") @db.Uuid
+  name                 String
+  challengeType        String?   @map("evaluation_type")
+  accountSize          Decimal?  @map("account_size")
+  challengeFee         Decimal?  @map("challenge_fee")
+  currency             String    @default("USD")
+  profitTargetPhaseOne Decimal?  @map("phase_one_target")
+  profitTargetPhaseTwo Decimal?  @map("phase_two_target")
+  dailyDrawdown        Decimal?  @map("daily_drawdown")
+  maxDrawdown          Decimal?  @map("maximum_drawdown")
+  profitSplit          Decimal?  @map("initial_profit_split")
+  maximumProfitSplit   Decimal?  @map("maximum_profit_split")
+  minimumTradingDays   Int?      @map("minimum_trading_days")
+  maxTradingDays       Int?      @map("maximum_trading_days")
+  refundableFee        Boolean   @default(false) @map("refundable_fee")
+  isActive             Boolean   @default(true) @map("is_active")
+  purchaseUrl          String?   @map("purchase_url")
+  platforms            String[]  @default([])
+  payoutDetails        Json      @default("{}") @map("payout_details")
+  restrictions         Json      @default("{}")
+  feeNotes             String?   @map("fee_notes")
+  status               String    @default("active")
+  contentStatus        String    @default("draft") @map("content_status")
+  verificationStatus   String    @default("unverified") @map("verification_status")
+  publicSourceName     String?   @map("public_source_name")
+  sourceUrl            String?   @map("source_url")
+  lastVerifiedAt       DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  firm                  PropFirm        @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  firm PropFirm @relation(fields: [firmId], references: [id], onDelete: Cascade)
 
   @@index([firmId])
   @@index([accountSize])
+  @@map("prop_firm_challenges")
 }
 
 model PropFirmRule {
-  id                    String          @id @default(cuid())
-  firmId                String
-  category              String
-  title                 String
-  currentValue          String
-  previousValue         String?
-  impactLevel           ImpactLevel     @default(MEDIUM)
-  effectiveAt           DateTime?
-  sourceUrl             String?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firmId             String    @map("prop_firm_id") @db.Uuid
+  category           String
+  title              String
+  currentValue       String    @map("current_value")
+  previousValue      String?   @map("previous_value")
+  impactLevel        String    @default("medium") @map("impact_level")
+  ruleKey            String?   @map("rule_key")
+  sourceUrl          String?   @map("source_url")
+  effectiveAt        DateTime? @map("effective_at") @db.Timestamptz(6)
+  status             String    @default("active")
+  contentStatus      String    @default("draft") @map("content_status")
+  verificationStatus String    @default("unverified") @map("verification_status")
+  publicSourceName   String?   @map("public_source_name")
+  lastVerifiedAt     DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  firm                  PropFirm        @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  firm PropFirm @relation(fields: [firmId], references: [id], onDelete: Cascade)
 
   @@index([firmId, category])
+  @@map("prop_firm_rule_details")
 }
 
-model Instrument {
-  id                    String              @id @default(cuid())
-  symbol                String              @unique
-  name                  String
-  category              InstrumentCategory
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+model Broker {
+  id                        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                      String
+  slug                      String    @unique
+  logoUrl                   String?   @map("logo_url")
+  websiteUrl                String?   @map("website_url")
+  affiliateUrl              String?   @map("affiliate_url")
+  sourceUrl                 String?   @map("source_url")
+  foundedYear               Int?      @map("founded_year")
+  headquarters              String?   @map("headquarters_country")
+  brokerType                String?   @map("broker_type")
+  countries                 String[]  @default([]) @map("supported_countries")
+  restrictedCountries       String[]  @default([]) @map("restricted_countries")
+  platforms                 String[]  @default([])
+  fundingMethods            String[]  @default([]) @map("funding_methods")
+  withdrawalMethods         String[]  @default([]) @map("withdrawal_methods")
+  minimumDeposit            Decimal?  @map("minimum_deposit")
+  baseCurrency              String?   @map("base_currency")
+  maximumLeverage           String?   @map("maximum_leverage")
+  demoAccountAvailable      Boolean   @default(false) @map("demo_account_available")
+  islamicAccountAvailable   Boolean   @default(false) @map("islamic_account_available")
+  negativeBalanceProtection Boolean   @default(false) @map("negative_balance_protection")
+  regulationSummary         String?   @map("regulation_summary")
+  trustScore                Decimal?  @map("trust_score")
+  verified                  Boolean   @default(false) @map("is_verified")
+  status                    String    @default("active")
+  publicSummary             String?   @map("description")
+  spreadSummary             String?   @map("spread_summary")
+  commissionSummary         String?   @map("commission_summary")
+  swapSummary               String?   @map("swap_summary")
+  confidenceScoreDetails    Json      @default("{}") @map("confidence_score_details")
+  verificationStatus        String    @default("unverified") @map("verification_status")
+  publicSourceName          String?   @map("public_source_name")
+  lastVerifiedAt            DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  contentStatus             String    @default("draft") @map("content_status")
+  publishedAt               DateTime? @map("published_at") @db.Timestamptz(6)
+  createdAt                 DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                 DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  spreadRecords         SpreadRecord[]
+  accounts      BrokerAccount[]
+  instruments   BrokerInstrument[]
+  regulations   BrokerRegulation[]
+  spreadHistory BrokerSpreadHistory[]
+
+  @@index([contentStatus, trustScore, lastVerifiedAt])
+  @@map("brokers")
 }
 
-model SpreadRecord {
-  id                    String          @id @default(cuid())
-  instrumentId          String
-  brokerOrFirm          String
-  bid                   Decimal?
-  ask                   Decimal?
-  spreadPips            Decimal
-  session               TradingSession?
-  recordedAt            DateTime        @default(now())
+model BrokerAccount {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brokerId         String    @map("broker_id") @db.Uuid
+  name             String
+  minimumDeposit   Decimal?  @map("minimum_deposit")
+  commission       String?
+  spreadModel      String?   @map("spread_model")
+  leverage         String?
+  platforms        String[]  @default([])
+  baseCurrencies   String[]  @default([]) @map("base_currencies")
+  publicSourceName String?   @map("public_source_name")
+  lastVerifiedAt   DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  contentStatus    String    @default("draft") @map("content_status")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  instrument            Instrument      @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
+  broker Broker @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
-  @@index([instrumentId, recordedAt])
-  @@index([brokerOrFirm])
+  @@index([brokerId])
+  @@map("broker_accounts")
 }
 
-model NewsEvent {
-  id                    String          @id @default(cuid())
-  title                 String
-  summary               String?
-  sourceName            String?
-  sourceUrl             String?
-  affectedFirms         String[]
-  affectedSymbols       String[]
-  impactLevel           ImpactLevel     @default(MEDIUM)
-  publishedAt           DateTime
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+model BrokerInstrument {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brokerId          String    @map("broker_id") @db.Uuid
+  symbol            String
+  displayName       String    @map("display_name")
+  assetClass        String    @map("asset_class")
+  averageSpreadPips Decimal?  @map("average_spread_pips")
+  minimumSpreadPips Decimal?  @map("minimum_spread_pips")
+  commission        String?
+  swapLong          String?   @map("swap_long")
+  swapShort         String?   @map("swap_short")
+  maxLeverage       String?   @map("max_leverage")
+  publicSourceName  String?   @map("public_source_name")
+  lastVerifiedAt    DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  contentStatus     String    @default("draft") @map("content_status")
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  broker Broker @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  @@index([symbol])
+  @@map("broker_instruments")
 }
 
-model Watchlist {
-  id                    String          @id @default(cuid())
-  userId                String
-  firmId                String
-  notes                 String?
-  createdAt             DateTime        @default(now())
+model BrokerRegulation {
+  id                        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brokerId                  String    @map("broker_id") @db.Uuid
+  regulator                 String
+  licenseNumber             String?   @map("license_number")
+  country                   String?
+  entityName                String?   @map("entity_name")
+  licenseStatus             String?   @map("license_status")
+  verificationLink          String?   @map("verification_link")
+  negativeBalanceProtection Boolean   @default(false) @map("negative_balance_protection")
+  segregatedClientFunds     Boolean   @default(false) @map("segregated_client_funds")
+  publicSourceName          String?   @map("public_source_name")
+  lastVerifiedAt            DateTime? @map("last_verified_at") @db.Timestamptz(6)
+  contentStatus             String    @default("draft") @map("content_status")
+  createdAt                 DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                 DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firm                  PropFirm        @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  broker Broker @relation(fields: [brokerId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, firmId])
+  @@map("broker_regulations")
 }
 
-model Alert {
-  id                    String          @id @default(cuid())
-  userId                String
-  firmId                String?
-  type                  AlertType
-  title                 String
-  message               String
-  triggerConfig         Json?
-  enabled               Boolean         @default(true)
-  lastTriggeredAt       DateTime?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+model Bookmark {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  entityType String   @map("entity_type")
+  entitySlug String   @map("entity_slug")
+  title      String
+  href       String
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firm                  PropFirm?       @relation(fields: [firmId], references: [id], onDelete: SetNull)
-
-  @@index([userId, enabled])
+  @@unique([userId, entityType, entitySlug])
+  @@index([userId, createdAt])
+  @@map("bookmarks")
 }
 
-model Review {
-  id                    String          @id @default(cuid())
-  userId                String
-  firmId                String
-  rating                Int
-  title                 String
-  body                  String
-  payoutProofUrl        String?
-  status                ReviewStatus    @default(PENDING)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
+model RecentlyViewed {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  entityType String   @map("entity_type")
+  entitySlug String?  @map("entity_slug")
+  title      String
+  href       String
+  viewedAt   DateTime @default(now()) @map("viewed_at") @db.Timestamptz(6)
 
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  firm                  PropFirm        @relation(fields: [firmId], references: [id], onDelete: Cascade)
-
-  @@index([firmId, status])
-}
-
-model Subscription {
-  id                    String              @id @default(cuid())
-  userId                String
-  stripeCustomerId      String?
-  stripeSubscriptionId  String?             @unique
-  plan                  String
-  status                SubscriptionStatus
-  currentPeriodEnd      DateTime?
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-
-  user                  User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-}
-
-model KycVerification {
-  id                    String          @id @default(cuid())
-  userId                String
-  provider              String?
-  providerReference     String?
-  status                KycStatus       @default(NOT_STARTED)
-  reviewedAt            DateTime?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model AuditLog {
-  id                    String          @id @default(cuid())
-  actorUserId           String?
-  firmId                String?
-  action                String
-  entityType            String
-  entityId              String?
-  metadata              Json?
-  createdAt             DateTime        @default(now())
-
-  actor                User?            @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
-  firm                 PropFirm?        @relation(fields: [firmId], references: [id], onDelete: SetNull)
-
-  @@index([entityType, entityId])
-}
-
-model JournalEntry {
-  id                    String          @id @default(cuid())
-  userId                String
-  title                 String
-  firmName              String?
-  accountSize           Int?
-  startingBalance       Decimal?
-  currentBalance        Decimal?
-  dailyDrawdownLimit    Decimal?
-  maxDrawdownLimit      Decimal?
-  notes                 String?
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, href])
+  @@index([userId, viewedAt])
+  @@map("recently_viewed")
 }
 
 model Notification {
-  id                    String          @id @default(cuid())
-  userId                String
-  title                 String
-  message               String
-  readAt                DateTime?
-  createdAt             DateTime        @default(now())
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String?   @map("user_id") @db.Uuid
+  title            String
+  message          String
+  notificationType String    @default("system") @map("notification_type")
+  href             String?
+  readAt           DateTime? @map("read_at") @db.Timestamptz(6)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
 
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId, createdAt])
+  @@map("notifications")
+}
+
+model InformationReport {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reporterUserId  String?   @map("reporter_user_id") @db.Uuid
+  reportedPage    String    @map("reported_page")
+  reportedCompany String?   @map("reported_company")
+  category        String
+  explanation     String
+  supportingUrl   String?   @map("supporting_url")
+  evidence        String?
+  status          String    @default("new")
+  assignedAdmin   String?   @map("assigned_admin") @db.Uuid
+  resolutionNotes String?   @map("resolution_notes")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  resolvedAt      DateTime? @map("resolved_at") @db.Timestamptz(6)
+
+  @@index([status, createdAt])
+  @@map("information_reports")
+}
+
+model SavedComparison {
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  name           String
+  comparisonType String   @default("prop_firm") @map("comparison_type")
+  entitySlugs    String[] @default([]) @map("entity_slugs")
+  notes          String?
+  filters        Json     @default("{}")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, name])
+  @@index([userId, createdAt])
+  @@map("saved_comparisons")
+}
+
+model Watchlist {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  entityType String   @default("prop_firm") @map("entity_type")
+  entitySlug String   @map("entity_slug")
+  title      String?
+  href       String?
+  notes      String?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, entityType, entitySlug])
+  @@index([userId, createdAt])
+  @@map("watchlists")
+}
+
+model PropFirmRuleHistory {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firmId           String    @map("prop_firm_id") @db.Uuid
+  ruleId           String?   @map("rule_id") @db.Uuid
+  ruleCategory     String    @map("rule_category")
+  ruleTitle        String    @map("rule_title")
+  previousValue    String?   @map("previous_value")
+  newValue         String    @map("new_value")
+  changeSummary    String    @map("change_summary")
+  publicSourceName String?   @map("public_source_name")
+  sourceUrl        String?   @map("source_url")
+  verifiedBy       String?   @map("verified_by") @db.Uuid
+  verifiedAt       DateTime? @map("verified_at") @db.Timestamptz(6)
+  contentStatus    String    @default("under_review") @map("content_status")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([firmId, createdAt])
+  @@map("prop_firm_rule_history")
+}
+
+model BrokerSpreadHistory {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  brokerId         String   @map("broker_id") @db.Uuid
+  symbol           String
+  bid              Decimal?
+  ask              Decimal?
+  spreadPips       Decimal? @map("spread_pips")
+  session          String?
+  recordedAt       DateTime @default(now()) @map("recorded_at") @db.Timestamptz(6)
+  publicSourceName String?  @map("public_source_name")
+
+  broker Broker @relation(fields: [brokerId], references: [id], onDelete: Cascade)
+
+  @@index([symbol, recordedAt])
+  @@map("broker_spread_history")
+}
+
+model CountryAvailability {
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  countryCode      String   @map("country_code")
+  entityType       String   @map("entity_type")
+  propFirmId       String?  @map("prop_firm_id") @db.Uuid
+  brokerId         String?  @map("broker_id") @db.Uuid
+  availability     String
+  notes            String?
+  paymentNotes     String?  @map("payment_notes")
+  restrictionNotes String?  @map("restriction_notes")
+  contentStatus    String   @default("draft") @map("content_status")
+  updatedAt        DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([countryCode, entityType])
+  @@map("country_availability")
+}
+
+model InternalResearchNote {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id") @db.Uuid
+  title      String
+  note       String
+  sourceUrl  String?  @map("source_url")
+  createdBy  String?  @map("created_by") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("internal_research_notes")
+}
+
+model Instrument {
+  id            String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  symbol        String             @unique
+  name          String
+  category      InstrumentCategory
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @default(now()) @updatedAt @map("updated_at")
+  spreadRecords SpreadRecord[]
+
+  @@map("instruments")
+}
+
+model SpreadRecord {
+  id           String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  instrumentId String          @map("instrument_id") @db.Uuid
+  brokerOrFirm String          @map("broker_or_firm")
+  bid          Decimal?
+  ask          Decimal?
+  spreadPips   Decimal         @map("spread_pips")
+  session      TradingSession?
+  recordedAt   DateTime        @default(now()) @map("recorded_at")
+  instrument   Instrument      @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
+
+  @@index([instrumentId, recordedAt])
+  @@index([brokerOrFirm])
+  @@map("spread_records")
+}
+
+model NewsEvent {
+  id              String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String
+  summary         String?
+  sourceName      String?     @map("source_name")
+  sourceUrl       String?     @map("source_url")
+  affectedFirms   String[]    @default([]) @map("affected_firms")
+  affectedSymbols String[]    @default([]) @map("affected_symbols")
+  impactLevel     ImpactLevel @default(MEDIUM) @map("impact_level")
+  publishedAt     DateTime    @map("published_at")
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @default(now()) @updatedAt @map("updated_at")
+
+  @@map("news_events")
+}
+
+model Alert {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  firmId          String?   @map("firm_id") @db.Uuid
+  type            AlertType
+  title           String
+  message         String
+  triggerConfig   Json?     @map("trigger_config")
+  enabled         Boolean   @default(true)
+  lastTriggeredAt DateTime? @map("last_triggered_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+  firm            PropFirm? @relation(fields: [firmId], references: [id], onDelete: SetNull)
+
+  @@index([userId, enabled])
+  @@map("alerts")
+}
+
+model Review {
+  id             String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String       @map("user_id") @db.Uuid
+  firmId         String       @map("firm_id") @db.Uuid
+  rating         Int
+  title          String
+  body           String
+  payoutProofUrl String?      @map("payout_proof_url")
+  status         ReviewStatus @default(PENDING)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @default(now()) @updatedAt @map("updated_at")
+  firm           PropFirm     @relation(fields: [firmId], references: [id], onDelete: Cascade)
+
+  @@index([firmId, status])
+  @@map("reviews")
+}
+
+model Subscription {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String             @map("user_id") @db.Uuid
+  stripeCustomerId     String?            @map("stripe_customer_id")
+  stripeSubscriptionId String?            @unique @map("stripe_subscription_id")
+  plan                 String
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime?          @map("current_period_end")
+  createdAt            DateTime           @default(now()) @map("created_at")
+  updatedAt            DateTime           @default(now()) @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model KycVerification {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String    @map("user_id") @db.Uuid
+  provider          String?
+  providerReference String?   @map("provider_reference")
+  status            KycStatus @default(NOT_STARTED)
+  reviewedAt        DateTime? @map("reviewed_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("kyc_verifications")
+}
+
+model AuditLog {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  actorUserId String?   @map("actor_user_id") @db.Uuid
+  firmId      String?   @map("firm_id") @db.Uuid
+  action      String
+  entityType  String    @map("entity_type")
+  entityId    String?   @map("entity_id")
+  metadata    Json?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  firm        PropFirm? @relation(fields: [firmId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@map("audit_logs")
+}
+
+model JournalEntry {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  title              String
+  firmName           String?  @map("firm_name")
+  accountSize        Int?     @map("account_size")
+  startingBalance    Decimal? @map("starting_balance")
+  currentBalance     Decimal? @map("current_balance")
+  dailyDrawdownLimit Decimal? @map("daily_drawdown_limit")
+  maxDrawdownLimit   Decimal? @map("max_drawdown_limit")
+  notes              String?
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("journal_entries")
 }
 
 model SavedToolResult {
-  id                    String          @id @default(cuid())
-  userId                String
-  toolName              String
-  input                 Json
-  result                Json
-  createdAt             DateTime        @default(now())
-
-  user                  User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  toolName  String   @map("tool_name")
+  input     Json
+  result    Json
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([userId, toolName])
+  @@map("saved_tool_results")
 }

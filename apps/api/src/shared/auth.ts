@@ -91,21 +91,13 @@ async function verifySupabaseJwksToken(token: string) {
   }) as SupabaseJwtPayload;
 }
 
-export function signAccessToken(payload: TokenPayload) {
-  return jwt.sign(payload, env.JWT_ACCESS_SECRET, { expiresIn: "15m" });
-}
-
-export function signRefreshToken(payload: TokenPayload) {
-  return jwt.sign(payload, env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
-}
-
 export function publicUser(user: {
   id: string;
-  email: string;
+  email: string | null;
   name: string | null;
   avatarUrl: string | null;
   role: string;
-  subscriptionStatus: string;
+  subscriptionStatus?: string | null;
   emailVerifiedAt: Date | null;
   createdAt: Date;
 }) {
@@ -115,7 +107,7 @@ export function publicUser(user: {
     name: user.name,
     avatarUrl: user.avatarUrl,
     role: user.role,
-    subscriptionStatus: user.subscriptionStatus,
+    subscriptionStatus: user.subscriptionStatus ?? "FREE",
     emailVerified: Boolean(user.emailVerifiedAt),
     createdAt: user.createdAt
   };
@@ -133,7 +125,7 @@ function normalizeRole(role: string | null | undefined) {
 async function getSupabaseProfileRole(userId: string) {
   try {
     const rows = await prisma.$queryRaw<Array<{ role: string | null }>>`
-      select role
+      select account_role as role
       from public.profiles
       where id::text = ${userId}
       limit 1
@@ -146,7 +138,7 @@ async function getSupabaseProfileRole(userId: string) {
 
 async function getSupabaseProfile(userId: string) {
   const rows = await prisma.$queryRaw<Array<{ role: string | null; email: string | null }>>`
-    select role, email
+    select account_role as role, email
     from public.profiles
     where id::text = ${userId}
     limit 1
@@ -161,11 +153,12 @@ export async function requireAuth(req: AuthenticatedRequest, _res: Response, nex
   if (!token) return next(new HttpError(401, "Missing bearer token"));
 
   try {
+    if (!env.JWT_ACCESS_SECRET) throw new Error("Legacy JWT auth is not configured");
     const payload = jwt.verify(token, env.JWT_ACCESS_SECRET) as TokenPayload;
     const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-    if (!user) return next(new HttpError(401, "User no longer exists"));
+    if (!user) return next(new HttpError(401, "Profile no longer exists"));
 
-    req.user = { sub: user.id, email: user.email, role: user.role };
+    req.user = { sub: user.id, email: user.email ?? payload.email, role: user.role };
     return next();
   } catch {
     if (!env.SUPABASE_JWT_SECRET && !supabaseJwksUrl()) {

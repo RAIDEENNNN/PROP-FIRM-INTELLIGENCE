@@ -71,7 +71,7 @@ function broker(domain: string, data: Omit<Broker, "domain" | "logoUrl" | "instr
   return {
     ...data,
     domain,
-    logoUrl: `https://logo.clearbit.com/${domain}`,
+    logoUrl: `https://logo.clearbit.com/${domain}?size=256`,
     instruments: data.instruments ?? defaultInstruments
   };
 }

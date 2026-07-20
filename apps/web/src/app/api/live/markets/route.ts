@@ -16,12 +16,53 @@ type TwelveQuote = {
   message?: string;
 };
 
-const twelveSymbols: Record<string, string> = {
-  XAUUSD: "XAU/USD",
-  EURUSD: "EUR/USD",
-  GBPUSD: "GBP/USD",
-  NAS100: "IXIC",
-  DXY: "DXY"
+type YahooQuote = {
+  symbol?: string;
+  regularMarketPrice?: number;
+  regularMarketChangePercent?: number;
+};
+
+type YahooQuoteResponse = {
+  quoteResponse?: {
+    result?: YahooQuote[];
+  };
+};
+
+type FrankfurterResponse = {
+  rates?: Record<string, number>;
+};
+
+type GoldApiResponse = {
+  price?: number;
+};
+
+type FinnhubQuote = {
+  c?: number;
+  dp?: number;
+};
+
+const twelveSymbols: Record<string, string[]> = {
+  XAUUSD: ["XAU/USD", "XAUUSD"],
+  EURUSD: ["EUR/USD", "EURUSD"],
+  GBPUSD: ["GBP/USD", "GBPUSD"],
+  NAS100: ["NDX", "IXIC", "NASDAQ100", "NAS100"],
+  DXY: ["DXY", "DXY.INDX", "DX"],
+  AAPL: ["AAPL"],
+  TSLA: ["TSLA"]
+};
+
+const yahooSymbols: Record<string, string> = {
+  XAUUSD: "GC=F",
+  EURUSD: "EURUSD=X",
+  GBPUSD: "GBPUSD=X",
+  NAS100: "NQ=F",
+  DXY: "DX-Y.NYB",
+  BTCUSD: "BTC-USD"
+};
+
+const finnhubSymbols: Record<string, string> = {
+  AAPL: "AAPL",
+  TSLA: "TSLA"
 };
 
 function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuote): MarketSnapshot[] {
@@ -45,6 +86,62 @@ function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuot
   );
 }
 
+function applyYahooQuote(markets: MarketSnapshot[], symbol: string, quote: YahooQuote): MarketSnapshot[] {
+  const rawPrice = Number(quote.regularMarketPrice);
+  const rawChange = Number(quote.regularMarketChangePercent);
+  if (!Number.isFinite(rawPrice)) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: rawPrice.toLocaleString("en-US", {
+            minimumFractionDigits: rawPrice < 10 ? 4 : 2,
+            maximumFractionDigits: symbol === "BTCUSD" || symbol === "NAS100" ? 0 : rawPrice < 10 ? 4 : 2
+          }),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source: "Live" as const
+        }
+      : market
+  );
+}
+
+function applySimplePrice(markets: MarketSnapshot[], symbol: string, price: number): MarketSnapshot[] {
+  if (!Number.isFinite(price)) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: price.toLocaleString("en-US", {
+            minimumFractionDigits: price < 10 ? 4 : 2,
+            maximumFractionDigits: symbol === "BTCUSD" || symbol === "NAS100" ? 0 : price < 10 ? 4 : 2
+          }),
+          source: "Live" as const
+        }
+      : market
+  );
+}
+
+function applyFinnhubQuote(markets: MarketSnapshot[], symbol: string, quote: FinnhubQuote): MarketSnapshot[] {
+  const rawPrice = Number(quote.c);
+  const rawChange = Number(quote.dp);
+  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: rawPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source: "Live" as const
+        }
+      : market
+  );
+}
+
 export async function GET() {
   let markets: MarketSnapshot[] = fallbackMarkets;
 
@@ -52,20 +149,114 @@ export async function GET() {
     const twelveKey = process.env.TWELVE_DATA_API_KEY?.trim();
     if (twelveKey) {
       const quotes = await Promise.all(
-        Object.entries(twelveSymbols).map(async ([symbol, providerSymbol]) => {
-          const url = new URL("https://api.twelvedata.com/quote");
-          url.searchParams.set("symbol", providerSymbol);
-          url.searchParams.set("apikey", twelveKey);
-          const response = await fetch(url, { next: { revalidate: 30 } });
-          if (!response.ok) return null;
-          const quote = (await response.json()) as TwelveQuote;
-          if (quote.status === "error") return null;
-          return { symbol, quote };
+        Object.entries(twelveSymbols).map(async ([symbol, providerSymbols]) => {
+          for (const providerSymbol of providerSymbols) {
+            const url = new URL("https://api.twelvedata.com/quote");
+            url.searchParams.set("symbol", providerSymbol);
+            url.searchParams.set("apikey", twelveKey);
+            const response = await fetch(url, { next: { revalidate: 30 } });
+            if (!response.ok) continue;
+            const quote = (await response.json()) as TwelveQuote;
+            if (quote.status === "error") continue;
+            const rawPrice = Number(quote.close ?? quote.price);
+            if (Number.isFinite(rawPrice)) return { symbol, quote };
+          }
+
+          return null;
         })
       );
 
       for (const item of quotes) {
         if (item) markets = applyQuote(markets, item.symbol, item.quote);
+      }
+    }
+
+    if (markets.some((market) => market.symbol === "XAUUSD" && market.source !== "Live")) {
+      const response = await fetch("https://api.gold-api.com/price/XAU", {
+        headers: { accept: "application/json" },
+        next: { revalidate: 30 }
+      });
+
+      if (response.ok) {
+        const payload = (await response.json()) as GoldApiResponse;
+        markets = applySimplePrice(markets, "XAUUSD", Number(payload.price));
+      }
+    }
+
+    const needsEurUsd = markets.some((market) => market.symbol === "EURUSD" && market.source !== "Live");
+    const needsGbpUsd = markets.some((market) => market.symbol === "GBPUSD" && market.source !== "Live");
+    if (needsEurUsd || needsGbpUsd) {
+      const fxRequests = await Promise.allSettled([
+        needsEurUsd
+          ? fetch("https://api.frankfurter.app/latest?from=EUR&to=USD", { headers: { accept: "application/json" }, next: { revalidate: 300 } })
+          : Promise.resolve(null),
+        needsGbpUsd
+          ? fetch("https://api.frankfurter.app/latest?from=GBP&to=USD", { headers: { accept: "application/json" }, next: { revalidate: 300 } })
+          : Promise.resolve(null)
+      ]);
+
+      const [eurResult, gbpResult] = fxRequests;
+      if (eurResult.status === "fulfilled" && eurResult.value?.ok) {
+        const payload = (await eurResult.value.json()) as FrankfurterResponse;
+        markets = applySimplePrice(markets, "EURUSD", Number(payload.rates?.USD));
+      }
+      if (gbpResult.status === "fulfilled" && gbpResult.value?.ok) {
+        const payload = (await gbpResult.value.json()) as FrankfurterResponse;
+        markets = applySimplePrice(markets, "GBPUSD", Number(payload.rates?.USD));
+      }
+    }
+
+    const finnhubKey = process.env.FINNHUB_API_KEY?.trim();
+    const missingStockSymbols = markets
+      .filter((market) => market.source !== "Live" && finnhubSymbols[market.symbol])
+      .map((market) => market.symbol);
+
+    if (finnhubKey && missingStockSymbols.length) {
+      const stockQuotes = await Promise.allSettled(
+        missingStockSymbols.map(async (symbol) => {
+          const url = new URL("https://finnhub.io/api/v1/quote");
+          url.searchParams.set("symbol", finnhubSymbols[symbol]!);
+          url.searchParams.set("token", finnhubKey);
+          const response = await fetch(url, {
+            headers: { accept: "application/json" },
+            next: { revalidate: 60 }
+          });
+          if (!response.ok) return null;
+          const quote = (await response.json()) as FinnhubQuote;
+          return { symbol, quote };
+        })
+      );
+
+      for (const result of stockQuotes) {
+        if (result.status === "fulfilled" && result.value) {
+          markets = applyFinnhubQuote(markets, result.value.symbol, result.value.quote);
+        }
+      }
+    }
+
+    const missingSymbols = markets.filter((market) => market.source !== "Live").map((market) => market.symbol);
+    const missingYahooSymbols = missingSymbols.map((symbol) => yahooSymbols[symbol]).filter(Boolean);
+
+    if (missingYahooSymbols.length) {
+      const url = new URL("https://query1.finance.yahoo.com/v7/finance/quote");
+      url.searchParams.set("symbols", missingYahooSymbols.join(","));
+      const response = await fetch(url, {
+        headers: {
+          accept: "application/json",
+          "user-agent": "FundedScope market reference/1.0"
+        },
+        next: { revalidate: 30 }
+      });
+
+      if (response.ok) {
+        const payload = (await response.json()) as YahooQuoteResponse;
+        const quotesByProviderSymbol = new Map((payload.quoteResponse?.result ?? []).map((quote) => [quote.symbol, quote]));
+
+        for (const [symbol, providerSymbol] of Object.entries(yahooSymbols)) {
+          if (!missingSymbols.includes(symbol)) continue;
+          const quote = quotesByProviderSymbol.get(providerSymbol);
+          if (quote) markets = applyYahooQuote(markets, symbol, quote);
+        }
       }
     }
 

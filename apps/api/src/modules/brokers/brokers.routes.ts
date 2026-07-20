@@ -79,14 +79,14 @@ brokersRouter.get(
         slug,
         logo_url,
         website_url,
-        official_url,
+        website_url as official_url,
         source_url,
         founded_year,
-        headquarters,
-        countries,
+        headquarters_country as headquarters,
+        supported_countries as countries,
         platforms,
         trust_score,
-        public_summary,
+        description as public_summary,
         verification_status,
         public_source_name,
         last_verified_at,
@@ -98,8 +98,8 @@ brokersRouter.get(
         updated_at
       from public.brokers
       where content_status = 'published'
-        and (${search}::text is null or name ilike ${search} or slug ilike ${search} or coalesce(public_summary, '') ilike ${search})
-        and (${country}::text is null or exists (select 1 from unnest(countries) value where value ilike ${country}))
+        and (${search}::text is null or name ilike ${search} or slug ilike ${search} or coalesce(description, '') ilike ${search})
+        and (${country}::text is null or exists (select 1 from unnest(supported_countries) value where value ilike ${country}))
         and (${platform}::text is null or exists (select 1 from unnest(platforms) value where value ilike ${platform}))
       order by coalesce(trust_score, 0) desc, name asc
       limit ${query.limit}
@@ -126,14 +126,14 @@ brokersRouter.get(
         slug,
         logo_url,
         website_url,
-        official_url,
+        website_url as official_url,
         source_url,
         founded_year,
-        headquarters,
-        countries,
+        headquarters_country as headquarters,
+        supported_countries as countries,
         platforms,
         trust_score,
-        public_summary,
+        description as public_summary,
         verification_status,
         public_source_name,
         last_verified_at,

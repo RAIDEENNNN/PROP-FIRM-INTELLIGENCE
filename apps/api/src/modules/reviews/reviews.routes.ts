@@ -20,12 +20,28 @@ reviewsRouter.get(
     const firmId = String(req.params.firmId);
     const reviews = await prisma.review.findMany({
       where: { firmId, status: "VERIFIED" },
-      include: { user: { select: { id: true, name: true, avatarUrl: true } } },
       orderBy: { createdAt: "desc" },
       take: 100
     });
+    const userIds = [...new Set(reviews.map((review) => review.userId))];
+    const users = userIds.length
+      ? await prisma.$queryRaw<Array<{ id: string; full_name: string | null; avatar_url: string | null }>>`
+          select id::text, full_name, avatar_url
+          from public.profiles
+          where id::text = any(${userIds})
+        `
+      : [];
 
-    return sendOk(res, { firmId, reviews });
+    return sendOk(res, {
+      firmId,
+      reviews: reviews.map((review) => {
+        const user = users.find((item) => item.id === review.userId);
+        return {
+          ...review,
+          user: user ? { name: user.full_name, avatarUrl: user.avatar_url } : null
+        };
+      })
+    });
   })
 );
 

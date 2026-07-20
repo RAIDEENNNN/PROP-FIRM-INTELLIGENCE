@@ -20,6 +20,15 @@ export function getSupabaseBrowserClient() {
   const { supabaseUrl, publishableKey } = getSupabaseBrowserClientConfig();
 
   if (!supabaseUrl || !publishableKey) {
+    if (process.env.NODE_ENV !== "production") {
+      const missing = [
+        !supabaseUrl ? "NEXT_PUBLIC_SUPABASE_URL" : null,
+        !publishableKey ? "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY" : null
+      ].filter(Boolean);
+
+      throw new Error(`Supabase browser auth is not configured. Missing ${missing.join(", ")}.`);
+    }
+
     throw new Error("Account sign-in is temporarily unavailable. Please try again shortly.");
   }
 

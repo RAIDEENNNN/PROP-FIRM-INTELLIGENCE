@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
 import { UniversalSearch } from "./UniversalSearch";
+import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase/client";
 
 const navRoutes = [
   { href: "/prop-firms", label: "Prop Firms" },
@@ -27,6 +28,28 @@ const mobileRoutes = [
 export function Header() {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    if (!isSupabaseBrowserConfigured()) return;
+
+    const supabase = getSupabaseBrowserClient();
+    supabase.auth.getSession().then(({ data }) => {
+      if (active) setSignedIn(Boolean(data.session));
+    });
+
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSignedIn(Boolean(session));
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   function closeMenus() {
     setOpen(false);
@@ -152,14 +175,16 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <Link href="/sign-in" onClick={closeMenus} className="rounded-2xl border border-white/15 px-4 py-3 text-center text-sm font-bold text-white">
-              Login
-            </Link>
-            <Link href="/sign-up" onClick={closeMenus} className="rounded-2xl bg-violet px-4 py-3 text-center text-sm font-bold text-white">
-              Sign Up
-            </Link>
-          </div>
+          {!signedIn ? (
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <Link href="/sign-in" onClick={closeMenus} className="rounded-2xl border border-white/15 px-4 py-3 text-center text-sm font-bold text-white">
+                Login
+              </Link>
+              <Link href="/sign-up" onClick={closeMenus} className="rounded-2xl bg-violet px-4 py-3 text-center text-sm font-bold text-white">
+                Sign Up
+              </Link>
+            </div>
+          ) : null}
         </div>
       ) : null}
     </header>

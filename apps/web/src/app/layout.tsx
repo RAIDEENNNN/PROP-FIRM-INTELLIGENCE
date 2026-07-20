@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "./globals.css";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { LiveMarketBar } from "../components/LiveMarketBar";
 import { EntryOfferModal } from "../components/EntryOfferModal";
+import { PwaRuntime } from "../components/PwaRuntime";
 import { brand, brandSameAs } from "../lib/brand";
 
 export const metadata: Metadata = {
@@ -26,8 +27,25 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/apple-touch-icon.png"
   },
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.webmanifest",
   applicationName: brand.companyName,
+  appleWebApp: {
+    capable: true,
+    title: "FundedScope",
+    statusBarStyle: "black-translucent"
+  },
+  formatDetection: {
+    telephone: false,
+    date: false,
+    address: false,
+    email: false,
+    url: false
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "msapplication-TileColor": "#020617",
+    "msapplication-config": "none"
+  },
   keywords: ["MyFundedScope", "FundedScope", "prop firm comparison", "trading intelligence", "prop firms", "broker comparison", "Trader DNA"],
   openGraph: {
     title: "FundedScope – Compare Prop Firms, Brokers, Spreads & Trading Tools",
@@ -45,10 +63,22 @@ export const metadata: Metadata = {
   }
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#020617" },
+    { media: "(prefers-color-scheme: light)", color: "#020617" }
+  ]
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
+        <PwaRuntime />
         {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ? (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}`} strategy="afterInteractive" />

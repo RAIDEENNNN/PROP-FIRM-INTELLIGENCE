@@ -8,6 +8,7 @@ type AccountState = {
   email: string;
   name?: string | null;
   role?: string | null;
+  avatarUrl?: string | null;
 };
 
 function isAdminRole(role?: string | null) {
@@ -38,12 +39,13 @@ export function AccountMenu({ onNavigate }: { onNavigate?: () => void }) {
         return;
       }
 
-      const { data: profile } = await supabase.from("profiles").select("full_name, role").eq("id", user.id).maybeSingle();
+      const { data: profile } = await supabase.from("profiles").select("full_name, account_role, avatar_url").eq("id", user.id).maybeSingle();
       if (!active) return;
       setAccount({
         email: user.email ?? "",
         name: profile?.full_name ?? user.user_metadata?.full_name ?? user.user_metadata?.name ?? null,
-        role: profile?.role ?? null
+        role: profile?.account_role ?? null,
+        avatarUrl: profile?.avatar_url ?? null
       });
     }
 
@@ -97,16 +99,25 @@ export function AccountMenu({ onNavigate }: { onNavigate?: () => void }) {
   }
 
   return (
-    <div ref={rootRef} className="relative">
+    <div ref={rootRef} className="relative flex items-center gap-2">
+      <Link href="/dashboard" onClick={onNavigate} className="hidden rounded-xl border border-white/10 px-4 py-2.5 text-sm font-bold text-slate-200 transition hover:border-electric/30 hover:text-white lg:inline-block">
+        Dashboard
+      </Link>
+      <Link href="/settings" onClick={onNavigate} className="hidden rounded-xl border border-white/10 px-4 py-2.5 text-sm font-bold text-slate-200 transition hover:border-electric/30 hover:text-white lg:inline-block">
+        Settings
+      </Link>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex h-11 items-center gap-2 rounded-xl border border-electric/25 bg-electric/10 px-3 text-sm font-black text-white transition hover:border-electric/50"
+        className="flex h-11 items-center gap-2 rounded-xl border border-electric/25 bg-electric/10 px-2 text-sm font-black text-white transition hover:border-electric/50 sm:px-3"
         aria-expanded={open}
         aria-controls="account-menu"
+        aria-label="Open account menu"
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-electric text-xs text-void">{(account.name || account.email || "?").slice(0, 1).toUpperCase()}</span>
-        Account
+        <span className="grid h-7 w-7 place-items-center overflow-hidden rounded-full bg-electric text-xs text-void">
+          {account.avatarUrl ? <img src={account.avatarUrl} alt="" className="h-full w-full object-cover" /> : (account.name || account.email || "?").slice(0, 1).toUpperCase()}
+        </span>
+        <span className="hidden sm:inline">Profile</span>
       </button>
       {open ? (
         <div id="account-menu" className="absolute right-0 top-full z-50 mt-3 w-64 rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">

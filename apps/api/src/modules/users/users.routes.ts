@@ -16,21 +16,26 @@ usersRouter.get(
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const user = await prisma.user.findUniqueOrThrow({
-      where: { id: req.user!.sub },
-      include: {
-        traderProfile: true,
-        watchlists: { include: { firm: true } },
-        alerts: true,
-        subscriptions: true
-      }
+      where: { id: req.user!.sub }
     });
+    const [watchlist, alerts, subscriptions] = await Promise.all([
+      prisma.$queryRaw`
+        select id::text, entity_type, entity_slug, title, href, notes, created_at, updated_at
+        from public.watchlists
+        where user_id::text = ${req.user!.sub}
+        order by created_at desc
+        limit 100
+      `,
+      prisma.alert.findMany({ where: { userId: req.user!.sub }, orderBy: { createdAt: "desc" } }).catch(() => []),
+      prisma.subscription.findMany({ where: { userId: req.user!.sub }, orderBy: { createdAt: "desc" } }).catch(() => [])
+    ]);
 
     return sendOk(res, {
       user: publicUser(user),
-      traderProfile: user.traderProfile,
-      watchlist: user.watchlists,
-      alerts: user.alerts,
-      subscriptions: user.subscriptions
+      traderProfile: user,
+      watchlist,
+      alerts,
+      subscriptions
     });
   })
 );

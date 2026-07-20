@@ -25,11 +25,12 @@ billingRouter.post(
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const input = checkoutSchema.parse(req.body);
     const user = await prisma.user.findUniqueOrThrow({ where: { id: req.user!.sub } });
+    const customerEmail = user.email ?? req.user!.email;
     const stripe = stripeClient();
 
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
-      customer_email: user.email,
+      customer_email: customerEmail,
       line_items: [{ price: input.priceId, quantity: 1 }],
       success_url: input.successUrl ?? `${env.FRONTEND_URL}/dashboard?checkout=success`,
       cancel_url: input.cancelUrl ?? `${env.FRONTEND_URL}/pricing?checkout=cancelled`,

@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { propFirms } from "../apps/web/src/lib/data";
 import { instruments, spreadRecords } from "../apps/web/src/lib/spreads";
@@ -10,17 +9,6 @@ function assertSafeSeedTarget() {
     throw new Error("Refusing to run seed in production without ALLOW_PRODUCTION_SEED=true");
   }
 }
-
-const challengeTypeMap = {
-  "One-step": "ONE_STEP",
-  "Two-step": "TWO_STEP",
-  "Three-step": "THREE_STEP",
-  "Instant funding": "INSTANT_FUNDING",
-  Evaluation: "TWO_STEP",
-  "Funded trader": "INSTANT_FUNDING",
-  "Futures combine": "TWO_STEP",
-  "Futures evaluation": "TWO_STEP"
-} as const;
 
 const categoryMap = {
   Forex: "FOREX",
@@ -41,25 +29,16 @@ function percentFromText(value: string) {
 }
 
 async function seedAdmin() {
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD;
-  if (!email || !password || password.includes("replace-with")) return;
+  const adminUserId = process.env.ADMIN_USER_ID;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminUserId || !adminEmail) return;
 
-  const passwordHash = await bcrypt.hash(password, 12);
-  await prisma.user.upsert({
-    where: { email },
-    update: { role: "SUPER_ADMIN", passwordHash },
-    create: {
-      email,
-      name: "FundedScope Admin",
-      passwordHash,
-      role: "SUPER_ADMIN",
-      emailVerifiedAt: new Date(),
-      traderProfile: {
-        create: { preferredMarkets: [] }
-      }
-    }
-  });
+  await prisma.$executeRaw`
+    insert into public.profiles (id, email, full_name, account_role)
+    values (${adminUserId}::uuid, ${adminEmail.toLowerCase()}, 'FundedScope Admin', 'super_admin')
+    on conflict (id)
+    do update set email = excluded.email, account_role = 'super_admin', updated_at = now()
+  `;
 }
 
 async function seedFirms() {
@@ -70,15 +49,22 @@ async function seedFirms() {
         name: firm.name,
         logoUrl: firm.logoUrl,
         websiteUrl: `https://${firm.domain}`,
-        affiliateUrl: `https://${firm.domain}`,
         country: firm.country,
         trustScore: firm.score,
+        confidenceScore: firm.score,
         rating: firm.rating,
         reviewCount: firm.reviewCount,
         payoutFrequency: firm.payoutFrequency,
+        maxDrawdown: firm.maxDrawdown,
+        dailyDrawdown: firm.dailyDrawdown,
+        profitTarget: firm.profitTarget,
+        challengeFee: firm.challengeFee,
+        maxAccount: firm.maxAccount,
         editorSummary: firm.summary,
-        seoTitle: `${firm.name} review, rules, spreads and payout intelligence | FundedScope`,
-        seoDescription: firm.summary,
+        markets: firm.markets,
+        challengeTypes: firm.challengeTypes,
+        verified: true,
+        contentStatus: "published",
         featured: firm.score >= 88
       },
       create: {
@@ -86,15 +72,22 @@ async function seedFirms() {
         slug: firm.slug,
         logoUrl: firm.logoUrl,
         websiteUrl: `https://${firm.domain}`,
-        affiliateUrl: `https://${firm.domain}`,
         country: firm.country,
         trustScore: firm.score,
+        confidenceScore: firm.score,
         rating: firm.rating,
         reviewCount: firm.reviewCount,
         payoutFrequency: firm.payoutFrequency,
+        maxDrawdown: firm.maxDrawdown,
+        dailyDrawdown: firm.dailyDrawdown,
+        profitTarget: firm.profitTarget,
+        challengeFee: firm.challengeFee,
+        maxAccount: firm.maxAccount,
         editorSummary: firm.summary,
-        seoTitle: `${firm.name} review, rules, spreads and payout intelligence | FundedScope`,
-        seoDescription: firm.summary,
+        markets: firm.markets,
+        challengeTypes: firm.challengeTypes,
+        verified: true,
+        contentStatus: "published",
         featured: firm.score >= 88
       }
     });
@@ -103,7 +96,7 @@ async function seedFirms() {
       const data = {
           firmId: saved.id,
           name: `${firm.name} ${type}`,
-          challengeType: challengeTypeMap[type as keyof typeof challengeTypeMap] ?? "TWO_STEP",
+          challengeType: type,
           accountSize: firm.maxAccount.includes("400") ? 400000 : firm.maxAccount.includes("300") ? 300000 : firm.maxAccount.includes("200") ? 200000 : 100000,
           challengeFee: amountFromFee(firm.challengeFee),
           profitTargetPhaseOne: percentFromText(firm.profitTarget),
@@ -111,7 +104,8 @@ async function seedFirms() {
           maxDrawdown: percentFromText(firm.maxDrawdown),
           profitSplit: 80,
           minimumTradingDays: index === 0 ? 0 : 3,
-          refundableFee: true
+          refundableFee: true,
+          contentStatus: "published"
       };
       const existing = await prisma.propFirmAccount.findFirst({
         where: { firmId: saved.id, name: data.name }
@@ -138,8 +132,9 @@ async function seedFirms() {
           category,
           title,
           currentValue,
-          impactLevel: category === "Risk" ? "HIGH" : "MEDIUM",
-          effectiveAt: new Date(firm.lastRuleUpdate)
+          impactLevel: category === "Risk" ? "high" : "medium",
+          effectiveAt: new Date(firm.lastRuleUpdate),
+          contentStatus: "published"
       };
       const existing = await prisma.propFirmRule.findFirst({
         where: { firmId: saved.id, category, title }

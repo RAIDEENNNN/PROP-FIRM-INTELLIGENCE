@@ -1,6 +1,6 @@
 import { brokers } from "./brokers";
 
-const favicon = (domain: string) => `https://logo.clearbit.com/${domain}`;
+const favicon = (domain: string) => `https://logo.clearbit.com/${domain}?size=256`;
 
 export type PropFirm = {
   name: string;
