@@ -5,7 +5,7 @@ import { JsonLd } from "../../components/JsonLd";
 
 export const metadata: Metadata = {
   title: "FundedScope Pricing | Free, Pro & Elite",
-  description: "Choose a FundedScope plan for prop firm comparison, unlimited AI, Trade Readiness, journaling, Trader DNA and personal trading intelligence.",
+  description: "Review FundedScope free access and planned paid tiers for prop firm comparison, Trade Readiness, journaling, Trader DNA and personal trading intelligence.",
   alternates: { canonical: "/pricing" },
   openGraph: {
     title: "FundedScope Pricing",
@@ -34,54 +34,54 @@ const plans = [
     features: [
       "Global prop firm directory",
       "Broker comparison preview",
-      "Limited market news and Today’s Edge",
+      "Limited market intelligence preview",
       "Limited AI assistant prompts",
       "Basic side-by-side comparison",
       "Basic economic calendar",
       "Lot size, drawdown and profit target calculators",
       "Starter spread matrix preview"
     ],
-    limits: ["Limited AI", "No saved alerts", "No unlimited journal analytics"]
+    limits: ["Limited AI", "No saved alerts", "No journal analytics"]
   },
   {
     name: "Pro",
     price: "$19",
-    badge: "Best starting upgrade",
+    badge: "Planned",
     audience: "For active traders who want FundedScope in their daily routine.",
     promise: "Become better every month — not just better informed.",
-    cta: "Upgrade to Pro",
-    href: "/sign-up?plan=pro",
+    cta: "Join Pro waitlist",
+    href: "/sign-up?interest=pro",
     features: [
-      "Unlimited AI assistant",
-      "Unlimited Trade Readiness checks",
-      "Unlimited trader journal entries and screenshots",
-      "AI Weekly Review every Sunday",
-      "Unlimited saved dashboards and watchlists",
-      "Broker Optimizer and Prop Optimizer",
-      "Real-time alerts for news, spreads, firms and discounts",
-      "Morning Brief, Afternoon Brief and Weekend Outlook",
-      "Performance analytics and payout progress"
+      "Planned: expanded AI assistant usage",
+      "Beta: Trade Readiness checks",
+      "Planned: trader journal entries and screenshots",
+      "Planned: AI Weekly Review every Sunday",
+      "Planned: saved dashboards and watchlists",
+      "Planned: Broker Optimizer and Prop Optimizer",
+      "Planned: alerts for news, spreads, firms and discounts",
+      "Planned: Morning Brief, Afternoon Brief and Weekend Outlook",
+      "Planned: performance analytics and payout progress"
     ],
-    limits: ["Trader DNA depth limited", "No monthly PDF report", "No AI trade replay"]
+    limits: ["Checkout not launched", "Feature access requires UAT", "No monthly PDF report yet", "No AI trade replay yet"]
   },
   {
     name: "Elite",
     price: "$49.99",
     audience: "For serious traders who want a personal AI coach and long-term trading memory.",
     promise: "Make cancelling feel like losing your trading operating system.",
-    cta: "Go Elite",
-    href: "/sign-up?plan=elite",
+    cta: "Join Elite waitlist",
+    href: "/sign-up?interest=elite",
     features: [
-      "Everything in Pro",
-      "Trader DNA: habits, psychology, mistakes and strengths",
-      "Personal AI Coach with evidence-based warnings",
-      "Monthly Trading Report PDF",
-      "AI Trade Replay for uploaded history",
-      "Deep psychology and risk pattern detection",
-      "Long-term performance graphing and goals",
-      "Priority research and alert rules"
+      "Planned: everything in Pro",
+      "Beta: Trader DNA habits, psychology, mistakes and strengths",
+      "Planned: personal AI Coach with evidence-based warnings",
+      "Planned: Monthly Trading Report PDF",
+      "Planned: AI Trade Replay for uploaded history",
+      "Planned: deep psychology and risk pattern detection",
+      "Planned: long-term performance graphing and goals",
+      "Planned: priority research and alert rules"
     ],
-    limits: ["Business/API access available separately"]
+    limits: ["Checkout not launched", "Feature access requires UAT", "Business/API access available separately"]
   }
 ];
 
@@ -90,16 +90,16 @@ const comparisonRows: Array<[string, string, string, string]> = [
   ["Every firm profile page", "Yes", "Yes", "Yes"],
   ["Broker comparison", "Preview", "Full", "Full"],
   ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview", "Full", "Full"],
-  ["AI assistant", "Limited", "Unlimited", "Unlimited + personal coach"],
-  ["Trade Readiness™", "Limited", "Unlimited", "Unlimited + Trader DNA"],
-  ["Trader journal", "Basic", "Unlimited", "Unlimited + deep analytics"],
-  ["AI Weekly Review", "No", "Yes", "Yes + monthly report"],
-  ["Saved firms/watchlist", "No", "Unlimited", "Unlimited"],
-  ["Rule-change alerts", "No", "Yes", "Yes"],
-  ["Payout and drawdown dashboard", "No", "Yes", "Advanced"],
-  ["Trader DNA™", "No", "Preview", "Full"],
-  ["AI Trade Replay", "No", "No", "Yes"],
-  ["Reports and analytics", "No", "Limited", "Full"]
+  ["AI assistant", "Limited preview", "Planned", "Planned coach"],
+  ["Trade Readiness™", "Preview", "Beta", "Beta + Trader DNA"],
+  ["Trader journal", "Basic planned", "Planned", "Planned analytics"],
+  ["AI Weekly Review", "No", "Planned", "Planned monthly report"],
+  ["Saved firms/watchlist", "No", "Planned", "Planned"],
+  ["Rule-change alerts", "No", "Planned", "Planned"],
+  ["Payout and drawdown dashboard", "No", "Planned", "Planned advanced"],
+  ["Trader DNA™", "Blank profile setup", "Beta", "Planned full"],
+  ["AI Trade Replay", "No", "No", "Planned"],
+  ["Reports and analytics", "No", "Planned", "Planned"]
 ];
 
 const reasons = [
@@ -125,8 +125,8 @@ const faqs = [
   ["Is the Free plan useful?", "Yes. Free users can research firms, compare basics and use calculators. Pro is for traders who want saved intelligence and alerts."],
   ["Are spreads source-backed?", "FundedScope separates research estimates from source-verified trading-cost figures. Exact broker or prop-firm spreads should always be checked inside the trading platform before execution."],
   ["Can firms pay for better scores?", "No. Featured placements and sponsorships must be disclosed separately from editorial scoring."],
-  ["Why Pro instead of just Free?", "Pro is for traders who want daily intelligence: unlimited AI, Trade Readiness, journal analytics, saved dashboards and real-time alerts."],
-  ["Who is Elite for?", "Elite is for traders who want FundedScope to learn their habits deeply through Trader DNA, AI coaching, monthly reports and trade replay."],
+  ["Why Pro instead of just Free?", "Pro is planned for traders who want daily intelligence, broader AI usage, Trade Readiness, journal analytics, saved dashboards and alerts after UAT."],
+  ["Who is Elite for?", "Elite is planned for traders who want FundedScope to learn their habits deeply through Trader DNA, AI coaching, monthly reports and trade replay."],
   ["Where is API or Business access?", "API access, sponsorships, reports and analytics are commercial products handled through business inquiries."]
 ];
 
@@ -161,6 +161,9 @@ export default function PricingPage() {
       <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-5xl md:text-6xl">Choose the plan that makes you a better trader every month.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
         FundedScope subscriptions make sense because consistency, risk, psychology, decisions and research are not one-time problems. They are continuous trading problems.
+      </p>
+      <p className="mt-4 max-w-3xl rounded-2xl border border-warning/20 bg-warning/10 px-4 py-3 text-sm leading-6 text-warning">
+        Pricing is standardized in USD. Paid plans are not available for checkout yet; Pro and Elite are waitlist/planned tiers until billing, permissions and feature access pass UAT.
       </p>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">

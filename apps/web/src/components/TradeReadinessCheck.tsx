@@ -33,7 +33,7 @@ export function TradeReadinessCheck() {
       <p className="text-sm uppercase tracking-[0.24em] text-electric">Decision engine</p>
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-black text-white">Should you trade today?</h2>
+          <h2 className="text-2xl font-black text-white">Are conditions good enough to trade?</h2>
           <p className="mt-2 text-sm leading-6 text-slate-400">This is not buy/sell advice. It checks whether your conditions are good enough to trade.</p>
         </div>
         <div className={`rounded-3xl border px-5 py-4 text-center ${ring}`}>

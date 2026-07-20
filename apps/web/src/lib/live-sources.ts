@@ -11,7 +11,7 @@ export const liveSources: LiveSource[] = [
   {
     name: "Binance public market data",
     category: "Crypto",
-    status: "Active",
+    status: "Provider-backed",
     envKeys: ["BINANCE_MARKET_DATA_ENABLED"],
     description: "Public bid/ask market data for crypto symbols where available.",
     launchUse: "Adds market context beside crypto spread research."

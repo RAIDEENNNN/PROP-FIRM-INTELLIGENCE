@@ -3,12 +3,12 @@ import { SpreadMatrix } from "../../components/SpreadMatrix";
 import { ExternalMarketChart } from "../../components/ExternalMarketChart";
 
 export const metadata: Metadata = {
-  title: "Prop Firm Spreads & Live Gold Chart | FundedScope",
+  title: "Prop Firm Spreads & Gold Reference Chart | FundedScope",
   description: "Compare prop firm spread estimates across forex, Gold, silver, indices, crypto and synthetic instruments with clear source labeling.",
   alternates: { canonical: "/spreads" },
   openGraph: {
-    title: "Prop Firm Spreads & Live Gold Chart | FundedScope",
-    description: "Understand spread estimates, source status and live market reference charts before trading.",
+    title: "Prop Firm Spreads & Gold Reference Chart | FundedScope",
+    description: "Understand spread estimates, source status and market reference charts before trading.",
     url: "/spreads",
     siteName: "MyFundedScope",
     type: "website",
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Prop Firm Spreads & Live Gold Chart | FundedScope",
-    description: "Understand spread estimates, source status and live market reference charts before trading.",
+    title: "Prop Firm Spreads & Gold Reference Chart | FundedScope",
+    description: "Understand spread estimates, source status and market reference charts before trading.",
     images: ["/brand/fundedscope-logo.png"]
   }
 };
@@ -31,7 +31,7 @@ export default function SpreadsPage() {
         Forex majors, minors, exotics, metals like XAUUSD/XAGUSD, commodities, indices, crypto pairs and synthetic instruments are mapped across every prop firm. FundedScope separates research estimates from source-verified trading-cost figures.
       </p>
       <div className="mt-8">
-        <ExternalMarketChart title="XAUUSD / Gold live reference chart" />
+        <ExternalMarketChart title="XAUUSD / Gold external reference chart" />
       </div>
       <SpreadMatrix />
     </main>

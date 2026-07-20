@@ -1,6 +1,6 @@
 export function ExternalMarketChart({
   symbol = "OANDA:XAUUSD",
-  title = "External live market chart"
+  title = "External market reference chart"
 }: {
   symbol?: string;
   title?: string;

@@ -11,10 +11,10 @@ export function CommandPreview() {
       <GlassCard className="glow-border">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.28em] text-electric">Live comparison</p>
+            <p className="text-sm uppercase tracking-[0.28em] text-electric">Product preview</p>
             <h2 className="mt-2 text-2xl font-black text-white">Command center</h2>
           </div>
-          <span className="rounded-full bg-success/15 px-3 py-1 text-sm text-success">Online</span>
+          <span className="rounded-full bg-electric/15 px-3 py-1 text-sm text-electric">Preview</span>
         </div>
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {dashboardMetrics.map((metric) => (

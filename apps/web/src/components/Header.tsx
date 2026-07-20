@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { AccountMenu } from "./AccountMenu";
 import { NotificationBell } from "./NotificationBell";
 import { UniversalSearch } from "./UniversalSearch";
 
@@ -36,11 +37,11 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05050a]/92 backdrop-blur-2xl">
       <div className="border-b border-white/10 bg-violet/25">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 px-4 py-2 text-center text-xs font-bold text-purple-100 sm:px-5">
-          <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">● TODAY</span>
+          <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">PREVIEW</span>
           <span>FundedScope market intelligence desk</span>
-          <span className="hidden text-slate-300 sm:inline">| London & New York session focus</span>
+          <span className="hidden text-slate-300 sm:inline">| Calendar examples until provider feeds are verified</span>
           <Link href="/market-intelligence" className="rounded-full border border-fuchsia-300/40 px-3 py-1 text-white transition hover:bg-white/10">
-            View Today’s Edge →
+            View Market Intelligence →
           </Link>
         </div>
       </div>
@@ -87,12 +88,7 @@ export function Header() {
             Search
           </button>
           <NotificationBell />
-          <Link href="/sign-in" onClick={closeMenus} className="hidden rounded-xl border border-white/10 bg-[#0d0d16] px-5 py-2.5 text-sm font-bold text-slate-200 transition hover:border-purple-400/40 hover:text-white sm:inline-block">
-            Login
-          </Link>
-          <Link href="/sign-up" onClick={closeMenus} className="hidden rounded-xl bg-violet px-5 py-2.5 text-sm font-black text-white shadow-[0_0_28px_rgba(124,58,237,0.45)] transition hover:scale-[1.02] sm:inline-block">
-            Sign Up
-          </Link>
+          <AccountMenu onNavigate={closeMenus} />
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}

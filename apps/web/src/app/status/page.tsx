@@ -7,14 +7,23 @@ export const metadata: Metadata = {
   description: "Check FundedScope platform, API, market data, news, email and payment readiness."
 };
 
-const systems = [
+const systems: Array<[string, string, string]> = [
   ["Website", "Operational", "Public comparison, broker intelligence and research pages are available."],
-  ["Accounts", "Monitored", "Authentication, profile access and account data are monitored as protected services."],
-  ["Data platform", "Monitored", "Firm, broker, rules and source-status data are maintained through the FundedScope data layer."],
-  ["Payments", "Monitored", "Premium subscription services are monitored through approved payment infrastructure."],
-  ["Emails", "Monitored", "Account and product communications are handled through approved email infrastructure."],
-  ["Analytics", "Monitored", "Product analytics help improve reliability, usability and content quality."]
+  ["Accounts", "Under development", "Sign-up and profile flows exist, but full UAT for verification, password reset and persistence is still required."],
+  ["Data platform", "Under development", "Firm, broker, rules and source-status data are maintained, but admin workflows need production role enforcement."],
+  ["Payments", "Not launched", "Paid subscriptions and checkout are disabled until Stripe, feature access and billing UAT are complete."],
+  ["Email delivery", "Under development", "Account and product email delivery needs end-to-end verification before being marked operational."],
+  ["Market feeds", "Degraded", "Market reference APIs may be unavailable. Static examples must not be treated as live quotes or live calendar events."],
+  ["Verified reviews", "Not launched", "Trader reviews and payout proof require moderation workflow completion before affecting public scores."],
+  ["Analytics", "Under development", "Product analytics are planned for reliability and usability measurement, but are not a launch-critical live service yet."]
 ];
+
+function statusClass(status: string) {
+  if (status === "Operational") return "border-success/30 bg-success/10 text-success";
+  if (status === "Degraded") return "border-warning/30 bg-warning/10 text-warning";
+  if (status === "Not launched") return "border-danger/30 bg-danger/10 text-danger";
+  return "border-electric/30 bg-electric/10 text-electric";
+}
 
 export default function StatusPage() {
   return (
@@ -26,7 +35,7 @@ export default function StatusPage() {
           <GlassCard key={name}>
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-xl font-black text-white">{name}</h2>
-              <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-bold text-electric">{status}</span>
+              <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusClass(status)}`}>{status}</span>
             </div>
             <p className="mt-3 text-sm leading-6 text-slate-400">{detail}</p>
           </GlassCard>
@@ -34,7 +43,7 @@ export default function StatusPage() {
       </section>
       <section className="mt-8">
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-violet">Live source registry</p>
+          <p className="text-sm uppercase tracking-[0.28em] text-violet">Source registry</p>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
             {liveSources.map((source) => {
               const configured = source.envKeys.length === 0 || source.envKeys.every((key) => Boolean(process.env[key]));
@@ -42,7 +51,7 @@ export default function StatusPage() {
                 <div key={source.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                   <p className="font-black text-white">{source.name}</p>
                   <p className="mt-1 text-sm text-slate-400">{source.launchUse}</p>
-                  <p className={`mt-3 text-sm font-bold ${configured ? "text-emerald-300" : "text-warning"}`}>{configured ? "Active" : "Source-reviewed"}</p>
+                  <p className={`mt-3 text-sm font-bold ${configured ? "text-emerald-300" : "text-warning"}`}>{configured ? "Configured" : "Not configured"}</p>
                 </div>
               );
             })}

@@ -79,7 +79,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
   const scoreHistory = [
     { label: "90 days", value: Math.max(60, firm.score - 3), note: "Older rule snapshot" },
     { label: "30 days", value: Math.max(60, firm.score - 1), note: "Source review pending" },
-    { label: "Today", value: firm.score, note: "Current FundedScope score" }
+    { label: "Current", value: firm.score, note: "Current FundedScope score" }
   ];
   const payoutHistory = [
     { label: "First payout", value: firm.payoutFrequency, note: "Confirm account phase and minimum days" },
@@ -389,7 +389,7 @@ export default function FirmProfilePage({ params }: { params: { slug: string } }
           <p className="text-sm uppercase tracking-[0.28em] text-gold">Community alerts</p>
           <h2 className="mt-2 text-2xl font-black text-white">Moderated signals</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
-            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">0 confirmed payout delay reports today.</p>
+            <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">No confirmed payout-delay reports in the seeded moderation preview.</p>
             <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">Rule changes require FundedScope moderation before confirmation.</p>
           </div>
         </GlassCard>

@@ -59,6 +59,7 @@ export function SignUpForm() {
 
       if (data.session?.access_token) {
         window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
+        if (data.session.refresh_token) window.localStorage.setItem("fundedscope_refresh_token", data.session.refresh_token);
         router.push("/profile");
         return;
       }
@@ -166,7 +167,9 @@ export function SignInForm() {
       if (error) throw error;
 
       if (data.session?.access_token) window.localStorage.setItem("fundedscope_access_token", data.session.access_token);
-      router.push("/dashboard");
+      if (data.session?.refresh_token) window.localStorage.setItem("fundedscope_refresh_token", data.session.refresh_token);
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(next && next.startsWith("/") ? next : "/dashboard");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Unable to sign in");
     } finally {
@@ -191,7 +194,7 @@ export function SignInForm() {
           }
           try {
             const supabase = getSupabaseBrowserClient();
-            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/settings` });
+            const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/reset-password` });
             if (error) throw error;
             setStatus("Password reset email sent if the address exists.");
           } catch (error) {
@@ -203,6 +206,50 @@ export function SignInForm() {
         Send password reset email
       </button>
       {status ? <p className="rounded-2xl border border-danger/30 bg-danger/10 p-3 text-sm text-danger">{status}</p> : null}
+    </form>
+  );
+}
+
+export function ResetPasswordForm() {
+  const router = useRouter();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus("");
+
+    if (password !== confirmPassword) {
+      setStatus("Passwords do not match.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const supabase = getSupabaseBrowserClient();
+      const { data, error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      if (data.user) {
+        setStatus("Password updated. Taking you back to settings.");
+        router.push("/settings");
+      }
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : "Unable to update password");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="mt-6 space-y-3">
+      <input value={password} onChange={(event) => setPassword(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="New password" type="password" required minLength={10} />
+      <input value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Confirm new password" type="password" required minLength={10} />
+      <button disabled={loading} className="w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void disabled:opacity-60">
+        {loading ? "Updating..." : "Reset password"}
+      </button>
+      {status ? <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-sm text-slate-300">{status}</p> : null}
     </form>
   );
 }

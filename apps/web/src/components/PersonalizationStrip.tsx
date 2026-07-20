@@ -47,8 +47,8 @@ export function PersonalizationStrip() {
           {[
             ["FundingPips Rules", "Yesterday"],
             ["FTMO Pricing", "2 hours ago"],
-            ["Exness Spreads", "Today"],
-            ["Broker review workflow", "Today"]
+            ["Exness Spreads", "Preview"],
+            ["Broker review workflow", "Preview"]
           ].map(([title, time]) => (
             <div key={title} className="rounded-2xl border border-white/10 bg-black/20 p-3">
               <p className="font-black text-white">{title}</p>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
 import { ProfileDetailsForm } from "../../components/ProfileDetailsForm";
+import { ProtectedRoute } from "../../components/ProtectedRoute";
 import { noindexMetadata } from "../../lib/seo";
 
 export const metadata = noindexMetadata("Set up your profile | FundedScope", "Start a private FundedScope profile from a blank account.", "/profile");
@@ -28,6 +29,7 @@ const privacyNotes = [
 
 export default function ProfilePage() {
   return (
+    <ProtectedRoute label="profile">
     <main className="relative mx-auto max-w-7xl overflow-hidden px-4 py-10 sm:px-5 sm:py-12">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(139,92,246,0.14),transparent_24%)]" />
 
@@ -121,6 +123,7 @@ export default function ProfilePage() {
         </GlassCard>
       </section>
     </main>
+    </ProtectedRoute>
   );
 }
 

@@ -116,7 +116,7 @@ export const marketEvents: MarketEvent[] = [
 
 export const volatilityMeters = [
   { asset: "Gold", score: 88, stars: 4, reason: "USD CPI and Fed commentary increase two-way risk." },
-  { asset: "EURUSD", score: 74, stars: 3, reason: "USD calendar dominates the pair today." },
+  { asset: "EURUSD", score: 74, stars: 3, reason: "USD calendar examples dominate the pair in this preview." },
   { asset: "GBPUSD", score: 82, stars: 4, reason: "BOE speech plus USD data can widen the range." },
   { asset: "US30", score: 69, stars: 3, reason: "Inflation data can shift rate-sensitive index flows." }
 ];

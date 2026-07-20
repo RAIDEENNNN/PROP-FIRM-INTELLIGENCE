@@ -6,6 +6,7 @@ import { fallbackMarkets, type MarketSnapshot } from "../lib/markets";
 export function LiveMarketBar() {
   const [markets, setMarkets] = useState<MarketSnapshot[]>(fallbackMarkets);
   const [message, setMessage] = useState("Market data is temporarily unavailable. Verify executable prices inside your trading platform before placing trades.");
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -34,11 +35,28 @@ export function LiveMarketBar() {
 
   const hasLiveQuotes = markets.some((market) => market.source === "Live");
 
+  if (!hasLiveQuotes) {
+    if (dismissed) return null;
+
+    return (
+      <section className="border-y border-warning/15 bg-warning/10">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-5">
+          <p className="text-xs font-semibold leading-5 text-warning">
+            Market reference data is currently unavailable. Verify executable prices in your trading platform.
+          </p>
+          <button type="button" onClick={() => setDismissed(true)} className="shrink-0 rounded-full border border-warning/25 px-3 py-1 text-xs font-black text-warning">
+            Dismiss
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-5">
         <div className={`z-10 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] ${hasLiveQuotes ? "border-electric/30 bg-void text-electric" : "border-warning/30 bg-warning/10 text-warning"}`}>
-          {hasLiveQuotes ? "Market bar" : "Market data unavailable"}
+          Market reference
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">
           <p className="truncate text-xs font-semibold text-slate-400 sm:hidden">{message}</p>
@@ -52,10 +70,9 @@ export function LiveMarketBar() {
                     {market.change}
                   </span>
                 ) : null}
-                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{hasLiveQuotes ? market.source : "Disabled"}</span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{market.source}</span>
               </div>
             ))}
-            <p className="w-[min(360px,80vw)] shrink-0 text-xs text-slate-500">{message}</p>
             <p className="w-[min(360px,80vw)] shrink-0 text-xs text-slate-500">{message}</p>
           </div>
         </div>

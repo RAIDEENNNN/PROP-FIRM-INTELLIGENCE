@@ -24,10 +24,10 @@ export const metadata: Metadata = {
 };
 
 const prompts = [
-  ["Should I trade Gold today?", "Uses your Trader DNA, news risk, spread status, session and recent journal behaviour."],
+  ["Are Gold conditions tradable?", "Uses your Trader DNA, news risk, spread status, session and recent journal behaviour."],
   ["Why did I lose money this week?", "Looks across trades, emotions, timing, market conditions and repeated mistakes."],
   ["Which prop firm suits me?", "Matches your strategy, risk tolerance, payout needs, markets and rule sensitivity."],
-  ["Explain today’s CPI risk.", "Summarizes likely volatility, affected assets and what to avoid before/after release."],
+  ["Explain CPI-style risk.", "Summarizes likely volatility, affected assets and what to avoid before/after release."],
   ["What should I improve next?", "Turns your journal and stats into one focused improvement target."]
 ];
 
@@ -54,12 +54,12 @@ export default function AiPage() {
           <p className="text-sm uppercase tracking-[0.28em] text-electric">Ask AI</p>
           <div className="mt-5 rounded-3xl border border-white/10 bg-void p-4">
             <p className="text-sm text-slate-500">Question</p>
-            <p className="mt-2 text-2xl font-black text-white">Should I trade Gold today?</p>
+            <p className="mt-2 text-2xl font-black text-white">Are Gold conditions tradable?</p>
           </div>
           <div className="mt-4 rounded-3xl border border-white/10 bg-white/[0.03] p-5">
             <p className="text-sm uppercase tracking-[0.24em] text-warning">Answer</p>
             <p className="mt-3 leading-7 text-slate-300">
-              Wait. Gold is tradable today, but not yet. Your journal shows weaker performance before high-impact USD news, and your best results come after London liquidity confirms direction. Reduce risk or wait for spreads to normalize.
+              Example answer: wait until conditions are verified. Your journal may show weaker performance before high-impact USD news, and your best results may come after London liquidity confirms direction. Reduce risk or wait for spreads to normalize.
             </p>
           </div>
         </GlassCard>

@@ -41,7 +41,7 @@ export function MarketIntelligenceDashboard() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div>
               <p className="text-sm uppercase tracking-[0.24em] text-electric">Market Intelligence Preview</p>
-              <h2 className="mt-2 text-3xl font-black text-white">Risk context for today’s trading decisions.</h2>
+              <h2 className="mt-2 text-3xl font-black text-white">Risk context preview for trading decisions.</h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
                 Curated market context highlights the assets, sessions and rule conditions traders should verify before opening or holding positions. Live news and calendar feeds appear here once provider APIs are configured.
               </p>
@@ -59,7 +59,7 @@ export function MarketIntelligenceDashboard() {
             ))}
           </div>
           <p className="mt-5 rounded-2xl border border-warning/25 bg-warning/10 p-4 text-sm font-bold text-warning">
-            Avoid trading around {readiness.avoidTime} UTC unless your plan and prop-firm rules explicitly allow news volatility.
+            Example caution window: {readiness.avoidTime} UTC. Use a verified economic calendar before treating this as a current release.
           </p>
         </GlassCard>
 

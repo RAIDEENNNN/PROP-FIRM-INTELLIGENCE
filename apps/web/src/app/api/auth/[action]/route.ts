@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getServerApiBase } from "../../../../lib/api-base";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export async function POST(request: Request, { params }: { params: { action: str
     return NextResponse.json({ ok: false, error: "Unknown auth action" }, { status: 404 });
   }
 
-  const apiBase = process.env.API_URL?.replace(/\/$/, "");
+  const apiBase = getServerApiBase();
   if (!apiBase) {
     return NextResponse.json(
       {

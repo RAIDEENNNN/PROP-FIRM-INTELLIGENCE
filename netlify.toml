@@ -8,6 +8,12 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[[redirects]]
+  from = "https://www.myfundedscope.com/*"
+  to = "https://myfundedscope.com/:splat"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]

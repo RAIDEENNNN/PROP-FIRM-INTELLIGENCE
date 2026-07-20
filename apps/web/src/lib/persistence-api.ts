@@ -1,10 +1,11 @@
 "use client";
 
-import { getSupabaseBrowserClient } from "./supabase/client";
+import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "./supabase/client";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_BACKEND_API_URL || "";
 
 export async function getAccessToken() {
+  if (!isSupabaseBrowserConfigured()) return window.localStorage.getItem("fundedscope_access_token");
   const supabase = getSupabaseBrowserClient();
   const { data } = await supabase.auth.getSession();
   return data.session?.access_token ?? window.localStorage.getItem("fundedscope_access_token");

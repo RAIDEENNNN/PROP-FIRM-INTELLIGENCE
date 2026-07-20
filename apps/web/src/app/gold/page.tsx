@@ -57,7 +57,10 @@ export default function GoldPage() {
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Gold command center</p>
       <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-4xl md:text-6xl">Trade XAUUSD with the context traders usually open five websites to find.</h1>
       <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-        One page for Gold volatility context, high-impact news risk, prop firm spread comparison, rule reminders, personal risk limits and journal prompts.
+        One page for Gold volatility context, example high-impact risk checks, prop firm spread comparison, rule reminders, personal risk limits and journal prompts.
+      </p>
+      <p className="mt-4 max-w-3xl rounded-2xl border border-warning/20 bg-warning/10 px-4 py-3 text-sm leading-6 text-warning">
+        Example risk checklist, not today&apos;s live calendar. Connect a verified calendar provider before showing current release times or live event labels.
       </p>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-4">
@@ -84,7 +87,7 @@ export default function GoldPage() {
       </div>
 
       <div className="mt-6">
-        <ExternalMarketChart title="Gold / XAUUSD external live reference" />
+        <ExternalMarketChart title="Gold / XAUUSD external reference chart" />
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.58fr_0.42fr]">
@@ -117,8 +120,8 @@ export default function GoldPage() {
         </GlassCard>
 
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-danger">Today's high-impact risk</p>
-          <h2 className="mt-2 text-2xl font-black text-white">News countdown checklist</h2>
+          <p className="text-sm uppercase tracking-[0.28em] text-danger">Example high-impact risk</p>
+          <h2 className="mt-2 text-2xl font-black text-white">News checklist, not a live countdown</h2>
           <div className="mt-5 space-y-3">
             {highImpactEvents.map((item) => (
               <div key={item.event} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -151,7 +154,7 @@ export default function GoldPage() {
         </GlassCard>
         <GlassCard>
           <p className="text-sm uppercase tracking-[0.28em] text-violet">AI risk summary</p>
-          <h2 className="mt-2 text-2xl font-black text-white">Today’s Gold trading notes</h2>
+          <h2 className="mt-2 text-2xl font-black text-white">Gold trading notes example</h2>
           <p className="mt-5 leading-8 text-slate-300">
             Gold is treated as a high-volatility instrument in the FundedScope risk model. If USD news is close, reduce risk or wait for spreads to normalize. Prefer firms with clear commodity rules, stable XAUUSD spread rows and no hidden news-trading traps.
           </p>

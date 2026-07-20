@@ -24,7 +24,7 @@ export default function SourcesPage() {
           <p className="mt-2 text-3xl font-black text-white">{readiness.total}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-sm text-slate-400">Active source types</p>
+          <p className="text-sm text-slate-400">Configured source types</p>
           <p className="mt-2 text-3xl font-black text-success">{readiness.connected}</p>
         </GlassCard>
         <GlassCard>
@@ -54,7 +54,7 @@ export default function SourcesPage() {
                       : "bg-warning/15 text-warning"
                 }`}
               >
-                {source.status}
+                {source.envKeys.length > 0 ? "Requires provider config" : source.status}
               </span>
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-300">{source.description}</p>

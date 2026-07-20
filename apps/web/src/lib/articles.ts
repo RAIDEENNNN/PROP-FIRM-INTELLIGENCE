@@ -72,7 +72,7 @@ export const brandArticles: BrandArticle[] = [
       },
       {
         heading: "Build a better routine",
-        body: "The product vision is simple: traders should start the day with FundedScope, check Today's Edge, review risk, update their journal and only then decide whether trading makes sense."
+        body: "The product vision is simple: traders should start with FundedScope, check market intelligence, review risk, update their journal and only then decide whether trading makes sense."
       }
     ]
   },
@@ -107,4 +107,3 @@ export function getArticle(slug: string) {
 export function articleUrl(slug: string) {
   return `${brand.url}/articles/${slug}`;
 }
-

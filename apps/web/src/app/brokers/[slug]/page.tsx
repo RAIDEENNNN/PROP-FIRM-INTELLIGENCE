@@ -272,7 +272,7 @@ export default function BrokerProfilePage({ params }: { params: { slug: string }
         </GlassCard>
 
         <GlassCard>
-          <p className="text-sm uppercase tracking-[0.28em] text-electric">Market risk today</p>
+          <p className="text-sm uppercase tracking-[0.28em] text-electric">Market risk preview</p>
           <h2 className="mt-2 text-2xl font-black text-white">Assets traders may route through {broker.name}</h2>
           <div className="mt-5 space-y-3">
             {volatilityMeters.slice(0, 3).map((item) => (

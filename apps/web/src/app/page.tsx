@@ -20,7 +20,7 @@ const popularSearches = ["FTMO", "FundedNext", "The 5%ers", "Exness", "IC Market
 
 const communityStats = [
   { label: "Profiles checked", value: String(propFirms.length + brokers.length), detail: "Firm and broker pages under public-source review" },
-  { label: "Research alerts", value: String(newsEvents.length + marketEvents.length), detail: "Rule, market and economic-risk items surfaced today" },
+  { label: "Research alerts", value: String(newsEvents.length + marketEvents.length), detail: "Rule, market and economic-risk items in the curated preview" },
   { label: "Decision tools", value: "9", detail: "Compare, spreads, calculators, alerts, DNA and market intelligence" }
 ];
 
@@ -31,7 +31,7 @@ const roadmapItems = [
 ];
 
 const testimonials = [
-  ["Gold scalper", "I want to know if today is a trade day before I care which firm is cheapest."],
+  ["Gold scalper", "I want to know if conditions are worth trading before I care which firm is cheapest."],
   ["Challenge buyer", "The rule context matters more than a coupon when one mistake can fail an account."],
   ["Swing trader", "A filtered news feed beats scrolling through every calendar event."]
 ];
@@ -126,7 +126,7 @@ export default function HomePage() {
         <GlassCard className="glow-border">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-electric">Today&apos;s Trading Intelligence</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-electric">Trading Intelligence Preview</p>
               <h2 className="mt-2 text-3xl font-black text-white">What deserves attention before you trade?</h2>
             </div>
             <Link href="/market-intelligence" className="rounded-full border border-electric/30 px-4 py-2 text-sm font-black text-electric transition hover:bg-electric/10">

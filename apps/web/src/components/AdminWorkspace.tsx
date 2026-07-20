@@ -138,6 +138,11 @@ export function AdminWorkspace() {
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300">
         Internal-only tools stay behind authenticated admin access. Public users receive published records and methodology, not database IDs, private source URLs, admin notes or scoring overrides.
       </p>
+      <div className="mt-6">
+        <Link href="/admin/diagnostics" className="inline-flex rounded-full border border-electric/30 bg-electric/10 px-5 py-3 text-sm font-black text-electric transition hover:bg-electric/15">
+          Open developer diagnostics
+        </Link>
+      </div>
       <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {adminModules.map((item) => (
           <GlassCard key={item.title}>

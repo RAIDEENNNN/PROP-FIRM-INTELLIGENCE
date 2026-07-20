@@ -69,7 +69,7 @@ export default function MarketIntelligencePage() {
               Economic news translated into trading decisions.
             </h1>
             <p className="mt-5 max-w-4xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              A calendar is useful. Context is better. See what today’s events may mean for Gold, forex, indices, prop-firm rules, session timing and your readiness to trade.
+              A calendar is useful. Context is better. This preview shows how FundedScope explains economic events, pair impact, prop-firm rules, session timing and readiness once verified provider feeds are connected.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="#calendar" className="rounded-2xl bg-electric px-5 py-3 text-sm font-black text-void transition hover:scale-[1.01]">
@@ -82,11 +82,11 @@ export default function MarketIntelligencePage() {
           </div>
 
           <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Today’s highest-risk window</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Example highest-risk window</p>
             <div className="mt-4 rounded-3xl border border-danger/30 bg-danger/10 p-5 text-center">
               <p className="text-sm font-black text-danger">USD CPI</p>
               <p className="mt-2 font-mono text-4xl font-black text-white">13:30 UTC</p>
-              <p className="mt-3 text-sm leading-6 text-slate-300">Gold, EURUSD, DXY, US30 and NASDAQ can move sharply around the release.</p>
+              <p className="mt-3 text-sm leading-6 text-slate-300">Gold, EURUSD, DXY, US30 and NASDAQ can move sharply around releases like this. Verify today&apos;s calendar before acting.</p>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs">
               {["Pair impact", "Prop warning", "News replay"].map((item) => (

@@ -76,7 +76,7 @@ export default function PropFirmsPage() {
             <div className="professional-panel rounded-[1.5rem] border p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="professional-accent text-xs uppercase tracking-[0.22em]">Today&apos;s shortlist</p>
+                <p className="professional-accent text-xs uppercase tracking-[0.22em]">Example shortlist</p>
                   <h2 className="mt-1 text-2xl font-black text-white">Decision picks</h2>
                 </div>
                 <Link href="/market-intelligence" className="professional-pill rounded-full border px-4 py-2 text-xs font-black">
@@ -106,7 +106,7 @@ export default function PropFirmsPage() {
               <div className="mt-4 rounded-2xl border border-warning/20 bg-warning/10 p-4">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-warning">High-impact check</p>
                 <p className="mt-2 text-sm leading-6 text-slate-200">
-                  {highImpactEvent.event} at {highImpactEvent.timeUtc} UTC can affect spreads, slippage and prop-firm news rules. Check restrictions before opening funded-account trades.
+                  Example calendar item: {highImpactEvent.event} at {highImpactEvent.timeUtc} UTC can affect spreads, slippage and prop-firm news rules. Verify a live calendar before treating this as today&apos;s event.
                 </p>
               </div>
             </div>

@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { getServerApiBase } from "../../../lib/api-base";
 
 export const dynamic = "force-dynamic";
 
 async function proxy(request: Request, method: "GET" | "PUT") {
-  const apiBase = process.env.API_URL?.replace(/\/$/, "");
+  const apiBase = getServerApiBase();
   if (!apiBase) {
     return NextResponse.json(
       {

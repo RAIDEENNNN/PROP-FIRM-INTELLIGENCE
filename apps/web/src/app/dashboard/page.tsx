@@ -4,6 +4,7 @@ import { FirmLogo } from "../../components/FirmLogo";
 import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
 import { MetricCard } from "../../components/MetricCard";
+import { ProtectedRoute } from "../../components/ProtectedRoute";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { dashboardMetrics, featuredFirms, newsEvents } from "../../lib/data";
 import { fallbackMarkets } from "../../lib/markets";
@@ -12,8 +13,8 @@ import { spreadRecords } from "../../lib/spreads";
 import { traderDnaProfile } from "../../lib/trader-dna";
 
 export const metadata: Metadata = noindexMetadata(
-  "Trader Dashboard & Today's Edge | FundedScope",
-  "Start your trading day with market context, Gold risk, watchlists, journal reminders, prop firm alerts and trade readiness.",
+  "Trader Dashboard Preview | FundedScope",
+  "Preview market context, Gold risk, watchlists, journal reminders, prop firm alerts and trade readiness.",
   "/dashboard"
 );
 
@@ -39,11 +40,12 @@ export default function DashboardPage() {
     .slice(0, 4);
 
   return (
+    <ProtectedRoute label="dashboard">
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Today’s Edge</p>
-          <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Your daily trading intelligence dashboard.</h1>
+          <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Dashboard preview</p>
+          <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Your trading intelligence dashboard.</h1>
           <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
             Start your day with market context, prop restrictions, watchlist alerts, risk limits, AI summaries and journal reminders.
           </p>
@@ -71,10 +73,10 @@ export default function DashboardPage() {
         <GlassCard className="glow-border">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm uppercase tracking-[0.28em] text-electric">Today’s market</p>
-              <h2 className="mt-2 text-3xl font-black text-white">Markets that matter now</h2>
+              <p className="text-sm uppercase tracking-[0.28em] text-electric">Market reference preview</p>
+              <h2 className="mt-2 text-3xl font-black text-white">Markets to verify before trading</h2>
             </div>
-            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400">Auto-refresh ready</span>
+            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400">Provider feed pending</span>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {fallbackMarkets.map((market) => (
@@ -222,5 +224,6 @@ export default function DashboardPage() {
         </GlassCard>
       </section>
     </main>
+    </ProtectedRoute>
   );
 }

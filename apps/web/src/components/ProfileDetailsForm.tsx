@@ -2,7 +2,7 @@
 
 import type { Dispatch, FormEvent, ReactNode, SetStateAction } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { getSupabaseBrowserClient } from "../lib/supabase/client";
+import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase/client";
 
 const marketOptions = ["Forex", "Gold", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
 const brokerOptions = ["Exness", "IC Markets", "Pepperstone", "Vantage", "JustMarkets", "Other"];
@@ -17,6 +17,9 @@ type ApiResponse = {
   code?: string;
   error?: string;
   details?: string;
+  data?: {
+    profile?: TraderProfileRecord | null;
+  };
 };
 
 type Personality = {
@@ -24,6 +27,47 @@ type Personality = {
   emotionalControl: number;
   planDiscipline: number;
   confidence: number;
+};
+
+type TraderProfileRecord = {
+  username?: string | null;
+  country?: string | null;
+  timezone?: string | null;
+  profilePictureUrl?: string | null;
+  traderType?: string | null;
+  experienceLevel?: string | null;
+  strategy?: string | null;
+  preferredMarkets?: string[] | null;
+  brokers?: string[] | null;
+  propFirms?: string[] | null;
+  liveAccountSize?: number | string | null;
+  propAccountSize?: number | string | null;
+  challengeSize?: number | string | null;
+  tradingStyle?: string | null;
+  goals?: string[] | null;
+  targetMonthlyPercent?: number | string | null;
+  targetMonthlyProfit?: number | string | null;
+  targetWinRate?: number | string | null;
+  maxDailyDrawdown?: number | string | null;
+  maxTotalDrawdown?: number | string | null;
+  sessions?: string[] | null;
+  favoriteAssets?: string[] | null;
+  yearsExperience?: number | string | null;
+  propChallenges?: number | null;
+  fundedBefore?: boolean | null;
+  largestAccount?: number | string | null;
+  psychologyWeaknesses?: string[] | null;
+  personality?: Partial<Personality> | null;
+  preferences?: {
+    notifications?: boolean;
+    newsAlerts?: boolean;
+    spreadAlerts?: boolean;
+  } | null;
+  connectedAccounts?: {
+    telegram?: boolean;
+    discord?: boolean;
+  } | null;
+  riskTolerance?: string | null;
 };
 
 const personalityQuestions: Array<[keyof Personality, string]> = [
@@ -79,6 +123,42 @@ export function ProfileDetailsForm() {
     }
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadProfile() {
+      if (!isSupabaseBrowserConfigured()) {
+        setStatus("Account services need Supabase env keys before Trading DNA can load locally.");
+        return;
+      }
+
+      const supabase = getSupabaseBrowserClient();
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token ?? window.localStorage.getItem("fundedscope_access_token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("/api/trader-profile", {
+          headers: { authorization: `Bearer ${token}` },
+          cache: "no-store"
+        });
+        const payload = (await response.json()) as ApiResponse;
+        const profile = payload.data?.profile;
+        if (!active || !response.ok || !profile) return;
+
+        hydrateProfile(profile);
+        setStatus("Loaded your saved Trading DNA.");
+      } catch {
+        if (active) setStatus("Sign in is active, but saved Trading DNA could not be loaded yet.");
+      }
+    }
+
+    loadProfile();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const dnaScore = useMemo(() => {
     const sections = [
       username,
@@ -109,8 +189,59 @@ export function ProfileDetailsForm() {
     return Number.isFinite(number) && value.trim() !== "" ? number : null;
   }
 
+  function valueToInput(value: number | string | null | undefined) {
+    return value == null ? "" : String(value);
+  }
+
+  function hydrateProfile(profile: TraderProfileRecord) {
+    setUsername(profile.username ?? "");
+    setCountry(profile.country ?? "");
+    setTimezone(profile.timezone ?? timezone);
+    setProfilePictureUrl(profile.profilePictureUrl ?? "");
+    setTraderType(profile.traderType ?? "");
+    setExperienceLevel(profile.experienceLevel ?? "");
+    setPreferredMarkets(profile.preferredMarkets ?? []);
+    setBrokers(profile.brokers ?? []);
+    setPropFirms(profile.propFirms ?? []);
+    setLiveAccountSize(valueToInput(profile.liveAccountSize));
+    setPropAccountSize(valueToInput(profile.propAccountSize));
+    setChallengeSize(valueToInput(profile.challengeSize));
+    setTradingStyle(profile.tradingStyle ?? "");
+    setStrategy(profile.strategy ?? "");
+    setGoals(profile.goals ?? []);
+    setTargetMonthlyPercent(valueToInput(profile.targetMonthlyPercent));
+    setTargetMonthlyProfit(valueToInput(profile.targetMonthlyProfit));
+    setTargetWinRate(valueToInput(profile.targetWinRate));
+    setMaxDailyDrawdown(valueToInput(profile.maxDailyDrawdown));
+    setMaxTotalDrawdown(valueToInput(profile.maxTotalDrawdown));
+    setSessions(profile.sessions ?? []);
+    setFavoriteAssets(profile.favoriteAssets ?? []);
+    setYearsExperience(valueToInput(profile.yearsExperience));
+    setPropChallenges(valueToInput(profile.propChallenges));
+    setFundedBefore(Boolean(profile.fundedBefore));
+    setLargestAccount(valueToInput(profile.largestAccount));
+    setPsychologyWeaknesses(profile.psychologyWeaknesses ?? []);
+    setPersonality({
+      patience: profile.personality?.patience ?? 1,
+      emotionalControl: profile.personality?.emotionalControl ?? 1,
+      planDiscipline: profile.personality?.planDiscipline ?? 1,
+      confidence: profile.personality?.confidence ?? 1
+    });
+    setNotifications(Boolean(profile.preferences?.notifications));
+    setNewsAlerts(Boolean(profile.preferences?.newsAlerts));
+    setSpreadAlerts(Boolean(profile.preferences?.spreadAlerts));
+    setTelegramConnected(Boolean(profile.connectedAccounts?.telegram));
+    setDiscordConnected(Boolean(profile.connectedAccounts?.discord));
+    setRiskTolerance(profile.riskTolerance ?? "");
+  }
+
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!isSupabaseBrowserConfigured()) {
+      setStatus("Account services need Supabase env keys before FundedScope can save Trading DNA.");
+      return;
+    }
+
     const supabase = getSupabaseBrowserClient();
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData.session?.access_token ?? window.localStorage.getItem("fundedscope_access_token");
@@ -176,7 +307,7 @@ export function ProfileDetailsForm() {
             currentProfit: 0,
             currentDrawdown: numberOrNull(maxTotalDrawdown) ?? 0
           },
-          riskTolerance,
+          riskTolerance: riskTolerance || undefined,
           payoutPriority: goals.includes("Full-time Income"),
           swingTrading: tradingStyle === "Swing Trader" || tradingStyle === "Position Trader",
           newsTrading: newsAlerts

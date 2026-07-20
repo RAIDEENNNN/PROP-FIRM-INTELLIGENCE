@@ -3,6 +3,7 @@ import type { PropFirm } from "../lib/data";
 
 export function ScoreBreakdown({ firm, compact = false }: { firm: PropFirm; compact?: boolean }) {
   const breakdown = getScoreBreakdown(firm);
+  const sourceMode = firm.verified ? "Editorial" : "Estimated";
 
   return (
     <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4">
@@ -26,7 +27,20 @@ export function ScoreBreakdown({ firm, compact = false }: { firm: PropFirm; comp
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
               <div className="h-full rounded-full bg-gradient-to-r from-success via-electric to-violet" style={{ width: `${row.percent}%` }} />
             </div>
-            {!compact ? <p className="mt-2 text-xs leading-5 text-slate-500">{row.explanation}</p> : null}
+            {!compact ? (
+              <div className="mt-2 rounded-2xl border border-white/10 bg-black/20 p-3">
+                <p className="text-xs leading-5 text-slate-400">{row.explanation}</p>
+                <div className="mt-3 grid gap-2 text-[11px] leading-5 text-slate-500 sm:grid-cols-2">
+                  <p>Source type: {sourceMode} review</p>
+                  <p>Last checked: {firm.lastRuleUpdate}</p>
+                  <p>Calculation: weighted deduction from {row.max} pts</p>
+                  <p>Evidence: official site, public profile data and FundedScope methodology</p>
+                </div>
+                <a href={`https://${firm.domain}`} target="_blank" rel="noreferrer" className="mt-3 inline-block text-xs font-black text-electric">
+                  Verify official source
+                </a>
+              </div>
+            ) : null}
           </div>
         ))}
       </div>
