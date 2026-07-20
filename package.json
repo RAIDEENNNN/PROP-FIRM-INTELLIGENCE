@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "FundedScope premium trader intelligence platform.",
+  "engines": {
+    "node": "20.x"
+  },
   "workspaces": [
     "apps/web",
     "apps/api"

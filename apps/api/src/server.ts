@@ -5,10 +5,12 @@ import rateLimit from "express-rate-limit";
 import { ZodError } from "zod";
 import { env } from "./shared/env";
 import { HttpError } from "./shared/http";
+import { prisma } from "./shared/prisma";
 import { authRouter } from "./modules/auth/auth.routes";
 import { usersRouter } from "./modules/users/users.routes";
 import { traderProfileRouter } from "./modules/trader-profile/trader-profile.routes";
 import { firmsRouter } from "./modules/firms/firms.routes";
+import { brokersRouter } from "./modules/brokers/brokers.routes";
 import { compareRouter } from "./modules/compare/compare.routes";
 import { spreadsRouter } from "./modules/spreads/spreads.routes";
 import { newsRouter } from "./modules/news/news.routes";
@@ -20,10 +22,12 @@ import { adminRouter } from "./modules/admin/admin.routes";
 import { persistenceRouter } from "./modules/persistence/persistence.routes";
 
 const app = express();
+const apiVersion = env.API_VERSION ?? process.env.npm_package_version ?? "0.1.0";
 const allowedCorsOrigins = new Set([
   env.FRONTEND_URL,
   "https://myfundedscope.com",
   "https://www.myfundedscope.com",
+  ...(env.CORS_ORIGINS ? env.CORS_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean) : []),
   ...(env.NODE_ENV === "production" ? [] : ["http://localhost:3000"])
 ].filter(Boolean));
 
@@ -44,22 +48,41 @@ app.use(
 app.use(express.json({ limit: "1mb" }));
 app.use(
   rateLimit({
-    windowMs: 60_000,
-    max: 180
+    windowMs: env.RATE_LIMIT_WINDOW_MS,
+    max: env.RATE_LIMIT_MAX,
+    standardHeaders: true,
+    legacyHeaders: false
   })
 );
 
-app.get("/api/health", (_req, res) => {
-  res.json({
-    status: "ok",
-    service: "myfundedscope-api"
+async function healthHandler(_req: express.Request, res: express.Response) {
+  let database: "ok" | "unavailable" = "ok";
+  let statusCode = 200;
+
+  try {
+    await prisma.$queryRaw`select 1`;
+  } catch {
+    database = "unavailable";
+    statusCode = 503;
+  }
+
+  res.status(statusCode).json({
+    status: database === "ok" ? "ok" : "degraded",
+    environment: env.NODE_ENV,
+    version: apiVersion,
+    database,
+    timestamp: new Date().toISOString()
   });
-});
+}
+
+app.get("/health", healthHandler);
+app.get("/api/health", healthHandler);
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/trader-profile", traderProfileRouter);
 app.use("/api/firms", firmsRouter);
+app.use("/api/brokers", brokersRouter);
 app.use("/api/compare", compareRouter);
 app.use("/api/spreads", spreadsRouter);
 app.use("/api/news", newsRouter);
@@ -91,7 +114,11 @@ app.use((error: unknown, _req: express.Request, res: express.Response, _next: ex
     });
   }
 
-  console.error(error);
+  if (env.NODE_ENV !== "production") {
+    console.error(error);
+  } else {
+    console.error(error instanceof Error ? error.message : "Unhandled API error");
+  }
   return res.status(500).json({
     ok: false,
     error: "Internal server error"

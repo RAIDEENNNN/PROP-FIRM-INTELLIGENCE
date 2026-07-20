@@ -23,7 +23,11 @@ const alertUpdateSchema = z.object({
 });
 
 const watchlistSchema = z.object({
-  firmId: z.string(),
+  entityType: z.enum(["prop_firm", "broker", "news", "article"]).default("prop_firm"),
+  entitySlug: z.string().min(1).max(160).optional(),
+  firmId: z.string().min(1).max(160).optional(),
+  title: z.string().max(180).optional(),
+  href: z.string().max(300).optional(),
   notes: z.string().max(500).optional()
 });
 
@@ -108,13 +112,28 @@ alertsRouter.get(
   "/watchlist",
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const watchlist = await prisma.watchlist.findMany({
-      where: { userId: req.user!.sub },
-      include: { firm: true },
-      orderBy: { createdAt: "desc" }
-    });
+    const rows = await prisma.$queryRaw<
+      Array<{ id: string; entity_type: string; entity_slug: string; title: string | null; href: string | null; notes: string | null; created_at: Date; updated_at: Date }>
+    >`
+      select id::text, entity_type, entity_slug, title, href, notes, created_at, updated_at
+      from public.watchlists
+      where user_id::text = ${req.user!.sub}
+      order by created_at desc
+      limit 100
+    `;
 
-    return sendOk(res, { watchlist });
+    return sendOk(res, {
+      watchlist: rows.map((row) => ({
+        id: row.id,
+        entityType: row.entity_type,
+        entitySlug: row.entity_slug,
+        title: row.title,
+        href: row.href,
+        notes: row.notes,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }))
+    });
   })
 );
 
@@ -123,14 +142,40 @@ alertsRouter.post(
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const input = watchlistSchema.parse(req.body);
-    const watchlistItem = await prisma.watchlist.upsert({
-      where: { userId_firmId: { userId: req.user!.sub, firmId: input.firmId } },
-      update: { notes: input.notes },
-      create: { userId: req.user!.sub, firmId: input.firmId, notes: input.notes },
-      include: { firm: true }
-    });
+    const entitySlug = input.entitySlug ?? input.firmId;
+    if (!entitySlug) throw new HttpError(400, "entitySlug is required");
+    const rows = await prisma.$queryRaw<Array<{ id: string; entity_type: string; entity_slug: string; updated_at: Date }>>`
+      insert into public.watchlists (user_id, entity_type, entity_slug, title, href, notes)
+      values (${req.user!.sub}::uuid, ${input.entityType}, ${entitySlug}, ${input.title ?? null}, ${input.href ?? null}, ${input.notes ?? null})
+      on conflict (user_id, entity_type, entity_slug)
+      do update set
+        title = excluded.title,
+        href = excluded.href,
+        notes = excluded.notes,
+        updated_at = now()
+      returning id::text, entity_type, entity_slug, updated_at
+    `;
 
-    return sendOk(res, { watchlistItem }, 201);
+    return sendOk(res, { watchlistItem: rows[0] }, 201);
+  })
+);
+
+alertsRouter.delete(
+  "/watchlist/:entityType/:entitySlug",
+  requireAuth,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const params = z.object({
+      entityType: z.enum(["prop_firm", "broker", "news", "article"]),
+      entitySlug: z.string().min(1)
+    }).parse(req.params);
+    await prisma.$executeRaw`
+      delete from public.watchlists
+      where user_id::text = ${req.user!.sub}
+        and entity_type = ${params.entityType}
+        and entity_slug = ${params.entitySlug}
+    `;
+
+    return sendOk(res, { deleted: true });
   })
 );
 
@@ -139,9 +184,12 @@ alertsRouter.delete(
   requireAuth,
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const firmId = String(req.params.firmId);
-    await prisma.watchlist.delete({
-      where: { userId_firmId: { userId: req.user!.sub, firmId } }
-    });
+    await prisma.$executeRaw`
+      delete from public.watchlists
+      where user_id::text = ${req.user!.sub}
+        and entity_type = 'prop_firm'
+        and entity_slug = ${firmId}
+    `;
 
     return sendOk(res, { deleted: true });
   })

@@ -15,7 +15,7 @@ The API is Railway-compatible:
 - Production build script: `npm run build:api`
 - Production start script from repo root: `npm run start:api`
 - API package start script: `node dist/server.js`
-- Health-check path: `/api/health`
+- Health-check path: `/health`
 - Port: `process.env.PORT`
 - Host binding: `0.0.0.0`
 
@@ -24,7 +24,10 @@ Expected health response:
 ```json
 {
   "status": "ok",
-  "service": "myfundedscope-api"
+  "environment": "production",
+  "version": "0.1.0",
+  "database": "ok",
+  "timestamp": "2026-07-20T00:00:00.000Z"
 }
 ```
 
@@ -34,9 +37,9 @@ Use the repository root so workspace scripts and shared root dependencies resolv
 
 ```text
 Root Directory: /
-Build command: npm install && npm run build:api
+Build command: npm run prisma:generate && npm run build:api
 Start command: npm run start:api
-Health-check path: /api/health
+Health-check path: /health
 ```
 
 Alternative if Railway installs dependencies automatically:
@@ -45,7 +48,7 @@ Alternative if Railway installs dependencies automatically:
 Root Directory: /
 Build command: npm run build:api
 Start command: npm run start:api
-Health-check path: /api/health
+Health-check path: /health
 ```
 
 Do not set Root Directory to `/apps/api` unless the deployment has been tested with workspace dependency resolution from that directory.
@@ -58,6 +61,8 @@ Configure these in Railway service variables. Do not commit values to GitHub.
 NODE_ENV="production"
 
 DATABASE_URL=""
+DIRECT_URL=""
+API_VERSION="0.1.0"
 
 JWT_ACCESS_SECRET=""
 JWT_REFRESH_SECRET=""
@@ -70,6 +75,9 @@ SUPABASE_JWT_ISSUER=""
 SUPABASE_JWT_SECRET=""
 
 FRONTEND_URL="https://myfundedscope.com"
+CORS_ORIGINS="https://myfundedscope.com,https://www.myfundedscope.com"
+RATE_LIMIT_WINDOW_MS="60000"
+RATE_LIMIT_MAX="180"
 ```
 
 Recommended:

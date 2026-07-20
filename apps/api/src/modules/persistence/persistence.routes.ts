@@ -33,6 +33,14 @@ const reportSchema = z.object({
   evidence: z.string().max(3000).optional()
 });
 
+const savedComparisonSchema = z.object({
+  name: z.string().min(1).max(120),
+  comparisonType: z.enum(["prop_firm", "broker", "mixed"]).default("prop_firm"),
+  entitySlugs: z.array(z.string().min(1).max(160)).min(1).max(12),
+  notes: z.string().max(1000).optional(),
+  filters: z.record(z.unknown()).optional()
+});
+
 function cleanText(value: string | undefined) {
   return value?.replace(/[<>]/g, "").trim() || null;
 }
@@ -206,5 +214,90 @@ persistenceRouter.post(
         createdAt: rows[0]?.created_at
       }
     }, 201);
+  })
+);
+
+persistenceRouter.get(
+  "/saved-comparisons",
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const rows = await prisma.$queryRaw<
+      Array<{
+        id: string;
+        name: string;
+        comparison_type: string;
+        entity_slugs: string[];
+        notes: string | null;
+        filters: unknown;
+        created_at: Date;
+        updated_at: Date;
+      }>
+    >`
+      select id::text, name, comparison_type, entity_slugs, notes, filters, created_at, updated_at
+      from public.saved_comparisons
+      where user_id::text = ${req.user!.sub}
+      order by updated_at desc
+      limit 100
+    `;
+
+    return sendOk(res, {
+      savedComparisons: rows.map((row) => ({
+        id: row.id,
+        name: row.name,
+        comparisonType: row.comparison_type,
+        entitySlugs: row.entity_slugs,
+        notes: row.notes,
+        filters: row.filters,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }))
+    });
+  })
+);
+
+persistenceRouter.post(
+  "/saved-comparisons",
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const input = savedComparisonSchema.parse(req.body);
+    const rows = await prisma.$queryRaw<Array<{ id: string; updated_at: Date }>>`
+      insert into public.saved_comparisons (
+        user_id,
+        name,
+        comparison_type,
+        entity_slugs,
+        notes,
+        filters
+      )
+      values (
+        ${req.user!.sub}::uuid,
+        ${cleanText(input.name)},
+        ${input.comparisonType},
+        ${input.entitySlugs},
+        ${cleanText(input.notes)},
+        ${(input.filters ?? {}) as any}::jsonb
+      )
+      on conflict (user_id, name)
+      do update set
+        comparison_type = excluded.comparison_type,
+        entity_slugs = excluded.entity_slugs,
+        notes = excluded.notes,
+        filters = excluded.filters,
+        updated_at = now()
+      returning id::text, updated_at
+    `;
+
+    return sendOk(res, { saved: true, id: rows[0]?.id, updatedAt: rows[0]?.updated_at }, 201);
+  })
+);
+
+persistenceRouter.delete(
+  "/saved-comparisons/:id",
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const params = z.object({ id: z.string().uuid() }).parse(req.params);
+    await prisma.$executeRaw`
+      delete from public.saved_comparisons
+      where id = ${params.id}::uuid and user_id::text = ${req.user!.sub}
+    `;
+
+    return sendOk(res, { removed: true });
   })
 );

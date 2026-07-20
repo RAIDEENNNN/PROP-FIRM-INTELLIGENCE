@@ -5,6 +5,12 @@ import { instruments, spreadRecords } from "../apps/web/src/lib/spreads";
 
 const prisma = new PrismaClient();
 
+function assertSafeSeedTarget() {
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_PRODUCTION_SEED !== "true") {
+    throw new Error("Refusing to run seed in production without ALLOW_PRODUCTION_SEED=true");
+  }
+}
+
 const challengeTypeMap = {
   "One-step": "ONE_STEP",
   "Two-step": "TWO_STEP",
@@ -93,12 +99,8 @@ async function seedFirms() {
       }
     });
 
-    await prisma.propFirmAccount.deleteMany({ where: { firmId: saved.id } });
-    await prisma.propFirmRule.deleteMany({ where: { firmId: saved.id } });
-
     for (const [index, type] of firm.challengeTypes.entries()) {
-      await prisma.propFirmAccount.create({
-        data: {
+      const data = {
           firmId: saved.id,
           name: `${firm.name} ${type}`,
           challengeType: challengeTypeMap[type as keyof typeof challengeTypeMap] ?? "TWO_STEP",
@@ -110,8 +112,15 @@ async function seedFirms() {
           profitSplit: 80,
           minimumTradingDays: index === 0 ? 0 : 3,
           refundableFee: true
-        }
+      };
+      const existing = await prisma.propFirmAccount.findFirst({
+        where: { firmId: saved.id, name: data.name }
       });
+      if (existing) {
+        await prisma.propFirmAccount.update({ where: { id: existing.id }, data });
+      } else {
+        await prisma.propFirmAccount.create({ data });
+      }
     }
 
     const ruleData = [
@@ -124,16 +133,22 @@ async function seedFirms() {
     ];
 
     for (const [category, title, currentValue] of ruleData) {
-      await prisma.propFirmRule.create({
-        data: {
+      const data = {
           firmId: saved.id,
           category,
           title,
           currentValue,
           impactLevel: category === "Risk" ? "HIGH" : "MEDIUM",
           effectiveAt: new Date(firm.lastRuleUpdate)
-        }
+      };
+      const existing = await prisma.propFirmRule.findFirst({
+        where: { firmId: saved.id, category, title }
       });
+      if (existing) {
+        await prisma.propFirmRule.update({ where: { id: existing.id }, data });
+      } else {
+        await prisma.propFirmRule.create({ data });
+      }
     }
   }
 }
@@ -154,8 +169,6 @@ async function seedSpreads() {
     });
   }
 
-  await prisma.spreadRecord.deleteMany({});
-
   const instrumentIds = await prisma.instrument.findMany({
     select: { id: true, symbol: true }
   });
@@ -165,14 +178,21 @@ async function seedSpreads() {
     const instrumentId = idBySymbol.get(record.symbol);
     if (!instrumentId) continue;
 
-    await prisma.spreadRecord.create({
-      data: {
+    const recordedAt = new Date(record.updatedAt);
+    const data = {
         instrumentId,
         brokerOrFirm: record.firmName,
         spreadPips: record.spread,
-        recordedAt: new Date(record.updatedAt)
-      }
+        recordedAt
+    };
+    const existing = await prisma.spreadRecord.findFirst({
+      where: { instrumentId, brokerOrFirm: record.firmName, recordedAt }
     });
+    if (existing) {
+      await prisma.spreadRecord.update({ where: { id: existing.id }, data });
+    } else {
+      await prisma.spreadRecord.create({ data });
+    }
   }
 }
 
@@ -199,11 +219,19 @@ async function seedNews() {
   ];
 
   for (const item of news) {
-    await prisma.newsEvent.create({ data: item });
+    const existing = await prisma.newsEvent.findFirst({
+      where: { title: item.title }
+    });
+    if (existing) {
+      await prisma.newsEvent.update({ where: { id: existing.id }, data: item });
+    } else {
+      await prisma.newsEvent.create({ data: item });
+    }
   }
 }
 
 async function main() {
+  assertSafeSeedTarget();
   await seedAdmin();
   await seedFirms();
   await seedSpreads();

@@ -19,7 +19,7 @@ const stats = [
 const popularSearches = ["FTMO", "FundedNext", "The 5%ers", "Exness", "IC Markets"];
 
 const communityStats = [
-  { label: "Profiles checked", value: String(propFirms.length + brokers.length), detail: "Firm and broker pages under public-source review" },
+  { label: "Profiles checked", value: String(propFirms.length + brokers.length), detail: "Firm and broker pages under public source review" },
   { label: "Research alerts", value: String(newsEvents.length + marketEvents.length), detail: "Rule, market and economic-risk items in the curated preview" },
   { label: "Decision tools", value: "9", detail: "Compare, spreads, calculators, alerts, DNA and market intelligence" }
 ];
@@ -37,9 +37,9 @@ const testimonials = [
 ];
 
 const faqs = [
-  ["What is FundedScope?", "A trading intelligence platform for comparing prop firms, brokers, rules, spreads, market risk and trader-fit recommendations."],
+  ["What is FundedScope?", "A trading intelligence platform for comparing prop firms, brokers, rules, spreads, market risk and trader fit recommendations."],
   ["Is this financial advice?", "No. FundedScope provides research, comparison data and educational decision support. Traders should verify official terms before acting."],
-  ["Why are some spreads source-checked?", "FundedScope only publishes exact numeric trading costs when they are supported by an official page, verified manual review or feed-backed source."]
+  ["Why are some spreads source-checked?", "FundedScope only publishes exact numeric trading costs when they are supported by an official page, verified manual review or feed backed source."]
 ];
 
 export default function HomePage() {
@@ -61,7 +61,7 @@ export default function HomePage() {
         }}
       />
 
-      <section className="grid gap-8 py-4 lg:grid-cols-[0.76fr_1fr] lg:items-center lg:py-8">
+      <section className="grid gap-8 py-4 lg:grid-cols-[minmax(0,0.76fr)_minmax(0,1fr)] lg:items-center lg:py-8">
         <div>
           <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#0b0b14]/80 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-slate-300">
             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_18px_rgba(52,211,153,0.9)]" />
@@ -412,10 +412,10 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
   ];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#090914] p-4 shadow-[0_0_80px_rgba(124,58,237,0.18)]">
+    <div className="relative min-w-0 overflow-hidden rounded-3xl border border-white/10 bg-[#090914] p-4 shadow-[0_0_80px_rgba(124,58,237,0.18)]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(124,58,237,0.24),transparent_28%),radial-gradient(circle_at_90%_10%,rgba(217,70,239,0.16),transparent_24%)]" />
-      <div className="relative grid gap-4 lg:grid-cols-[140px_1fr]">
-        <aside className="hidden rounded-2xl border border-white/10 bg-black/25 p-3 lg:block">
+      <div className="relative grid min-w-0 gap-4 xl:grid-cols-[150px_minmax(0,1fr)]">
+        <aside className="hidden rounded-2xl border border-white/10 bg-black/25 p-3 xl:block">
           <Link href="/" className="mb-5 flex items-center gap-2">
             <span className="grid h-7 w-7 shrink-0 place-items-center overflow-hidden rounded-full border border-purple-400/30 bg-black shadow-[0_0_20px_rgba(124,58,237,0.35)]">
               <img src="/brand/fundedscope-logo.png" alt="FundedScope logo" width={36} height={36} decoding="async" className="h-full w-full object-contain p-0.5" />
@@ -442,9 +442,9 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
           </Link>
         </aside>
 
-        <div className="rounded-2xl border border-white/10 bg-[#0d0d18]/90 p-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-[#0d0d18]/90 p-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
               <span className="rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-purple-200">
                 Product preview
               </span>
@@ -456,13 +456,13 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
             </Link>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="mt-5 grid grid-cols-2 gap-3 2xl:grid-cols-4">
             {metrics.map((metric) => (
               <DashMetric key={metric.label} {...metric} />
             ))}
           </div>
 
-          <div className="mt-5 grid gap-4 xl:grid-cols-[0.9fr_0.9fr_1.2fr]">
+          <div className="mt-5 grid min-w-0 gap-4 xl:grid-cols-2 2xl:grid-cols-[0.9fr_0.9fr_1.15fr]">
             <DashboardList
               title="Top Prop Firms"
               href="/prop-firms"
@@ -474,6 +474,7 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
               items={previewBrokers.slice(0, 5).map((broker) => ({ name: broker.name, value: `${(broker.trustScore / 20).toFixed(1)} ★`, href: `/brokers/${broker.slug}` }))}
             />
             <DashboardList
+              className="xl:col-span-2 2xl:col-span-1"
               title="Pair Impact"
               href="/market-intelligence"
               items={pairImpacts.map((item) => ({ name: item.pair, value: item.overall.replace(" volatility", ""), href: "/market-intelligence" }))}
@@ -494,20 +495,20 @@ function DashMetric({ label, value, href }: { label: string; value: string; href
   );
 }
 
-function DashboardList({ title, href, items }: { title: string; href: string; items: Array<{ name: string; value: string; href: string }> }) {
+function DashboardList({ title, href, items, className = "" }: { title: string; href: string; items: Array<{ name: string; value: string; href: string }>; className?: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
-      <div className="flex items-center justify-between">
-        <p className="font-black text-white">{title}</p>
+    <div className={`min-w-0 rounded-2xl border border-white/10 bg-black/20 p-4 ${className}`}>
+      <div className="flex min-w-0 items-start justify-between gap-3">
+        <p className="min-w-0 text-base font-black leading-tight text-white">{title}</p>
         <Link href={href} className="rounded-lg px-2 py-1 text-[10px] font-bold text-purple-300 transition hover:bg-purple-400/10 hover:text-purple-100">
           View all
         </Link>
       </div>
       <div className="mt-4 space-y-3">
         {items.slice(0, 5).map(({ name, value, href: itemHref }, index) => (
-          <Link key={`${title}-${name}`} href={itemHref} className="flex items-center justify-between gap-3 rounded-xl px-2 py-1.5 text-sm transition hover:bg-white/10">
-            <span className="truncate text-slate-300">{index + 1}. {name}</span>
-            <span className="font-black text-amber-300">{value}</span>
+          <Link key={`${title}-${name}`} href={itemHref} className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-start gap-3 rounded-xl px-2 py-1.5 text-sm transition hover:bg-white/10">
+            <span className="min-w-0 leading-snug text-slate-300">{index + 1}. {name}</span>
+            <span className="shrink-0 text-right font-black leading-tight text-amber-300">{value}</span>
           </Link>
         ))}
       </div>

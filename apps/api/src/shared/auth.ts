@@ -144,6 +144,16 @@ async function getSupabaseProfileRole(userId: string) {
   }
 }
 
+async function getSupabaseProfile(userId: string) {
+  const rows = await prisma.$queryRaw<Array<{ role: string | null; email: string | null }>>`
+    select role, email
+    from public.profiles
+    where id::text = ${userId}
+    limit 1
+  `;
+  return rows[0] ?? null;
+}
+
 export async function requireAuth(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   const token = header?.startsWith("Bearer ") ? header.slice("Bearer ".length) : undefined;
@@ -179,38 +189,26 @@ export async function requireAuth(req: AuthenticatedRequest, _res: Response, nex
 
     if (!payload) return next(new HttpError(401, "Invalid or expired token"));
     if (!payload.sub || !payload.email) return next(new HttpError(401, "Invalid Supabase token"));
-    const role = await getSupabaseProfileRole(payload.sub);
+    const profile = await getSupabaseProfile(payload.sub);
+    const role = normalizeRole(profile?.role);
 
-    const user = await prisma.user.upsert({
-      where: { id: payload.sub },
-      update: {
-        email: payload.email.toLowerCase(),
-        role: role as any,
-        lastLoginAt: new Date()
-      },
-      create: {
-        id: payload.sub,
-        email: payload.email.toLowerCase(),
-        passwordHash: "SUPABASE_AUTH",
-        name: payload.user_metadata?.full_name ?? payload.user_metadata?.name,
-        role: role as any,
-        lastLoginAt: new Date(),
-        emailVerifiedAt: new Date()
-      }
-    });
-
-    req.user = { sub: user.id, email: user.email, role: user.role };
+    req.user = { sub: payload.sub, email: (profile?.email ?? payload.email).toLowerCase(), role };
     return next();
   } catch {
     return next(new HttpError(401, "Invalid or expired token"));
   }
 }
 
-export function requireAdmin(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
-  const role = normalizeRole(req.user?.role);
-  if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
+export async function requireAdmin(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
+  try {
+    const role = normalizeRole(await getSupabaseProfileRole(req.user?.sub ?? ""));
+    if (role !== "ADMIN" && role !== "SUPER_ADMIN") {
+      return next(new HttpError(403, "Admin access required"));
+    }
+
+    req.user = req.user ? { ...req.user, role } : req.user;
+    return next();
+  } catch {
     return next(new HttpError(403, "Admin access required"));
   }
-
-  return next();
 }
