@@ -12,6 +12,8 @@ export const fallbackMarkets: MarketSnapshot[] = [
   { symbol: "BTCUSD", label: "BTC", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
   { symbol: "EURUSD", label: "EUR/USD", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
   { symbol: "GBPUSD", label: "GBP/USD", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
-  { symbol: "AAPL", label: "Apple", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
-  { symbol: "TSLA", label: "Tesla", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" }
+  { symbol: "AAPL", label: "AAPL", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "TSLA", label: "Tesla", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "NAS100", label: "NASDAQ", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" },
+  { symbol: "DXY", label: "DXY", price: "Unavailable", change: "", tone: "flat", source: "Unavailable" }
 ];

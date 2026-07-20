@@ -43,6 +43,7 @@ type FinnhubQuote = {
 
 const twelveSymbols: Record<string, string[]> = {
   XAUUSD: ["XAU/USD", "XAUUSD"],
+  BTCUSD: ["BTC/USD", "BTCUSD"],
   EURUSD: ["EUR/USD", "EURUSD"],
   GBPUSD: ["GBP/USD", "GBPUSD"],
   NAS100: ["NDX", "IXIC", "NASDAQ100", "NAS100"],
@@ -61,6 +62,7 @@ const yahooSymbols: Record<string, string> = {
 };
 
 const finnhubSymbols: Record<string, string> = {
+  BTCUSD: "BINANCE:BTCUSDT",
   AAPL: "AAPL",
   TSLA: "TSLA"
 };
@@ -207,13 +209,13 @@ export async function GET() {
     }
 
     const finnhubKey = process.env.FINNHUB_API_KEY?.trim();
-    const missingStockSymbols = markets
+    const missingFinnhubSymbols = markets
       .filter((market) => market.source !== "Live" && finnhubSymbols[market.symbol])
       .map((market) => market.symbol);
 
-    if (finnhubKey && missingStockSymbols.length) {
-      const stockQuotes = await Promise.allSettled(
-        missingStockSymbols.map(async (symbol) => {
+    if (finnhubKey && missingFinnhubSymbols.length) {
+      const finnhubQuotes = await Promise.allSettled(
+        missingFinnhubSymbols.map(async (symbol) => {
           const url = new URL("https://finnhub.io/api/v1/quote");
           url.searchParams.set("symbol", finnhubSymbols[symbol]!);
           url.searchParams.set("token", finnhubKey);
@@ -227,7 +229,7 @@ export async function GET() {
         })
       );
 
-      for (const result of stockQuotes) {
+      for (const result of finnhubQuotes) {
         if (result.status === "fulfilled" && result.value) {
           markets = applyFinnhubQuote(markets, result.value.symbol, result.value.quote);
         }
