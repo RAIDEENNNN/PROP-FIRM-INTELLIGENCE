@@ -112,10 +112,36 @@ const referenceProxySymbols: Record<string, { providerSymbol: string; note: stri
 const zeroDecimalSymbols = new Set(["BTCUSD", "ETHUSD", "NAS100", "SPX500", "US30"]);
 const providerTimeoutMs = 4_500;
 
+const plausiblePriceRanges: Record<string, { min: number; max: number }> = {
+  XAUUSD: { min: 500, max: 10_000 },
+  XAGUSD: { min: 5, max: 200 },
+  BTCUSD: { min: 1_000, max: 1_000_000 },
+  ETHUSD: { min: 100, max: 100_000 },
+  EURUSD: { min: 0.5, max: 2 },
+  GBPUSD: { min: 0.5, max: 2.5 },
+  USDJPY: { min: 50, max: 300 },
+  GBPJPY: { min: 50, max: 350 },
+  AAPL: { min: 1, max: 5_000 },
+  TSLA: { min: 1, max: 5_000 },
+  NVDA: { min: 1, max: 5_000 },
+  MSFT: { min: 1, max: 5_000 },
+  NAS100: { min: 100, max: 100_000 },
+  SPX500: { min: 100, max: 20_000 },
+  US30: { min: 1_000, max: 100_000 },
+  DXY: { min: 50, max: 200 }
+};
+
+function isPlausiblePrice(symbol: string, price: number) {
+  const range = plausiblePriceRanges[symbol];
+  return Number.isFinite(price) && price > 0 && (!range || (price >= range.min && price <= range.max));
+}
+
 function formatPrice(symbol: string, price: number) {
+  const usesWholeNumbers = zeroDecimalSymbols.has(symbol);
+
   return price.toLocaleString("en-US", {
-    minimumFractionDigits: price < 10 ? 4 : 2,
-    maximumFractionDigits: zeroDecimalSymbols.has(symbol) ? 0 : price < 10 ? 4 : 2
+    minimumFractionDigits: usesWholeNumbers ? 0 : price < 10 ? 4 : 2,
+    maximumFractionDigits: usesWholeNumbers ? 0 : price < 10 ? 4 : 2
   });
 }
 
@@ -141,7 +167,7 @@ async function fetchJson<T>(input: string | URL, init: RequestInit = {}) {
 function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuote): MarketSnapshot[] {
   const rawPrice = Number(quote.close ?? quote.price);
   const rawChange = Number(quote.percent_change);
-  if (!Number.isFinite(rawPrice)) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -159,7 +185,7 @@ function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuot
 function applyYahooQuote(markets: MarketSnapshot[], symbol: string, quote: YahooQuote): MarketSnapshot[] {
   const rawPrice = Number(quote.regularMarketPrice);
   const rawChange = Number(quote.regularMarketChangePercent);
-  if (!Number.isFinite(rawPrice)) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -175,7 +201,7 @@ function applyYahooQuote(markets: MarketSnapshot[], symbol: string, quote: Yahoo
 }
 
 function applySimplePrice(markets: MarketSnapshot[], symbol: string, price: number): MarketSnapshot[] {
-  if (!Number.isFinite(price)) return markets;
+  if (!isPlausiblePrice(symbol, price)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -191,7 +217,7 @@ function applySimplePrice(markets: MarketSnapshot[], symbol: string, price: numb
 function applyFinnhubQuote(markets: MarketSnapshot[], symbol: string, quote: FinnhubQuote): MarketSnapshot[] {
   const rawPrice = Number(quote.c);
   const rawChange = Number(quote.dp);
-  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -210,7 +236,7 @@ function applyReferenceQuote(markets: MarketSnapshot[], symbol: string, quote: F
   const isFinnhubQuote = Object.prototype.hasOwnProperty.call(quote, "c") || Object.prototype.hasOwnProperty.call(quote, "dp");
   const rawPrice = isFinnhubQuote ? Number((quote as FinnhubQuote).c) : Number((quote as YahooQuote).regularMarketPrice);
   const rawChange = isFinnhubQuote ? Number((quote as FinnhubQuote).dp) : Number((quote as YahooQuote).regularMarketChangePercent);
-  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -229,7 +255,7 @@ function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote
   const globalQuote = quote["Global Quote"];
   const rawPrice = Number(globalQuote?.["05. price"]);
   const rawChange = Number(globalQuote?.["10. change percent"]?.replace("%", ""));
-  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -248,7 +274,7 @@ function applyCoinbaseStats(markets: MarketSnapshot[], symbol: string, stats: Co
   const rawPrice = Number(stats.last);
   const open = Number(stats.open);
   const rawChange = Number.isFinite(rawPrice) && Number.isFinite(open) && open > 0 ? ((rawPrice - open) / open) * 100 : Number.NaN;
-  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -277,7 +303,7 @@ export async function GET() {
           const quote = await fetchJson<TwelveQuote>(url, { next: { revalidate: 30 } });
           if (!quote || quote.status === "error") continue;
           const rawPrice = Number(quote.close ?? quote.price);
-          if (Number.isFinite(rawPrice)) return { symbol, quote };
+          if (isPlausiblePrice(symbol, rawPrice)) return { symbol, quote };
         }
 
         return null;
