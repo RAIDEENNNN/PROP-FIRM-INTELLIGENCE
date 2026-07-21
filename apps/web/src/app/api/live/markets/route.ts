@@ -7,6 +7,11 @@ type BinanceTicker = {
   priceChangePercent: string;
 };
 
+type CoinbaseStats = {
+  open?: string;
+  last?: string;
+};
+
 type TwelveQuote = {
   symbol?: string;
   close?: string;
@@ -239,6 +244,25 @@ function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote
   );
 }
 
+function applyCoinbaseStats(markets: MarketSnapshot[], symbol: string, stats: CoinbaseStats): MarketSnapshot[] {
+  const rawPrice = Number(stats.last);
+  const open = Number(stats.open);
+  const rawChange = Number.isFinite(rawPrice) && Number.isFinite(open) && open > 0 ? ((rawPrice - open) / open) * 100 : Number.NaN;
+  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: formatPrice(symbol, rawPrice),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source: "Live" as const
+        }
+      : market
+  );
+}
+
 export async function GET() {
   let markets: MarketSnapshot[] = fallbackMarkets;
 
@@ -459,6 +483,30 @@ export async function GET() {
             }
           : market
       );
+    }
+  }
+
+  const missingCoinbaseSymbols = markets
+    .filter((market) => market.source !== "Live" && ["BTCUSD", "ETHUSD"].includes(market.symbol))
+    .map((market) => market.symbol);
+
+  if (missingCoinbaseSymbols.length) {
+    const coinbaseStats = await Promise.allSettled(
+      missingCoinbaseSymbols.map(async (symbol) => {
+        const productId = symbol === "BTCUSD" ? "BTC-USD" : "ETH-USD";
+        const stats = await fetchJson<CoinbaseStats>(`https://api.exchange.coinbase.com/products/${productId}/stats`, {
+          headers: { accept: "application/json" },
+          next: { revalidate: 20 }
+        });
+        if (!stats) return null;
+        return { symbol, stats };
+      })
+    );
+
+    for (const result of coinbaseStats) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applyCoinbaseStats(markets, result.value.symbol, result.value.stats);
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 export type LiveSource = {
   name: string;
-  category: "News" | "Forex" | "Crypto" | "Synthetic" | "Rules" | "Reviews" | "Payments";
+  category: "News" | "Forex" | "Crypto" | "Stocks" | "Indices" | "Synthetic" | "Rules" | "Reviews" | "Payments";
   status: "Active" | "Provider-backed" | "Editorial review" | "Connected";
   envKeys: string[];
   description: string;
@@ -21,8 +21,32 @@ export const liveSources: LiveSource[] = [
     category: "Forex",
     status: "Provider-backed",
     envKeys: ["TWELVE_DATA_API_KEY"],
-    description: "FX quote provider for forex pair bid/ask snapshots.",
-    launchUse: "Supports provider-backed forex quote validation."
+    description: "Market quote provider for FX, metals, crypto, equities and index symbols depending on plan.",
+    launchUse: "Supports provider-backed quote validation across the market reference strip."
+  },
+  {
+    name: "Finnhub",
+    category: "Stocks",
+    status: "Provider-backed",
+    envKeys: ["FINNHUB_API_KEY"],
+    description: "Equity, crypto and ETF quote provider for stock cards and index-reference proxies.",
+    launchUse: "Feeds AAPL, TSLA, NVDA, MSFT and index ETF references when configured."
+  },
+  {
+    name: "Alpha Vantage",
+    category: "Stocks",
+    status: "Provider-backed",
+    envKeys: ["ALPHA_VANTAGE_API_KEY"],
+    description: "Backup equity and ETF quote provider for stock cards and index-reference proxies.",
+    launchUse: "Backs up AAPL, TSLA, NVDA, MSFT, NASDAQ, S&P 500, US30 and DXY references."
+  },
+  {
+    name: "Coinbase public market data",
+    category: "Crypto",
+    status: "Connected",
+    envKeys: [],
+    description: "Public crypto stats used as a no-key fallback when Binance or Twelve Data are unavailable.",
+    launchUse: "Keeps BTC and ETH reference prices available without exposing API keys."
   },
   {
     name: "Polygon.io",
