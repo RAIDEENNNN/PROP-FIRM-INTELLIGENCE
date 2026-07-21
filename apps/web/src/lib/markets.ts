@@ -4,7 +4,7 @@ export type MarketSnapshot = {
   price: string;
   change: string;
   tone: "up" | "down" | "flat";
-  source: "Live" | "Unavailable";
+  source: "Live" | "Reference" | "Unavailable";
 };
 
 export const fallbackMarkets: MarketSnapshot[] = [

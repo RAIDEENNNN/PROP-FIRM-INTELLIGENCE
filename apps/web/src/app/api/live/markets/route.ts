@@ -41,6 +41,15 @@ type FinnhubQuote = {
   dp?: number;
 };
 
+type AlphaVantageGlobalQuote = {
+  "Global Quote"?: {
+    "05. price"?: string;
+    "10. change percent"?: string;
+  };
+  Note?: string;
+  Information?: string;
+};
+
 const twelveSymbols: Record<string, string[]> = {
   XAUUSD: ["XAU/USD", "XAUUSD"],
   XAGUSD: ["XAG/USD", "XAGUSD"],
@@ -88,13 +97,40 @@ const finnhubSymbols: Record<string, string> = {
   MSFT: "MSFT"
 };
 
+const referenceProxySymbols: Record<string, { providerSymbol: string; note: string }> = {
+  NAS100: { providerSymbol: "QQQ", note: "NASDAQ 100 ETF reference" },
+  SPX500: { providerSymbol: "SPY", note: "S&P 500 ETF reference" },
+  US30: { providerSymbol: "DIA", note: "Dow 30 ETF reference" },
+  DXY: { providerSymbol: "UUP", note: "US Dollar ETF reference" }
+};
+
 const zeroDecimalSymbols = new Set(["BTCUSD", "ETHUSD", "NAS100", "SPX500", "US30"]);
+const providerTimeoutMs = 4_500;
 
 function formatPrice(symbol: string, price: number) {
   return price.toLocaleString("en-US", {
     minimumFractionDigits: price < 10 ? 4 : 2,
     maximumFractionDigits: zeroDecimalSymbols.has(symbol) ? 0 : price < 10 ? 4 : 2
   });
+}
+
+async function fetchJson<T>(input: string | URL, init: RequestInit = {}) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), providerTimeoutMs);
+
+  try {
+    const response = await fetch(input, {
+      ...init,
+      signal: controller.signal
+    });
+
+    if (!response.ok) return null;
+    return (await response.json()) as T;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuote): MarketSnapshot[] {
@@ -165,160 +201,276 @@ function applyFinnhubQuote(markets: MarketSnapshot[], symbol: string, quote: Fin
   );
 }
 
+function applyReferenceQuote(markets: MarketSnapshot[], symbol: string, quote: FinnhubQuote | YahooQuote): MarketSnapshot[] {
+  const isFinnhubQuote = Object.prototype.hasOwnProperty.call(quote, "c") || Object.prototype.hasOwnProperty.call(quote, "dp");
+  const rawPrice = isFinnhubQuote ? Number((quote as FinnhubQuote).c) : Number((quote as YahooQuote).regularMarketPrice);
+  const rawChange = isFinnhubQuote ? Number((quote as FinnhubQuote).dp) : Number((quote as YahooQuote).regularMarketChangePercent);
+  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: formatPrice(symbol, rawPrice),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source: "Reference" as const
+        }
+      : market
+  );
+}
+
+function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote: AlphaVantageGlobalQuote, source: "Live" | "Reference" = "Live"): MarketSnapshot[] {
+  const globalQuote = quote["Global Quote"];
+  const rawPrice = Number(globalQuote?.["05. price"]);
+  const rawChange = Number(globalQuote?.["10. change percent"]?.replace("%", ""));
+  if (!Number.isFinite(rawPrice) || rawPrice <= 0) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: formatPrice(symbol, rawPrice),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source
+        }
+      : market
+  );
+}
+
 export async function GET() {
   let markets: MarketSnapshot[] = fallbackMarkets;
 
-  try {
-    const twelveKey = process.env.TWELVE_DATA_API_KEY?.trim();
-    if (twelveKey) {
-      const quotes = await Promise.allSettled(
-        Object.entries(twelveSymbols).map(async ([symbol, providerSymbols]) => {
-          for (const providerSymbol of providerSymbols) {
-            const url = new URL("https://api.twelvedata.com/quote");
-            url.searchParams.set("symbol", providerSymbol);
-            url.searchParams.set("apikey", twelveKey);
-            const response = await fetch(url, { next: { revalidate: 30 } });
-            if (!response.ok) continue;
-            const quote = (await response.json()) as TwelveQuote;
-            if (quote.status === "error") continue;
-            const rawPrice = Number(quote.close ?? quote.price);
-            if (Number.isFinite(rawPrice)) return { symbol, quote };
-          }
+  const twelveKey = process.env.TWELVE_DATA_API_KEY?.trim();
+  if (twelveKey) {
+    const quotes = await Promise.allSettled(
+      Object.entries(twelveSymbols).map(async ([symbol, providerSymbols]) => {
+        for (const providerSymbol of providerSymbols) {
+          const url = new URL("https://api.twelvedata.com/quote");
+          url.searchParams.set("symbol", providerSymbol);
+          url.searchParams.set("apikey", twelveKey);
+          const quote = await fetchJson<TwelveQuote>(url, { next: { revalidate: 30 } });
+          if (!quote || quote.status === "error") continue;
+          const rawPrice = Number(quote.close ?? quote.price);
+          if (Number.isFinite(rawPrice)) return { symbol, quote };
+        }
 
-          return null;
-        })
-      );
+        return null;
+      })
+    );
 
-      for (const result of quotes) {
-        const item = result.status === "fulfilled" ? result.value : null;
-        if (item) markets = applyQuote(markets, item.symbol, item.quote);
-      }
+    for (const result of quotes) {
+      const item = result.status === "fulfilled" ? result.value : null;
+      if (item) markets = applyQuote(markets, item.symbol, item.quote);
     }
+  }
 
-    if (markets.some((market) => market.symbol === "XAUUSD" && market.source !== "Live")) {
-      const response = await fetch("https://api.gold-api.com/price/XAU", {
+  if (markets.some((market) => market.symbol === "XAUUSD" && market.source !== "Live")) {
+    const payload = await fetchJson<GoldApiResponse>(
+      "https://api.gold-api.com/price/XAU",
+      {
         headers: { accept: "application/json" },
         next: { revalidate: 30 }
-      });
-
-      if (response.ok) {
-        const payload = (await response.json()) as GoldApiResponse;
-        markets = applySimplePrice(markets, "XAUUSD", Number(payload.price));
       }
+    );
+
+    if (payload) {
+      markets = applySimplePrice(markets, "XAUUSD", Number(payload.price));
     }
+  }
 
-    const fallbackFxPairs = [
-      { symbol: "EURUSD", from: "EUR", to: "USD" },
-      { symbol: "GBPUSD", from: "GBP", to: "USD" },
-      { symbol: "USDJPY", from: "USD", to: "JPY" },
-      { symbol: "GBPJPY", from: "GBP", to: "JPY" }
-    ].filter((pair) => markets.some((market) => market.symbol === pair.symbol && market.source !== "Live"));
+  const fallbackFxPairs = [
+    { symbol: "EURUSD", from: "EUR", to: "USD" },
+    { symbol: "GBPUSD", from: "GBP", to: "USD" },
+    { symbol: "USDJPY", from: "USD", to: "JPY" },
+    { symbol: "GBPJPY", from: "GBP", to: "JPY" }
+  ].filter((pair) => markets.some((market) => market.symbol === pair.symbol && market.source !== "Live"));
 
-    if (fallbackFxPairs.length) {
-      const fxRequests = await Promise.allSettled(
-        fallbackFxPairs.map(async (pair) => {
-          const response = await fetch(`https://api.frankfurter.app/latest?from=${pair.from}&to=${pair.to}`, {
+  if (fallbackFxPairs.length) {
+    const fxRequests = await Promise.allSettled(
+      fallbackFxPairs.map(async (pair) => {
+        const payload = await fetchJson<FrankfurterResponse>(
+          `https://api.frankfurter.app/latest?from=${pair.from}&to=${pair.to}`,
+          {
             headers: { accept: "application/json" },
             next: { revalidate: 300 }
-          });
-          if (!response.ok) return null;
-          const payload = (await response.json()) as FrankfurterResponse;
-          return { symbol: pair.symbol, price: Number(payload.rates?.[pair.to]) };
-        })
-      );
+          }
+        );
+        if (!payload) return null;
+        return { symbol: pair.symbol, price: Number(payload.rates?.[pair.to]) };
+      })
+    );
 
-      for (const result of fxRequests) {
-        if (result.status === "fulfilled" && result.value) {
-          markets = applySimplePrice(markets, result.value.symbol, result.value.price);
-        }
+    for (const result of fxRequests) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applySimplePrice(markets, result.value.symbol, result.value.price);
       }
     }
+  }
 
-    const finnhubKey = process.env.FINNHUB_API_KEY?.trim();
-    const missingFinnhubSymbols = markets
-      .filter((market) => market.source !== "Live" && finnhubSymbols[market.symbol])
-      .map((market) => market.symbol);
+  const finnhubKey = process.env.FINNHUB_API_KEY?.trim();
+  const missingFinnhubSymbols = markets
+    .filter((market) => market.source !== "Live" && finnhubSymbols[market.symbol])
+    .map((market) => market.symbol);
 
-    if (finnhubKey && missingFinnhubSymbols.length) {
-      const finnhubQuotes = await Promise.allSettled(
-        missingFinnhubSymbols.map(async (symbol) => {
-          const url = new URL("https://finnhub.io/api/v1/quote");
-          url.searchParams.set("symbol", finnhubSymbols[symbol]!);
-          url.searchParams.set("token", finnhubKey);
-          const response = await fetch(url, {
+  if (finnhubKey && missingFinnhubSymbols.length) {
+    const finnhubQuotes = await Promise.allSettled(
+      missingFinnhubSymbols.map(async (symbol) => {
+        const url = new URL("https://finnhub.io/api/v1/quote");
+        url.searchParams.set("symbol", finnhubSymbols[symbol]!);
+        url.searchParams.set("token", finnhubKey);
+        const quote = await fetchJson<FinnhubQuote>(url, {
             headers: { accept: "application/json" },
             next: { revalidate: 60 }
-          });
-          if (!response.ok) return null;
-          const quote = (await response.json()) as FinnhubQuote;
-          return { symbol, quote };
-        })
-      );
+        });
+        if (!quote) return null;
+        return { symbol, quote };
+      })
+    );
 
-      for (const result of finnhubQuotes) {
-        if (result.status === "fulfilled" && result.value) {
-          markets = applyFinnhubQuote(markets, result.value.symbol, result.value.quote);
-        }
+    for (const result of finnhubQuotes) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applyFinnhubQuote(markets, result.value.symbol, result.value.quote);
       }
     }
+  }
 
-    const missingSymbols = markets.filter((market) => market.source !== "Live").map((market) => market.symbol);
-    const missingYahooSymbols = missingSymbols.map((symbol) => yahooSymbols[symbol]).filter(Boolean);
+  const alphaVantageKey = process.env.ALPHA_VANTAGE_API_KEY?.trim();
+  const missingAlphaSymbols = markets
+    .filter((market) => market.source !== "Live" && ["AAPL", "TSLA", "NVDA", "MSFT"].includes(market.symbol))
+    .map((market) => market.symbol);
 
-    if (missingYahooSymbols.length) {
-      const url = new URL("https://query1.finance.yahoo.com/v7/finance/quote");
-      url.searchParams.set("symbols", missingYahooSymbols.join(","));
-      const response = await fetch(url, {
+  if (alphaVantageKey && missingAlphaSymbols.length) {
+    const alphaQuotes = await Promise.allSettled(
+      missingAlphaSymbols.map(async (symbol) => {
+        const url = new URL("https://www.alphavantage.co/query");
+        url.searchParams.set("function", "GLOBAL_QUOTE");
+        url.searchParams.set("symbol", symbol);
+        url.searchParams.set("apikey", alphaVantageKey);
+        const quote = await fetchJson<AlphaVantageGlobalQuote>(url, { next: { revalidate: 60 } });
+        if (!quote) return null;
+        return { symbol, quote };
+      })
+    );
+
+    for (const result of alphaQuotes) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applyAlphaVantageQuote(markets, result.value.symbol, result.value.quote);
+      }
+    }
+  }
+
+  const missingSymbols = markets.filter((market) => market.source !== "Live").map((market) => market.symbol);
+  const missingYahooSymbols = missingSymbols.map((symbol) => yahooSymbols[symbol]).filter(Boolean);
+
+  if (missingYahooSymbols.length) {
+    const url = new URL("https://query1.finance.yahoo.com/v7/finance/quote");
+    url.searchParams.set("symbols", missingYahooSymbols.join(","));
+    const payload = await fetchJson<YahooQuoteResponse>(url, {
         headers: {
           accept: "application/json",
           "user-agent": "FundedScope market reference/1.0"
         },
         next: { revalidate: 30 }
-      });
+    });
 
-      if (response.ok) {
-        const payload = (await response.json()) as YahooQuoteResponse;
-        const quotesByProviderSymbol = new Map((payload.quoteResponse?.result ?? []).map((quote) => [quote.symbol, quote]));
+    if (payload) {
+      const quotesByProviderSymbol = new Map((payload.quoteResponse?.result ?? []).map((quote) => [quote.symbol, quote]));
 
-        for (const [symbol, providerSymbol] of Object.entries(yahooSymbols)) {
-          if (!missingSymbols.includes(symbol)) continue;
-          const quote = quotesByProviderSymbol.get(providerSymbol);
-          if (quote) markets = applyYahooQuote(markets, symbol, quote);
-        }
+      for (const [symbol, providerSymbol] of Object.entries(yahooSymbols)) {
+        if (!missingSymbols.includes(symbol)) continue;
+        const quote = quotesByProviderSymbol.get(providerSymbol);
+        if (quote) markets = applyYahooQuote(markets, symbol, quote);
       }
     }
-
-    if (process.env.BINANCE_MARKET_DATA_ENABLED !== "false") {
-      const response = await fetch("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT", {
-        next: { revalidate: 20 }
-      });
-
-      if (response.ok) {
-        const ticker = (await response.json()) as BinanceTicker;
-        const price = Number(ticker.lastPrice);
-        const change = Number(ticker.priceChangePercent);
-
-        markets = markets.map((market) =>
-          market.symbol === "BTCUSD"
-            ? {
-                ...market,
-                price: price.toLocaleString("en-US", { maximumFractionDigits: 0 }),
-                change: `${change >= 0 ? "+" : ""}${change.toFixed(2)}%`,
-                tone: change > 0 ? "up" : change < 0 ? "down" : "flat",
-                source: "Live"
-              }
-            : market
-        );
-      }
-    }
-  } catch {
-    // Keep any quotes already collected instead of wiping the whole market reference strip.
   }
+
+  const missingReferenceSymbols = markets
+    .filter((market) => market.source === "Unavailable" && referenceProxySymbols[market.symbol])
+    .map((market) => market.symbol);
+
+  if (finnhubKey && missingReferenceSymbols.length) {
+    const referenceQuotes = await Promise.allSettled(
+      missingReferenceSymbols.map(async (symbol) => {
+        const url = new URL("https://finnhub.io/api/v1/quote");
+        url.searchParams.set("symbol", referenceProxySymbols[symbol]!.providerSymbol);
+        url.searchParams.set("token", finnhubKey);
+        const quote = await fetchJson<FinnhubQuote>(url, {
+          headers: { accept: "application/json" },
+          next: { revalidate: 60 }
+        });
+        if (!quote) return null;
+        return { symbol, quote };
+      })
+    );
+
+    for (const result of referenceQuotes) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applyReferenceQuote(markets, result.value.symbol, result.value.quote);
+      }
+    }
+  }
+
+  if (alphaVantageKey) {
+    const stillMissingReferenceSymbols = markets
+      .filter((market) => market.source === "Unavailable" && referenceProxySymbols[market.symbol])
+      .map((market) => market.symbol);
+
+    const alphaReferenceQuotes = await Promise.allSettled(
+      stillMissingReferenceSymbols.map(async (symbol) => {
+        const url = new URL("https://www.alphavantage.co/query");
+        url.searchParams.set("function", "GLOBAL_QUOTE");
+        url.searchParams.set("symbol", referenceProxySymbols[symbol]!.providerSymbol);
+        url.searchParams.set("apikey", alphaVantageKey);
+        const quote = await fetchJson<AlphaVantageGlobalQuote>(url, { next: { revalidate: 60 } });
+        if (!quote) return null;
+        return { symbol, quote };
+      })
+    );
+
+    for (const result of alphaReferenceQuotes) {
+      if (result.status === "fulfilled" && result.value) {
+        markets = applyAlphaVantageQuote(markets, result.value.symbol, result.value.quote, "Reference");
+      }
+    }
+  }
+
+  if (process.env.BINANCE_MARKET_DATA_ENABLED !== "false" && markets.some((market) => market.symbol === "BTCUSD" && market.source !== "Live")) {
+    const ticker = await fetchJson<BinanceTicker>(
+      "https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT",
+      {
+        next: { revalidate: 20 }
+      }
+    );
+
+    if (ticker) {
+      const price = Number(ticker.lastPrice);
+      const change = Number(ticker.priceChangePercent);
+
+      markets = markets.map((market) =>
+        market.symbol === "BTCUSD"
+          ? {
+              ...market,
+              price: formatPrice("BTCUSD", price),
+              change: Number.isFinite(change) ? `${change >= 0 ? "+" : ""}${change.toFixed(2)}%` : market.change,
+              tone: change > 0 ? "up" : change < 0 ? "down" : "flat",
+              source: "Live"
+            }
+          : market
+      );
+    }
+  }
+
+  const liveCount = markets.filter((market) => market.source === "Live").length;
+  const referenceCount = markets.filter((market) => market.source === "Reference").length;
 
   return Response.json({
     ok: true,
     markets,
-    message: markets.some((market) => market.source === "Live")
+    liveCount,
+    referenceCount,
+    message: liveCount || referenceCount
       ? "Market quotes attached where available. Always verify executable prices inside your trading platform."
       : "Market data is temporarily unavailable. Verify executable prices inside your broker or trading platform."
   });

@@ -32,12 +32,12 @@ export function LiveMarketBar() {
     };
   }, []);
 
-  const hasLiveQuotes = markets.some((market) => market.source === "Live");
+  const hasMarketQuotes = markets.some((market) => market.source === "Live" || market.source === "Reference");
 
   return (
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-5">
-        <div className={`z-10 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] ${hasLiveQuotes ? "border-electric/30 bg-void text-electric" : "border-white/10 bg-void text-slate-400"}`}>
+        <div className={`z-10 shrink-0 rounded-full border px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] ${hasMarketQuotes ? "border-electric/30 bg-void text-electric" : "border-white/10 bg-void text-slate-400"}`}>
           Market reference
         </div>
         <div className="min-w-0 flex-1 overflow-hidden">

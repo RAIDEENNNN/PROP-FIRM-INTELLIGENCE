@@ -29,7 +29,7 @@ export function MarketReferenceGrid() {
     };
   }, []);
 
-  const liveCount = markets.filter((market) => market.source === "Live").length;
+  const marketCount = markets.filter((market) => market.source === "Live" || market.source === "Reference").length;
 
   return (
     <>
@@ -38,8 +38,8 @@ export function MarketReferenceGrid() {
           <p className="text-sm uppercase tracking-[0.28em] text-electric">Market reference preview</p>
           <h2 className="mt-2 text-3xl font-black text-white">Markets to verify before trading</h2>
         </div>
-        <span className={`rounded-full border px-3 py-1 text-xs font-bold ${liveCount ? "border-success/25 bg-success/10 text-success" : "border-white/10 text-slate-400"}`}>
-          {liveCount ? `${liveCount} live references` : loaded ? "Reference feed checking" : "Loading references"}
+        <span className={`rounded-full border px-3 py-1 text-xs font-bold ${marketCount ? "border-success/25 bg-success/10 text-success" : "border-white/10 text-slate-400"}`}>
+          {marketCount ? `${marketCount} market references` : loaded ? "Reference feed checking" : "Loading references"}
         </span>
       </div>
       <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -47,8 +47,12 @@ export function MarketReferenceGrid() {
           <div key={market.symbol} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-bold text-slate-400">{market.label}</p>
-              <span className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${market.source === "Live" ? "bg-success/10 text-success" : "bg-white/[0.04] text-slate-500"}`}>
-                {market.source === "Live" ? "Live" : "Check"}
+              <span
+                className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${
+                  market.source === "Live" ? "bg-success/10 text-success" : market.source === "Reference" ? "bg-electric/10 text-electric" : "bg-white/[0.04] text-slate-500"
+                }`}
+              >
+                {market.source === "Unavailable" ? "Check" : market.source}
               </span>
             </div>
             <p className="mt-2 text-2xl font-black text-white">{market.price}</p>
