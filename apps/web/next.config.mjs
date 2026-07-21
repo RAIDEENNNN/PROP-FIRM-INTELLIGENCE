@@ -1,8 +1,15 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const rootEnvPath = path.resolve(process.cwd(), "../../.env");
-if (existsSync(rootEnvPath)) {
+const configDir = path.dirname(fileURLToPath(import.meta.url));
+const envCandidates = [
+  path.resolve(process.cwd(), ".env"),
+  path.resolve(configDir, ".env"),
+  path.resolve(configDir, "../../.env")
+];
+const rootEnvPath = envCandidates.find((candidate) => existsSync(candidate));
+if (rootEnvPath) {
   const rootEnv = readFileSync(rootEnvPath, "utf8");
   for (const line of rootEnv.split(/\r?\n/)) {
     const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);

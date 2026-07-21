@@ -9,7 +9,7 @@ const brokerOptions = ["Exness", "IC Markets", "Pepperstone", "Vantage", "JustMa
 const firmOptions = ["FTMO", "FundingPips", "The5ers", "E8 Markets", "FundedNext", "None"];
 const goalOptions = ["Pass Prop Challenge", "Consistency", "Full-time Income", "Grow Capital", "Learn", "Build Wealth"];
 const sessionOptions = ["London", "New York", "Asian", "Overlap"];
-const assetOptions = ["Gold", "BTC", "EURUSD", "GBPUSD", "NAS100", "US30", "XAGUSD", "ETHUSD"];
+const assetOptions = ["XAUUSD", "XAGUSD", "BTCUSD", "ETHUSD", "EURUSD", "GBPUSD", "USDJPY", "GBPJPY", "NAS100", "SPX500", "US30", "DXY", "AAPL", "TSLA", "NVDA", "MSFT"];
 const weaknessOptions = ["Fear", "Greed", "Overtrading", "Revenge Trading", "FOMO", "Holding losers", "Closing winners too early"];
 
 type ApiResponse = {

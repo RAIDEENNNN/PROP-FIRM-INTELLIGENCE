@@ -43,29 +43,59 @@ type FinnhubQuote = {
 
 const twelveSymbols: Record<string, string[]> = {
   XAUUSD: ["XAU/USD", "XAUUSD"],
+  XAGUSD: ["XAG/USD", "XAGUSD"],
   BTCUSD: ["BTC/USD", "BTCUSD"],
+  ETHUSD: ["ETH/USD", "ETHUSD"],
   EURUSD: ["EUR/USD", "EURUSD"],
   GBPUSD: ["GBP/USD", "GBPUSD"],
+  USDJPY: ["USD/JPY", "USDJPY"],
+  GBPJPY: ["GBP/JPY", "GBPJPY"],
   NAS100: ["NDX", "IXIC", "NASDAQ100", "NAS100"],
+  SPX500: ["SPX", "SPX500", "GSPC"],
+  US30: ["DJI", "DJIA", "US30"],
   DXY: ["DXY", "DXY.INDX", "DX"],
   AAPL: ["AAPL"],
-  TSLA: ["TSLA"]
+  TSLA: ["TSLA"],
+  NVDA: ["NVDA"],
+  MSFT: ["MSFT"]
 };
 
 const yahooSymbols: Record<string, string> = {
   XAUUSD: "GC=F",
+  XAGUSD: "SI=F",
   EURUSD: "EURUSD=X",
   GBPUSD: "GBPUSD=X",
+  USDJPY: "JPY=X",
+  GBPJPY: "GBPJPY=X",
   NAS100: "NQ=F",
+  SPX500: "ES=F",
+  US30: "YM=F",
   DXY: "DX-Y.NYB",
-  BTCUSD: "BTC-USD"
+  BTCUSD: "BTC-USD",
+  ETHUSD: "ETH-USD",
+  AAPL: "AAPL",
+  TSLA: "TSLA",
+  NVDA: "NVDA",
+  MSFT: "MSFT"
 };
 
 const finnhubSymbols: Record<string, string> = {
   BTCUSD: "BINANCE:BTCUSDT",
+  ETHUSD: "BINANCE:ETHUSDT",
   AAPL: "AAPL",
-  TSLA: "TSLA"
+  TSLA: "TSLA",
+  NVDA: "NVDA",
+  MSFT: "MSFT"
 };
+
+const zeroDecimalSymbols = new Set(["BTCUSD", "ETHUSD", "NAS100", "SPX500", "US30"]);
+
+function formatPrice(symbol: string, price: number) {
+  return price.toLocaleString("en-US", {
+    minimumFractionDigits: price < 10 ? 4 : 2,
+    maximumFractionDigits: zeroDecimalSymbols.has(symbol) ? 0 : price < 10 ? 4 : 2
+  });
+}
 
 function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuote): MarketSnapshot[] {
   const rawPrice = Number(quote.close ?? quote.price);
@@ -76,10 +106,7 @@ function applyQuote(markets: MarketSnapshot[], symbol: string, quote: TwelveQuot
     market.symbol === symbol
       ? {
           ...market,
-          price: rawPrice.toLocaleString("en-US", {
-            minimumFractionDigits: rawPrice < 10 ? 4 : 2,
-            maximumFractionDigits: rawPrice < 10 ? 4 : 2
-          }),
+          price: formatPrice(symbol, rawPrice),
           change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
           tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
           source: "Live" as const
@@ -97,10 +124,7 @@ function applyYahooQuote(markets: MarketSnapshot[], symbol: string, quote: Yahoo
     market.symbol === symbol
       ? {
           ...market,
-          price: rawPrice.toLocaleString("en-US", {
-            minimumFractionDigits: rawPrice < 10 ? 4 : 2,
-            maximumFractionDigits: symbol === "BTCUSD" || symbol === "NAS100" ? 0 : rawPrice < 10 ? 4 : 2
-          }),
+          price: formatPrice(symbol, rawPrice),
           change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
           tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
           source: "Live" as const
@@ -116,10 +140,7 @@ function applySimplePrice(markets: MarketSnapshot[], symbol: string, price: numb
     market.symbol === symbol
       ? {
           ...market,
-          price: price.toLocaleString("en-US", {
-            minimumFractionDigits: price < 10 ? 4 : 2,
-            maximumFractionDigits: symbol === "BTCUSD" || symbol === "NAS100" ? 0 : price < 10 ? 4 : 2
-          }),
+          price: formatPrice(symbol, price),
           source: "Live" as const
         }
       : market
@@ -135,7 +156,7 @@ function applyFinnhubQuote(markets: MarketSnapshot[], symbol: string, quote: Fin
     market.symbol === symbol
       ? {
           ...market,
-          price: rawPrice.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          price: formatPrice(symbol, rawPrice),
           change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
           tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
           source: "Live" as const
@@ -150,7 +171,7 @@ export async function GET() {
   try {
     const twelveKey = process.env.TWELVE_DATA_API_KEY?.trim();
     if (twelveKey) {
-      const quotes = await Promise.all(
+      const quotes = await Promise.allSettled(
         Object.entries(twelveSymbols).map(async ([symbol, providerSymbols]) => {
           for (const providerSymbol of providerSymbols) {
             const url = new URL("https://api.twelvedata.com/quote");
@@ -168,7 +189,8 @@ export async function GET() {
         })
       );
 
-      for (const item of quotes) {
+      for (const result of quotes) {
+        const item = result.status === "fulfilled" ? result.value : null;
         if (item) markets = applyQuote(markets, item.symbol, item.quote);
       }
     }
@@ -185,26 +207,30 @@ export async function GET() {
       }
     }
 
-    const needsEurUsd = markets.some((market) => market.symbol === "EURUSD" && market.source !== "Live");
-    const needsGbpUsd = markets.some((market) => market.symbol === "GBPUSD" && market.source !== "Live");
-    if (needsEurUsd || needsGbpUsd) {
-      const fxRequests = await Promise.allSettled([
-        needsEurUsd
-          ? fetch("https://api.frankfurter.app/latest?from=EUR&to=USD", { headers: { accept: "application/json" }, next: { revalidate: 300 } })
-          : Promise.resolve(null),
-        needsGbpUsd
-          ? fetch("https://api.frankfurter.app/latest?from=GBP&to=USD", { headers: { accept: "application/json" }, next: { revalidate: 300 } })
-          : Promise.resolve(null)
-      ]);
+    const fallbackFxPairs = [
+      { symbol: "EURUSD", from: "EUR", to: "USD" },
+      { symbol: "GBPUSD", from: "GBP", to: "USD" },
+      { symbol: "USDJPY", from: "USD", to: "JPY" },
+      { symbol: "GBPJPY", from: "GBP", to: "JPY" }
+    ].filter((pair) => markets.some((market) => market.symbol === pair.symbol && market.source !== "Live"));
 
-      const [eurResult, gbpResult] = fxRequests;
-      if (eurResult.status === "fulfilled" && eurResult.value?.ok) {
-        const payload = (await eurResult.value.json()) as FrankfurterResponse;
-        markets = applySimplePrice(markets, "EURUSD", Number(payload.rates?.USD));
-      }
-      if (gbpResult.status === "fulfilled" && gbpResult.value?.ok) {
-        const payload = (await gbpResult.value.json()) as FrankfurterResponse;
-        markets = applySimplePrice(markets, "GBPUSD", Number(payload.rates?.USD));
+    if (fallbackFxPairs.length) {
+      const fxRequests = await Promise.allSettled(
+        fallbackFxPairs.map(async (pair) => {
+          const response = await fetch(`https://api.frankfurter.app/latest?from=${pair.from}&to=${pair.to}`, {
+            headers: { accept: "application/json" },
+            next: { revalidate: 300 }
+          });
+          if (!response.ok) return null;
+          const payload = (await response.json()) as FrankfurterResponse;
+          return { symbol: pair.symbol, price: Number(payload.rates?.[pair.to]) };
+        })
+      );
+
+      for (const result of fxRequests) {
+        if (result.status === "fulfilled" && result.value) {
+          markets = applySimplePrice(markets, result.value.symbol, result.value.price);
+        }
       }
     }
 
@@ -286,7 +312,7 @@ export async function GET() {
       }
     }
   } catch {
-    markets = fallbackMarkets;
+    // Keep any quotes already collected instead of wiping the whole market reference strip.
   }
 
   return Response.json({

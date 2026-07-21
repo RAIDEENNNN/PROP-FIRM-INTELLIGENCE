@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { GlassCard } from "../../components/GlassCard";
 import { JsonLd } from "../../components/JsonLd";
+import { PricingActionButton } from "../../components/PricingActionButton";
 
 export const metadata: Metadata = {
   title: "FundedScope Pricing | Free, Pro & Elite",
@@ -162,9 +163,6 @@ export default function PricingPage() {
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
         FundedScope subscriptions make sense because consistency, risk, psychology, decisions and research are not one-time problems. They are continuous trading problems.
       </p>
-      <p className="mt-4 max-w-3xl rounded-2xl border border-warning/20 bg-warning/10 px-4 py-3 text-sm leading-6 text-warning">
-        Pricing is standardized in USD. Paid plans are not available for checkout yet; Pro and Elite are waitlist/planned tiers until billing, permissions and feature access pass UAT.
-      </p>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-3">
         {plans.map((plan) => (
@@ -191,9 +189,7 @@ export default function PricingPage() {
               ))}
             </div>
 
-            <Link href={plan.href} className="mt-8 block w-full rounded-2xl bg-white px-4 py-3 text-center font-bold text-void">
-              {plan.cta}
-            </Link>
+            <PricingActionButton planName={plan.name} guestHref={plan.href} guestLabel={plan.cta} />
           </GlassCard>
         ))}
       </div>

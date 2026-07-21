@@ -319,7 +319,7 @@ export default function HomePage() {
               <div key={session.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
                 <div className="flex items-center justify-between">
                   <p className="font-black text-white">{session.name}</p>
-                  <p className="text-xs font-black uppercase text-electric">{session.status}</p>
+                  <p className="text-xs font-black uppercase text-electric">{String(session.openUtc).padStart(2, "0")}:00 UTC</p>
                 </div>
                 <p className="mt-2 text-xs text-slate-500">{session.focus}</p>
               </div>
@@ -407,8 +407,8 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
   const metrics = [
     { label: "Prop Firms", value: String(propFirms.length), href: "/prop-firms" },
     { label: "Brokers", value: String(brokers.length), href: "/brokers" },
-    { label: "Readiness", value: "82%", href: "/market-intelligence" },
-    { label: "High Risk", value: "13:30", href: "/market-intelligence" }
+    { label: "Readiness", value: "Set DNA", href: "/profile" },
+    { label: "Sessions", value: "Live", href: "/market-intelligence" }
   ];
 
   return (
@@ -451,7 +451,7 @@ function HeroDashboard({ firms, brokers: previewBrokers }: { firms: typeof featu
               <h2 className="mt-3 text-xl font-black text-white">See how FundedScope works</h2>
               <p className="mt-1 text-sm text-slate-400">A public preview of the trading intelligence dashboard.</p>
             </div>
-            <Link href="/sign-up" className="hidden rounded-full border border-violet/40 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-violet/15 sm:inline-flex">
+            <Link href="/profile" className="hidden rounded-full border border-violet/40 px-4 py-2 text-xs font-black text-purple-100 transition hover:bg-violet/15 sm:inline-flex">
               Personalize yours
             </Link>
           </div>

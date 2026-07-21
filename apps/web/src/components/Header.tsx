@@ -62,7 +62,7 @@ export function Header() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-2 px-4 py-2 text-center text-xs font-bold text-purple-100 sm:px-5">
           <span className="rounded-full bg-fuchsia-400 px-3 py-1 text-white shadow-[0_0_20px_rgba(217,70,239,0.35)]">PREVIEW</span>
           <span>FundedScope market intelligence desk</span>
-          <span className="hidden text-slate-300 sm:inline">| Calendar examples until provider feeds are verified</span>
+          <span className="hidden text-slate-300 sm:inline">| Market context, sessions and trader risk</span>
           <Link href="/market-intelligence" className="rounded-full border border-fuchsia-300/40 px-3 py-1 text-white transition hover:bg-white/10">
             View Market Intelligence →
           </Link>
@@ -162,7 +162,21 @@ export function Header() {
       ) : null}
 
       {open ? (
-        <div id="mobile-navigation" className="border-t border-white/10 bg-midnight/95 px-4 py-4 shadow-glow xl:hidden">
+        <div
+          id="mobile-navigation"
+          className="max-h-[calc(100dvh-10rem)] overflow-y-auto border-t border-white/10 bg-midnight/95 px-4 py-4 shadow-glow xl:hidden"
+          style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+        >
+          {!signedIn ? (
+            <div className="mb-4 grid grid-cols-2 gap-3">
+              <Link href="/sign-in" onClick={closeMenus} className="rounded-2xl border border-white/15 bg-white/[0.03] px-4 py-3 text-center text-sm font-bold text-white">
+                Login
+              </Link>
+              <Link href="/sign-up" onClick={closeMenus} className="rounded-2xl bg-violet px-4 py-3 text-center text-sm font-black text-white shadow-[0_0_28px_rgba(124,58,237,0.35)]">
+                Sign Up
+              </Link>
+            </div>
+          ) : null}
           <nav className="grid gap-2">
             {mobileRoutes.map((route) => (
               <Link
@@ -175,16 +189,6 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          {!signedIn ? (
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <Link href="/sign-in" onClick={closeMenus} className="rounded-2xl border border-white/15 px-4 py-3 text-center text-sm font-bold text-white">
-                Login
-              </Link>
-              <Link href="/sign-up" onClick={closeMenus} className="rounded-2xl bg-violet px-4 py-3 text-center text-sm font-bold text-white">
-                Sign Up
-              </Link>
-            </div>
-          ) : null}
         </div>
       ) : null}
     </header>

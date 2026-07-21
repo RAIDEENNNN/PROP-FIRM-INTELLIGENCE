@@ -82,11 +82,11 @@ export default function MarketIntelligencePage() {
           </div>
 
           <div className="rounded-[1.5rem] border border-white/10 bg-black/30 p-4">
-            <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Example highest-risk window</p>
-            <div className="mt-4 rounded-3xl border border-danger/30 bg-danger/10 p-5 text-center">
-              <p className="text-sm font-black text-danger">USD CPI</p>
-              <p className="mt-2 font-mono text-4xl font-black text-white">13:30 UTC</p>
-              <p className="mt-3 text-sm leading-6 text-slate-300">Gold, EURUSD, DXY, US30 and NASDAQ can move sharply around releases like this. Verify today&apos;s calendar before acting.</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Provider status</p>
+            <div className="mt-4 rounded-3xl border border-electric/25 bg-electric/10 p-5 text-center">
+              <p className="text-sm font-black text-electric">Calendar integration planned</p>
+              <p className="mt-2 text-3xl font-black text-white">No fake live news</p>
+              <p className="mt-3 text-sm leading-6 text-slate-300">FundedScope will only show live economic events after a verified calendar provider is connected.</p>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-3 text-center text-xs">
               {["Pair impact", "Prop warning", "News replay"].map((item) => (

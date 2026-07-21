@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase/client";
 import { hasPersistenceApi, persistenceFetch } from "../lib/persistence-api";
 
-const fallbackNotifications = [
-  "Sign in to view personal alerts, watchlists and saved research.",
-  "Report moderation helps FundedScope keep broker and prop-firm data accurate.",
-  "Market and broker figures are source-gated so unsupported numbers are not presented as facts."
+const fallbackNotifications: Notification[] = [
+  { title: "Account alerts", message: "Sign in to view personal alerts, watchlists and saved research.", href: "/sign-in" },
+  { title: "Data quality", message: "Report incorrect broker or prop-firm information so FundedScope can review it.", href: "/report" },
+  { title: "Market references", message: "Live figures are source-gated. Unsupported numbers are not presented as facts.", href: "/sources" }
 ];
 
 type Notification = {
@@ -20,9 +21,40 @@ type Notification = {
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
-  const [notifications, setNotifications] = useState<Notification[]>(fallbackNotifications.map((message) => ({ title: "FundedScope", message })));
+  const [notifications, setNotifications] = useState<Notification[]>(fallbackNotifications);
   const rootRef = useRef<HTMLDivElement>(null);
   const unreadCount = useMemo(() => notifications.filter((notification) => notification.id && !notification.readAt).length, [notifications]);
+
+  useEffect(() => {
+    let active = true;
+    async function addLifecyclePrompts() {
+      if (!isSupabaseBrowserConfigured()) return;
+      const supabase = getSupabaseBrowserClient();
+      const { data } = await supabase.auth.getSession();
+      const createdAt = data.session?.user.created_at;
+      if (!active || !createdAt) return;
+
+      const accountAgeDays = Math.floor((Date.now() - new Date(createdAt).getTime()) / 86_400_000);
+      if (accountAgeDays >= 3) {
+        setNotifications((items) => {
+          if (items.some((item) => item.title === "Unlock more intelligence")) return items;
+          return [
+            {
+              title: "Unlock more intelligence",
+              message: "Pro and Elite add saved dashboards, alerts, AI reviews and deeper Trader DNA features.",
+              href: "/pricing"
+            },
+            ...items
+          ];
+        });
+      }
+    }
+
+    void addLifecyclePrompts();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!hasPersistenceApi()) return;

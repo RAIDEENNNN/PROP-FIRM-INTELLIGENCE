@@ -130,10 +130,10 @@ export const currencyHeat = [
 ];
 
 export const tradingSessions = [
-  { name: "Sydney", status: "Closed", focus: "Low liquidity handoff" },
-  { name: "Tokyo", status: "Closed", focus: "JPY and Asia equity context" },
-  { name: "London", status: "Open", focus: "Forex liquidity and Gold setup quality" },
-  { name: "New York", status: "Opens soon", focus: "USD data, indices and metals volatility" }
+  { name: "Sydney", openUtc: 21, closeUtc: 6, focus: "AUD, Asia handoff and lower-liquidity conditions" },
+  { name: "Tokyo", openUtc: 0, closeUtc: 9, focus: "JPY and Asia equity context" },
+  { name: "London", openUtc: 7, closeUtc: 16, focus: "Forex liquidity and metals setup quality" },
+  { name: "New York", openUtc: 12, closeUtc: 21, focus: "USD data, indices and metals volatility" }
 ];
 
 export const pairImpacts = [
@@ -193,7 +193,6 @@ export function getMarketReadiness(tag: string) {
     score,
     avoidTime,
     reasons: [
-      "London liquidity is active",
       "Market context is mapped by asset",
       `${relevantEvents.length} relevant event${relevantEvents.length === 1 ? "" : "s"} for this filter`,
       highImpactCount ? `${highImpactCount} high-impact release${highImpactCount === 1 ? "" : "s"} require caution` : "No high-impact events in this filter"

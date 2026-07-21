@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import {
   currencyHeat,
   getMarketReadiness,
@@ -14,6 +15,7 @@ import {
   type MarketEvent
 } from "../lib/market-intelligence";
 import { GlassCard } from "./GlassCard";
+import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/supabase/client";
 
 const impactClass = {
   High: "bg-danger/15 text-danger border-danger/25",
@@ -25,6 +27,8 @@ export function MarketIntelligenceDashboard() {
   const [filter, setFilter] = useState("Gold Trader");
   const [selectedPair, setSelectedPair] = useState("Gold");
   const [selectedEventId, setSelectedEventId] = useState(marketEvents[0]!.id);
+  const [dnaCompletion, setDnaCompletion] = useState<number | null>(null);
+  const [sessionsNow, setSessionsNow] = useState(() => new Date());
 
   const events = useMemo(
     () => (filter === "All" ? marketEvents : marketEvents.filter((event) => event.traderTags.includes(filter))),
@@ -32,7 +36,55 @@ export function MarketIntelligenceDashboard() {
   );
   const selectedEvent = marketEvents.find((event) => event.id === selectedEventId) ?? marketEvents[0]!;
   const readiness = getMarketReadiness(filter);
+  const canShowReadiness = typeof dnaCompletion === "number" && dnaCompletion >= 35;
   const pair = pairImpacts.find((item) => item.pair === selectedPair) ?? pairImpacts[0]!;
+  const liveSessions = useMemo(() => getLiveSessions(sessionsNow), [sessionsNow]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setSessionsNow(new Date()), 60_000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    async function loadProfileCompletion() {
+      if (!isSupabaseBrowserConfigured()) {
+        if (active) setDnaCompletion(null);
+        return;
+      }
+
+      const supabase = getSupabaseBrowserClient();
+      const { data: sessionData } = await supabase.auth.getSession();
+      const user = sessionData.session?.user;
+      if (!user) {
+        if (active) setDnaCompletion(null);
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name,country,trader_type,experience_level,markets,risk_tolerance,preferences")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (!active) return;
+      const checks = [
+        profile?.full_name,
+        profile?.country,
+        profile?.trader_type,
+        profile?.experience_level,
+        Array.isArray(profile?.markets) && profile.markets.length,
+        profile?.risk_tolerance,
+        profile?.preferences && Object.keys(profile.preferences as Record<string, unknown>).length
+      ];
+      setDnaCompletion(Math.round((checks.filter(Boolean).length / checks.length) * 100));
+    }
+
+    void loadProfileCompletion();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <div className="mt-8 grid gap-6">
@@ -48,19 +100,24 @@ export function MarketIntelligenceDashboard() {
             </div>
             <div className="rounded-3xl border border-electric/25 bg-electric/10 p-4 text-center">
               <p className="text-xs uppercase tracking-[0.18em] text-electric">Trading Readiness</p>
-              <p className="mt-2 text-5xl font-black text-white">{readiness.score}%</p>
+              <p className="mt-2 text-4xl font-black text-white">{canShowReadiness ? `${readiness.score}%` : "Set DNA"}</p>
+              <p className="mt-2 text-xs leading-5 text-slate-300">
+                {canShowReadiness ? `${dnaCompletion}% profile basis` : "Complete your Trading DNA before FundedScope scores readiness."}
+              </p>
             </div>
           </div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {readiness.reasons.map((reason) => (
+            {(canShowReadiness ? readiness.reasons : ["No fake readiness score before profile setup", "Add markets, style, risk and preferences", "Session timing updates from UTC for every timezone", "Economic events stay educational until provider feeds are connected"]).map((reason) => (
               <p key={reason} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm font-semibold text-slate-200">
                 {reason}
               </p>
             ))}
           </div>
-          <p className="mt-5 rounded-2xl border border-warning/25 bg-warning/10 p-4 text-sm font-bold text-warning">
-            Example caution window: {readiness.avoidTime} UTC. Use a verified economic calendar before treating this as a current release.
-          </p>
+          {!canShowReadiness ? (
+            <Link href="/profile#trading-dna-form" className="mt-5 inline-flex rounded-2xl border border-electric/30 px-5 py-3 text-sm font-black text-electric transition hover:bg-electric/10">
+              Complete Trading DNA
+            </Link>
+          ) : null}
         </GlassCard>
 
         <GlassCard>
@@ -162,15 +219,16 @@ export function MarketIntelligenceDashboard() {
         <GlassCard>
           <p className="text-sm uppercase tracking-[0.24em] text-electric">Trading sessions</p>
           <div className="mt-5 grid gap-3">
-            {tradingSessions.map((session) => (
+            {liveSessions.map((session) => (
               <div key={session.name} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-black text-white">{session.name}</p>
-                  <span className={`rounded-full px-3 py-1 text-xs font-black ${session.status === "Open" ? "bg-success/15 text-success" : "bg-white/10 text-slate-300"}`}>
+                  <span className={`rounded-full px-3 py-1 text-xs font-black ${session.status === "Open" ? "bg-success/15 text-success" : session.status === "Opens soon" ? "bg-warning/15 text-warning" : "bg-white/10 text-slate-300"}`}>
                     {session.status}
                   </span>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-slate-400">{session.focus}</p>
+                <p className="mt-2 text-[11px] font-bold text-slate-500">{session.localWindow}</p>
               </div>
             ))}
           </div>
@@ -256,6 +314,36 @@ export function MarketIntelligenceDashboard() {
       </section>
     </div>
   );
+}
+
+function getLiveSessions(now: Date) {
+  const utcHour = now.getUTCHours() + now.getUTCMinutes() / 60;
+
+  return tradingSessions.map((session) => {
+    const open = isWithinSession(utcHour, session.openUtc, session.closeUtc);
+    const hoursUntilOpen = getHoursUntil(utcHour, session.openUtc);
+    const status = open ? "Open" : hoursUntilOpen <= 1.5 ? "Opens soon" : "Closed";
+    return {
+      ...session,
+      status,
+      localWindow: `${formatLocalHour(session.openUtc)} - ${formatLocalHour(session.closeUtc)} local`
+    };
+  });
+}
+
+function isWithinSession(hour: number, openUtc: number, closeUtc: number) {
+  if (openUtc < closeUtc) return hour >= openUtc && hour < closeUtc;
+  return hour >= openUtc || hour < closeUtc;
+}
+
+function getHoursUntil(hour: number, targetUtc: number) {
+  return (targetUtc - hour + 24) % 24;
+}
+
+function formatLocalHour(utcHour: number) {
+  const date = new Date();
+  date.setUTCHours(utcHour, 0, 0, 0);
+  return new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
 }
 
 function EventRow({ event, selected, onSelect }: { event: MarketEvent; selected: boolean; onSelect: () => void }) {

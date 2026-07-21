@@ -159,7 +159,7 @@ export function getFirmTrust(firm: PropFirm) {
   ];
 
   return {
-    confidence: firm.verified ? "Editorial checked" : "Needs verification",
+    confidence: firm.verified ? "Editorial checked" : "Discovery profile",
     confidenceTone: firm.verified ? "success" : "warning",
     sourceLabel: firm.verified ? "FundedScope editorial check" : "FundedScope discovery profile",
     lastChecked: checkedDate(firm),

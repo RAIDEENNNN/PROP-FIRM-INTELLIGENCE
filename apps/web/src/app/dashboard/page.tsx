@@ -3,11 +3,11 @@ import Link from "next/link";
 import { FirmLogo } from "../../components/FirmLogo";
 import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
+import { MarketReferenceGrid } from "../../components/MarketReferenceGrid";
 import { MetricCard } from "../../components/MetricCard";
 import { ProtectedRoute } from "../../components/ProtectedRoute";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { dashboardMetrics, featuredFirms, newsEvents } from "../../lib/data";
-import { fallbackMarkets } from "../../lib/markets";
 import { noindexMetadata } from "../../lib/seo";
 import { spreadRecords } from "../../lib/spreads";
 import { traderDnaProfile } from "../../lib/trader-dna";
@@ -71,24 +71,7 @@ export default function DashboardPage() {
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[0.62fr_0.38fr]">
         <GlassCard className="glow-border">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-[0.28em] text-electric">Market reference preview</p>
-              <h2 className="mt-2 text-3xl font-black text-white">Markets to verify before trading</h2>
-            </div>
-            <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-400">Provider feed pending</span>
-          </div>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {fallbackMarkets.map((market) => (
-              <div key={market.symbol} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                <p className="text-sm text-slate-400">{market.label}</p>
-                <p className="mt-2 text-2xl font-black text-white">{market.price}</p>
-                <p className={`mt-1 text-sm font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
-                  {market.change} · {market.source}
-                </p>
-              </div>
-            ))}
-          </div>
+          <MarketReferenceGrid />
         </GlassCard>
 
         <GlassCard>
