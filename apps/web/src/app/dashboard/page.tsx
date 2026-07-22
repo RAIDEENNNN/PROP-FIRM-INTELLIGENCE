@@ -5,12 +5,12 @@ import { GlassCard } from "../../components/GlassCard";
 import { GoldRiskPlanner } from "../../components/GoldRiskPlanner";
 import { MarketReferenceGrid } from "../../components/MarketReferenceGrid";
 import { MetricCard } from "../../components/MetricCard";
+import { DashboardProfileCard } from "../../components/DashboardProfileCard";
 import { ProtectedRoute } from "../../components/ProtectedRoute";
 import { TradeReadinessCheck } from "../../components/TradeReadinessCheck";
 import { dashboardMetrics, featuredFirms, newsEvents } from "../../lib/data";
 import { noindexMetadata } from "../../lib/seo";
 import { spreadRecords } from "../../lib/spreads";
-import { traderDnaProfile } from "../../lib/trader-dna";
 
 export const metadata: Metadata = noindexMetadata(
   "Trader Dashboard Preview | FundedScope",
@@ -155,26 +155,7 @@ export default function DashboardPage() {
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[0.45fr_0.55fr]">
-        <GlassCard className="glow-border">
-          <p className="text-sm uppercase tracking-[0.28em] text-electric">Trader DNA</p>
-          <h2 className="mt-2 text-3xl font-black text-white">{traderDnaProfile.identity}</h2>
-          <p className="mt-4 text-sm leading-7 text-slate-300">
-            FundedScope remembers your trades, mistakes, best sessions, emotional patterns and risk sweet spot so every recommendation becomes more personal over time.
-          </p>
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-sm text-slate-500">DNA score</p>
-              <p className="mt-1 text-3xl font-black text-electric">{traderDnaProfile.dnaScore}/100</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-              <p className="text-sm text-slate-500">Best session</p>
-              <p className="mt-1 font-black text-white">{traderDnaProfile.bestSession}</p>
-            </div>
-          </div>
-          <Link href="/trader-dna" className="mt-5 block rounded-full bg-white px-5 py-3 text-center font-bold text-void">
-            Open Trader DNA
-          </Link>
-        </GlassCard>
+        <DashboardProfileCard />
         <TradeReadinessCheck />
       </section>
 

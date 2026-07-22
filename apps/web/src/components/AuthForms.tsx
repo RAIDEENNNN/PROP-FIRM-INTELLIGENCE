@@ -6,6 +6,10 @@ import { friendlyAuthMessage } from "../lib/auth-errors";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
 const maxAvatarPreviewBytes = 750_000;
+const oauthProviders = [
+  { id: "google", label: "Continue with Google" },
+  { id: "github", label: "Continue with GitHub" }
+];
 
 function initialsFromName(name: string, email: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -80,6 +84,27 @@ export function SignUpForm() {
     reader.readAsDataURL(file);
   }
 
+  async function signUpWithProvider(provider: string) {
+    setLoading(true);
+    setStatus("");
+    setStatusTone("info");
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider as "google" | "github",
+        options: {
+          redirectTo: `${window.location.origin}/profile`
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      setStatusTone("error");
+      setStatus(friendlyAuthMessage(error, "We couldn't start that sign-up method. Please try email instead."));
+      setLoading(false);
+    }
+  }
+
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -127,6 +152,24 @@ export function SignUpForm() {
 
   return (
     <form onSubmit={submit} className="mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="sm:col-span-2 grid gap-3 sm:grid-cols-2">
+        {oauthProviders.map((provider) => (
+          <button
+            key={provider.id}
+            type="button"
+            onClick={() => signUpWithProvider(provider.id)}
+            disabled={loading}
+            className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-white transition hover:border-electric/40 disabled:opacity-60"
+          >
+            {provider.label}
+          </button>
+        ))}
+      </div>
+      <div className="sm:col-span-2 flex items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+        <span className="h-px flex-1 bg-white/10" />
+        <span>Email sign up</span>
+        <span className="h-px flex-1 bg-white/10" />
+      </div>
       <div className="sm:col-span-2 rounded-3xl border border-electric/20 bg-electric/10 p-4">
         <p className="text-sm font-black text-electric">Start blank</p>
         <p className="mt-2 text-sm leading-6 text-slate-300">
@@ -260,8 +303,45 @@ export function SignInForm() {
     }
   }
 
+  async function signInWithProvider(provider: string) {
+    setLoading(true);
+    setStatus("");
+
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider as "google" | "github",
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      setStatus(friendlyAuthMessage(error, "We couldn't start that sign-in method. Please try email instead."));
+      setLoading(false);
+    }
+  }
+
   return (
     <form onSubmit={submit} className="mt-6 space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        {oauthProviders.map((provider) => (
+          <button
+            key={provider.id}
+            type="button"
+            onClick={() => signInWithProvider(provider.id)}
+            disabled={loading}
+            className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black text-white transition hover:border-electric/40 disabled:opacity-60"
+          >
+            {provider.label}
+          </button>
+        ))}
+      </div>
+      <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+        <span className="h-px flex-1 bg-white/10" />
+        <span>Email sign in</span>
+        <span className="h-px flex-1 bg-white/10" />
+      </div>
       <input value={email} onChange={(event) => setEmail(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Email" type="email" required />
       <input value={password} onChange={(event) => setPassword(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Password" type="password" required />
       <button disabled={loading} className="w-full rounded-2xl bg-white px-4 py-3 font-bold text-void disabled:opacity-60">
