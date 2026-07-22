@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
   return (
     <ProtectedRoute label="dashboard">
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+    <main className="mx-auto max-w-7xl px-3 py-8 sm:px-5 sm:py-12">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Dashboard preview</p>
@@ -65,7 +65,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <nav aria-label="Dashboard tools" className="mt-8 flex gap-2 overflow-x-auto pb-2">
+      <nav aria-label="Dashboard tools" className="mt-8 flex gap-2 overflow-x-auto pb-2 no-scrollbar">
         {workspaceTabs.map((tab, index) => (
           <Link
             key={tab.label}
@@ -165,15 +165,15 @@ export default function DashboardPage() {
           <h2 className="mt-2 text-2xl font-black text-white">Firms you are monitoring</h2>
           <div className="mt-5 grid gap-3">
             {featuredFirms.slice(0, 4).map((firm) => (
-              <Link key={firm.slug} href={`/prop-firms/${firm.slug}`} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-                <div className="flex items-center gap-3">
+              <Link key={firm.slug} href={`/prop-firms/${firm.slug}`} className="flex min-w-0 items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex min-w-0 items-center gap-3">
                   <FirmLogo firm={firm} size="sm" />
-                  <div>
-                    <p className="font-black text-white">{firm.name}</p>
-                    <p className="text-xs text-slate-500">{firm.payoutFrequency} payout · {firm.maxDrawdown} max DD</p>
+                  <div className="min-w-0">
+                    <p className="truncate font-black text-white">{firm.name}</p>
+                    <p className="truncate text-xs text-slate-500">{firm.payoutFrequency} payout · {firm.maxDrawdown} max DD</p>
                   </div>
                 </div>
-                <p className="text-sm font-black text-electric">{firm.score}/100</p>
+                <p className="shrink-0 text-sm font-black text-electric">{firm.score}/100</p>
               </Link>
             ))}
           </div>

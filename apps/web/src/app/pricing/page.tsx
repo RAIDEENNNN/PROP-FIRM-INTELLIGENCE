@@ -142,7 +142,7 @@ const stickyFeatures = [
 
 export default function PricingPage() {
   return (
-    <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
+    <main className="mx-auto max-w-7xl px-3 py-8 sm:px-5 sm:py-12">
       <JsonLd
         id="pricing-faq-jsonld"
         data={{
@@ -159,7 +159,7 @@ export default function PricingPage() {
         }}
       />
       <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Pricing</p>
-      <h1 className="mt-3 max-w-5xl text-3xl font-black text-white sm:text-5xl md:text-6xl">Choose the plan that makes you a better trader every month.</h1>
+      <h1 className="mt-3 max-w-5xl text-3xl font-black leading-tight text-white sm:text-5xl md:text-6xl">Choose the plan that makes you a better trader every month.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
         FundedScope subscriptions make sense because consistency, risk, psychology, decisions and research are not one-time problems. They are continuous trading problems.
       </p>
@@ -169,7 +169,7 @@ export default function PricingPage() {
           <GlassCard key={plan.name} className={plan.name === "Pro" ? "glow-border relative overflow-hidden" : "relative overflow-hidden"}>
             {plan.badge ? <span className="mb-5 inline-block rounded-full bg-electric/15 px-3 py-1 text-xs font-bold text-electric">{plan.badge}</span> : null}
             <p className="text-2xl font-black text-white">{plan.name}</p>
-            <p className="mt-4 text-6xl font-black text-electric">{plan.price}</p>
+            <p className="mt-4 break-words text-5xl font-black text-electric sm:text-6xl">{plan.price}</p>
             <p className="mt-2 text-sm text-slate-500">per month</p>
             <p className="mt-5 text-sm font-bold text-white">{plan.audience}</p>
             <p className="mt-3 min-h-12 text-sm leading-6 text-slate-400">{plan.promise}</p>

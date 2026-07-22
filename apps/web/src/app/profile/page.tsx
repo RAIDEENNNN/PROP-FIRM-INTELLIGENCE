@@ -30,14 +30,14 @@ const privacyNotes = [
 export default function ProfilePage() {
   return (
     <ProtectedRoute label="profile">
-    <main className="relative mx-auto max-w-7xl overflow-hidden px-4 py-10 sm:px-5 sm:py-12">
+    <main className="relative mx-auto max-w-7xl overflow-hidden px-3 py-8 sm:px-5 sm:py-12">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(56,189,248,0.18),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(139,92,246,0.14),transparent_24%)]" />
 
       <section className="overflow-hidden rounded-[2.25rem] border border-white/10 bg-slate-950/75 p-5 shadow-2xl shadow-electric/10 backdrop-blur sm:p-8">
         <div className="grid gap-8 lg:grid-cols-[0.58fr_0.42fr] lg:items-center">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-electric">New account setup</p>
-            <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-white sm:text-6xl">Your FundedScope profile starts empty.</h1>
+            <h1 className="mt-4 max-w-4xl text-3xl font-black leading-tight text-white sm:text-6xl">Your FundedScope profile starts empty.</h1>
             <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
               No fake trading history. No guessed country. No assumed capital. Tell FundedScope what matters to you, then the dashboard becomes personal.
             </p>

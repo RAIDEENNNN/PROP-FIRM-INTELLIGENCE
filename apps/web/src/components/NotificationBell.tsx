@@ -117,7 +117,7 @@ export function NotificationBell() {
         aria-expanded={open}
         aria-controls="notification-menu"
         onClick={() => setOpen((value) => !value)}
-        className="relative grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white transition hover:border-electric/40 hover:text-electric"
+        className="relative grid h-10 w-10 place-items-center rounded-full border border-white/15 text-white transition hover:border-electric/40 hover:text-electric sm:h-11 sm:w-11"
       >
         <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
@@ -128,7 +128,7 @@ export function NotificationBell() {
         {unreadCount > 0 ? <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-electric" /> : null}
       </button>
       {open ? (
-        <div id="notification-menu" role="menu" className="absolute right-0 top-full z-50 mt-3 w-[min(calc(100vw-2rem),20rem)] rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
+        <div id="notification-menu" role="menu" className="absolute right-0 top-full z-50 mt-3 w-[min(calc(100vw-1.5rem),20rem)] rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
           <p className="px-2 text-xs font-bold uppercase tracking-[0.2em] text-electric">Notifications</p>
           <div className="mt-3 grid gap-2">
             {notifications.map((notification) => (

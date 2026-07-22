@@ -121,6 +121,14 @@ a {
   animation-play-state: paused;
 }
 
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .radar-target[data-active="true"] {
   border-color: rgba(224, 178, 83, 0.42);
   box-shadow:

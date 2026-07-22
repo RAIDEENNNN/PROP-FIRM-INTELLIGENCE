@@ -118,7 +118,7 @@ export function AccountMenu({ onNavigate }: { onNavigate?: () => void }) {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex h-11 items-center gap-2 rounded-xl border border-electric/25 bg-electric/10 px-2 text-sm font-black text-white transition hover:border-electric/50 sm:px-3"
+        className="flex h-10 items-center gap-2 rounded-xl border border-electric/25 bg-electric/10 px-2 text-sm font-black text-white transition hover:border-electric/50 sm:h-11 sm:px-3"
         aria-expanded={open}
         aria-controls="account-menu"
         aria-label="Open account menu"
@@ -129,7 +129,7 @@ export function AccountMenu({ onNavigate }: { onNavigate?: () => void }) {
         <span className="hidden sm:inline">Profile</span>
       </button>
       {open ? (
-        <div id="account-menu" className="absolute right-0 top-full z-50 mt-3 w-64 rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
+        <div id="account-menu" className="absolute right-0 top-full z-50 mt-3 w-[min(calc(100vw-1.5rem),16rem)] rounded-3xl border border-white/10 bg-midnight/95 p-3 shadow-glow backdrop-blur-xl">
           <p className="truncate px-2 text-sm font-black text-white">{account.name || "FundedScope trader"}</p>
           <p className="truncate px-2 text-xs text-slate-500">{account.email}</p>
           <div className="mt-3 grid gap-2 text-sm font-bold">

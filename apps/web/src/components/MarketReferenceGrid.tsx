@@ -54,11 +54,11 @@ export function MarketReferenceGrid() {
           {marketCount ? `${marketCount} market references` : loaded ? "Reference feed checking" : "Loading references"}
         </span>
       </div>
-      <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-6 grid gap-3 min-[520px]:grid-cols-2 xl:grid-cols-3">
         {markets.map((market) => (
-          <div key={market.symbol} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+          <div key={market.symbol} className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-bold text-slate-400">{market.label}</p>
+              <p className="min-w-0 truncate text-sm font-bold text-slate-400">{market.label}</p>
               <span
                 className={`rounded-full px-2 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${
                   market.source === "Live" ? "bg-success/10 text-success" : market.source === "Reference" ? "bg-electric/10 text-electric" : "bg-white/[0.04] text-slate-500"
@@ -67,7 +67,7 @@ export function MarketReferenceGrid() {
                 {sourceLabel(market.source)}
               </span>
             </div>
-            <p className="mt-2 text-2xl font-black text-white">{market.price}</p>
+            <p className="mt-2 min-w-0 break-words text-xl font-black text-white sm:text-2xl">{market.price}</p>
             <p className={`mt-1 text-sm font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
               {detailLabel(market)}
             </p>

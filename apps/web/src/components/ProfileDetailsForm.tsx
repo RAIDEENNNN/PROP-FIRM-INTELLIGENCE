@@ -467,7 +467,11 @@ export function ProfileDetailsForm() {
         </div>
       </section>
 
-      <button disabled={loading} className="sticky bottom-4 z-20 w-full rounded-2xl bg-electric px-5 py-4 text-base font-black text-void shadow-glow disabled:opacity-60 sm:static">
+      <button
+        disabled={loading}
+        className="sticky bottom-3 z-20 w-full rounded-2xl bg-electric px-5 py-4 text-base font-black text-void shadow-glow disabled:opacity-60 sm:static"
+        style={{ marginBottom: "env(safe-area-inset-bottom)" }}
+      >
         {loading ? "Saving..." : "Save My Trading DNA"}
       </button>
       {status ? <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm leading-6 text-slate-300">{status}</p> : null}
@@ -505,7 +509,7 @@ function ChoiceSection({ title, options, values, onToggle }: { title: string; op
           <p className="mt-2 text-sm text-slate-400">{values.length} selected</p>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-4 grid gap-2 min-[420px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
         {options.map((option) => {
           const active = values.includes(option);
           return (
