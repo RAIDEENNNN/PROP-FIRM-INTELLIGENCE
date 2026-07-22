@@ -131,8 +131,20 @@ const plausiblePriceRanges: Record<string, { min: number; max: number }> = {
   DXY: { min: 50, max: 200 }
 };
 
+const referencePriceRanges: Record<string, { min: number; max: number }> = {
+  NAS100: { min: 1, max: 5_000 },
+  SPX500: { min: 1, max: 5_000 },
+  US30: { min: 1, max: 5_000 },
+  DXY: { min: 1, max: 5_000 }
+};
+
 function isPlausiblePrice(symbol: string, price: number) {
   const range = plausiblePriceRanges[symbol];
+  return Number.isFinite(price) && price > 0 && (!range || (price >= range.min && price <= range.max));
+}
+
+function isPlausibleReferencePrice(symbol: string, price: number) {
+  const range = referencePriceRanges[symbol] ?? plausiblePriceRanges[symbol];
   return Number.isFinite(price) && price > 0 && (!range || (price >= range.min && price <= range.max));
 }
 
@@ -236,7 +248,7 @@ function applyReferenceQuote(markets: MarketSnapshot[], symbol: string, quote: F
   const isFinnhubQuote = Object.prototype.hasOwnProperty.call(quote, "c") || Object.prototype.hasOwnProperty.call(quote, "dp");
   const rawPrice = isFinnhubQuote ? Number((quote as FinnhubQuote).c) : Number((quote as YahooQuote).regularMarketPrice);
   const rawChange = isFinnhubQuote ? Number((quote as FinnhubQuote).dp) : Number((quote as YahooQuote).regularMarketChangePercent);
-  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
+  if (!isPlausibleReferencePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -255,7 +267,8 @@ function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote
   const globalQuote = quote["Global Quote"];
   const rawPrice = Number(globalQuote?.["05. price"]);
   const rawChange = Number(globalQuote?.["10. change percent"]?.replace("%", ""));
-  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
+  const isPlausible = source === "Reference" ? isPlausibleReferencePrice(symbol, rawPrice) : isPlausiblePrice(symbol, rawPrice);
+  if (!isPlausible) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -327,6 +340,20 @@ export async function GET() {
 
     if (payload) {
       markets = applySimplePrice(markets, "XAUUSD", Number(payload.price));
+    }
+  }
+
+  if (markets.some((market) => market.symbol === "XAGUSD" && market.source !== "Live")) {
+    const payload = await fetchJson<GoldApiResponse>(
+      "https://api.gold-api.com/price/XAG",
+      {
+        headers: { accept: "application/json" },
+        next: { revalidate: 30 }
+      }
+    );
+
+    if (payload) {
+      markets = applySimplePrice(markets, "XAGUSD", Number(payload.price));
     }
   }
 
