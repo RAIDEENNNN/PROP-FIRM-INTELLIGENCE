@@ -7,6 +7,8 @@ export function EntryOfferModal() {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (window.localStorage.getItem("fundedscope_offer_closed") === "true") return;
@@ -19,11 +21,32 @@ export function EntryOfferModal() {
     setOpen(false);
   }
 
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!email) return;
-    window.localStorage.setItem("fundedscope_waitlist_email", email);
-    setSaved(true);
+    setSaving(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          plan: "newsletter",
+          source: "entry-offer-modal",
+          consent: true
+        })
+      });
+
+      if (!response.ok) throw new Error("waitlist failed");
+      window.localStorage.setItem("fundedscope_waitlist_email", email);
+      setSaved(true);
+    } catch {
+      setError("We could not save this yet. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!open) return null;
@@ -73,8 +96,9 @@ export function EntryOfferModal() {
                 <input type="checkbox" defaultChecked className="mt-1 accent-violet" />
                 <span>I want FundedScope research, offers, product updates and trading-intelligence emails.</span>
               </label>
-              <button type="submit" className="mt-4 min-h-12 w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-violet px-5 py-3 text-sm font-black text-white transition hover:scale-[1.01] active:scale-[0.99]">
-                Enter
+              {error ? <p className="mt-3 text-sm font-bold text-danger">{error}</p> : null}
+              <button type="submit" disabled={saving} className="mt-4 min-h-12 w-full rounded-2xl bg-gradient-to-r from-fuchsia-500 to-violet px-5 py-3 text-sm font-black text-white transition hover:scale-[1.01] active:scale-[0.99] disabled:cursor-wait disabled:opacity-70">
+                {saving ? "Saving..." : "Enter"}
               </button>
             </form>
           )}

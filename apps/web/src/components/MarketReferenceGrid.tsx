@@ -30,6 +30,18 @@ export function MarketReferenceGrid() {
   }, []);
 
   const marketCount = markets.filter((market) => market.source === "Live" || market.source === "Reference").length;
+  const sourceLabel = (source: MarketSnapshot["source"]) => {
+    if (source === "Live") return "Live";
+    if (source === "Reference") return "Proxy";
+    return "Checking";
+  };
+
+  const detailLabel = (market: MarketSnapshot) => {
+    if (market.change) return market.change;
+    if (market.source === "Live") return "Live quote";
+    if (market.source === "Reference") return "Market proxy";
+    return "Feed checking";
+  };
 
   return (
     <>
@@ -52,12 +64,12 @@ export function MarketReferenceGrid() {
                   market.source === "Live" ? "bg-success/10 text-success" : market.source === "Reference" ? "bg-electric/10 text-electric" : "bg-white/[0.04] text-slate-500"
                 }`}
               >
-                {market.source === "Unavailable" ? "Check" : market.source}
+                {sourceLabel(market.source)}
               </span>
             </div>
             <p className="mt-2 text-2xl font-black text-white">{market.price}</p>
             <p className={`mt-1 text-sm font-bold ${market.tone === "up" ? "text-success" : market.tone === "down" ? "text-danger" : "text-slate-400"}`}>
-              {market.change || "Verify in platform"}
+              {detailLabel(market)}
             </p>
           </div>
         ))}

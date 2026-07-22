@@ -34,15 +34,15 @@ const plans = [
     href: "/sign-up?plan=free",
     features: [
       "Global prop firm directory",
-      "Broker comparison preview",
-      "Limited market intelligence preview",
-      "Limited AI assistant prompts",
+      "Broker comparison preview only",
+      "Market intelligence preview only",
+      "AI assistant preview prompts only",
       "Basic side-by-side comparison",
-      "Basic economic calendar",
+      "Basic economic calendar preview",
       "Lot size, drawdown and profit target calculators",
       "Starter spread matrix preview"
     ],
-    limits: ["Limited AI", "No saved alerts", "No journal analytics"]
+    limits: ["No saved alerts", "No full journal analytics", "No premium AI coach", "No automated reports"]
   },
   {
     name: "Pro",
@@ -53,17 +53,17 @@ const plans = [
     cta: "Join Pro waitlist",
     href: "/sign-up?interest=pro",
     features: [
-      "Planned: expanded AI assistant usage",
-      "Beta: Trade Readiness checks",
-      "Planned: trader journal entries and screenshots",
-      "Planned: AI Weekly Review every Sunday",
-      "Planned: saved dashboards and watchlists",
-      "Planned: Broker Optimizer and Prop Optimizer",
-      "Planned: alerts for news, spreads, firms and discounts",
-      "Planned: Morning Brief, Afternoon Brief and Weekend Outlook",
-      "Planned: performance analytics and payout progress"
+      "Expanded AI assistant usage",
+      "Trade Readiness checks",
+      "Trader journal entries and screenshots",
+      "AI Weekly Review every Sunday",
+      "Saved dashboards and watchlists",
+      "Broker Optimizer and Prop Optimizer",
+      "Alerts for news, spreads, firms and discounts",
+      "Morning Brief, Afternoon Brief and Weekend Outlook",
+      "Performance analytics and payout progress"
     ],
-    limits: ["Checkout not launched", "Feature access requires UAT", "No monthly PDF report yet", "No AI trade replay yet"]
+    limits: ["Join the waitlist while checkout is prepared", "Feature access opens after UAT", "No monthly PDF report yet", "No AI trade replay yet"]
   },
   {
     name: "Elite",
@@ -73,34 +73,34 @@ const plans = [
     cta: "Join Elite waitlist",
     href: "/sign-up?interest=elite",
     features: [
-      "Planned: everything in Pro",
-      "Beta: Trader DNA habits, psychology, mistakes and strengths",
-      "Planned: personal AI Coach with evidence-based warnings",
-      "Planned: Monthly Trading Report PDF",
-      "Planned: AI Trade Replay for uploaded history",
-      "Planned: deep psychology and risk pattern detection",
-      "Planned: long-term performance graphing and goals",
-      "Planned: priority research and alert rules"
+      "Everything in Pro",
+      "Trader DNA habits, psychology, mistakes and strengths",
+      "Personal AI Coach with evidence-based warnings",
+      "Monthly Trading Report PDF",
+      "AI Trade Replay for uploaded history",
+      "Deep psychology and risk pattern detection",
+      "Long-term performance graphing and goals",
+      "Priority research and alert rules"
     ],
-    limits: ["Checkout not launched", "Feature access requires UAT", "Business/API access available separately"]
+    limits: ["Join the waitlist while checkout is prepared", "Feature access opens after UAT", "Business/API access available separately"]
   }
 ];
 
 const comparisonRows: Array<[string, string, string, string]> = [
   ["Prop firm directory", "Yes", "Yes", "Yes"],
   ["Every firm profile page", "Yes", "Yes", "Yes"],
-  ["Broker comparison", "Preview", "Full", "Full"],
-  ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview", "Full", "Full"],
-  ["AI assistant", "Limited preview", "Planned", "Planned coach"],
-  ["Trade Readiness™", "Preview", "Beta", "Beta + Trader DNA"],
-  ["Trader journal", "Basic planned", "Planned", "Planned analytics"],
-  ["AI Weekly Review", "No", "Planned", "Planned monthly report"],
-  ["Saved firms/watchlist", "No", "Planned", "Planned"],
-  ["Rule-change alerts", "No", "Planned", "Planned"],
-  ["Payout and drawdown dashboard", "No", "Planned", "Planned advanced"],
-  ["Trader DNA™", "Blank profile setup", "Beta", "Planned full"],
-  ["AI Trade Replay", "No", "No", "Planned"],
-  ["Reports and analytics", "No", "Planned", "Planned"]
+  ["Broker comparison", "Preview only", "Full", "Full"],
+  ["Forex, metals, indices, crypto and synthetic spread matrix", "Preview only", "Full", "Full"],
+  ["AI assistant", "Limited preview", "Expanded", "Personal coach"],
+  ["Trade Readiness™", "Preview only", "Full", "Full + Trader DNA"],
+  ["Trader journal", "Basic setup", "Full", "Full analytics"],
+  ["AI Weekly Review", "No", "Yes", "Weekly + monthly report"],
+  ["Saved firms/watchlist", "Basic", "Full", "Full"],
+  ["Rule-change alerts", "No", "Yes", "Priority"],
+  ["Payout and drawdown dashboard", "No", "Yes", "Advanced"],
+  ["Trader DNA™", "Blank profile setup", "Full", "Full coach memory"],
+  ["AI Trade Replay", "No", "No", "Yes"],
+  ["Reports and analytics", "No", "Yes", "Advanced"]
 ];
 
 const reasons = [

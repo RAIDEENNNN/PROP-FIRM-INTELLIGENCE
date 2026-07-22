@@ -18,7 +18,17 @@ export const metadata: Metadata = noindexMetadata(
   "/dashboard"
 );
 
-const workspaceTabs = ["Gold", "Trader DNA", "Watchlist", "Calendar", "AI Summary", "Journal", "Performance", "News", "Broker Alerts"];
+const workspaceTabs = [
+  { label: "Gold", href: "/gold" },
+  { label: "Trader DNA", href: "/trader-dna" },
+  { label: "Watchlist", href: "/profile" },
+  { label: "Calendar", href: "/market-intelligence#calendar" },
+  { label: "AI Summary", href: "/ai" },
+  { label: "Journal", href: "/journal" },
+  { label: "Performance", href: "/trader-dna#performance" },
+  { label: "News", href: "/news-radar" },
+  { label: "Broker Alerts", href: "/alerts" }
+];
 
 const aiBrief = [
   "Gold risk is elevated around USD news windows. Reduce size or wait for spreads to normalize.",
@@ -55,13 +65,19 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      <div className="mt-8 flex gap-2 overflow-x-auto pb-2">
+      <nav aria-label="Dashboard tools" className="mt-8 flex gap-2 overflow-x-auto pb-2">
         {workspaceTabs.map((tab, index) => (
-          <span key={tab} className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold ${index === 0 ? "bg-electric text-void" : "border border-white/10 text-slate-300"}`}>
-            {tab}
-          </span>
+          <Link
+            key={tab.label}
+            href={tab.href}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition hover:-translate-y-0.5 hover:border-electric/40 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-electric ${
+              index === 0 ? "bg-electric text-void hover:text-void" : "border border-white/10 text-slate-300"
+            }`}
+          >
+            {tab.label}
+          </Link>
         ))}
-      </div>
+      </nav>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {dashboardMetrics.map((metric) => (

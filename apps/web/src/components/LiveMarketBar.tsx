@@ -33,6 +33,11 @@ export function LiveMarketBar() {
   }, []);
 
   const hasMarketQuotes = markets.some((market) => market.source === "Live" || market.source === "Reference");
+  const sourceLabel = (source: MarketSnapshot["source"]) => {
+    if (source === "Reference") return "proxy";
+    if (source === "Unavailable") return "checking";
+    return "live";
+  };
 
   return (
     <section className="overflow-hidden border-y border-white/10 bg-white/[0.03]">
@@ -52,7 +57,7 @@ export function LiveMarketBar() {
                     {market.change}
                   </span>
                 ) : null}
-                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{market.source}</span>
+                <span className="text-[10px] uppercase tracking-[0.16em] text-slate-600">{sourceLabel(market.source)}</span>
               </div>
             ))}
             <p className="w-[min(360px,80vw)] shrink-0 text-xs text-slate-500">{message}</p>
