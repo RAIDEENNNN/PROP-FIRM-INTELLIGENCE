@@ -6,12 +6,12 @@ import { brand } from "../../lib/brand";
 import { articleUrl, brandArticles } from "../../lib/articles";
 
 export const metadata: Metadata = {
-  title: "MyFundedScope Articles | Trading Intelligence Company Updates",
-  description: "Read MyFundedScope articles about FundedScope, trading intelligence, prop firm comparison, broker research and personal Trading DNA.",
+  title: "Trading Education | FundedScope",
+  description: "FundedScope education for prop firm rules, broker research, market risk, Trading DNA and smarter trader workflows.",
   alternates: { canonical: "/articles" },
   openGraph: {
-    title: "MyFundedScope Articles",
-    description: "Company updates and trading intelligence articles from MyFundedScope.",
+    title: "Trading Education",
+    description: "FundedScope education for prop firm rules, broker research, market risk and smarter trader workflows.",
     url: "/articles",
     siteName: "MyFundedScope",
     type: "website",
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MyFundedScope Articles",
-    description: "Company updates and trading intelligence articles from MyFundedScope.",
+    title: "Trading Education",
+    description: "FundedScope education for prop firm rules, broker research, market risk and smarter trader workflows.",
     images: [brand.logoPath]
   }
 };
@@ -53,10 +53,10 @@ export default function ArticlesPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-5 sm:py-12">
       <JsonLd id="articles-itemlist-jsonld" data={itemListJsonLd} />
-      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">MyFundedScope articles</p>
-      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Teaching Google and traders what MyFundedScope means.</h1>
+      <p className="text-xs uppercase tracking-[0.24em] text-electric sm:text-sm sm:tracking-[0.28em]">Education</p>
+      <h1 className="mt-3 max-w-4xl text-3xl font-black text-white sm:text-5xl">Trading education and FundedScope guides.</h1>
       <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300">
-        Company updates and trading intelligence essays that explain why MyFundedScope exists and how FundedScope helps traders make better decisions.
+        Learn prop firm rules, broker research, market risk, Trading DNA, platform workflows and smarter decision habits.
       </p>
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         {brandArticles.map((article) => (
@@ -73,4 +73,3 @@ export default function ArticlesPage() {
     </main>
   );
 }
-

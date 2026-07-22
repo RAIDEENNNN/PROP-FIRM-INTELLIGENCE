@@ -9,9 +9,9 @@ export default function SignUpPage() {
     <main className="mx-auto grid min-h-[70vh] max-w-5xl place-items-center px-4 py-10 sm:px-5 sm:py-12">
       <GlassCard className="w-full glow-border">
         <p className="text-sm uppercase tracking-[0.28em] text-electric">Create account</p>
-        <h1 className="mt-3 text-3xl font-black text-white sm:text-5xl">Start with a blank FundedScope account.</h1>
+        <h1 className="mt-3 text-3xl font-black text-white sm:text-5xl">Create your FundedScope account.</h1>
         <p className="mt-3 text-sm leading-6 text-slate-400">
-          New users should not see guessed profile data. Create the login first, then add Trading DNA, watchlists, alerts and preferences only when you are ready.
+          Sign up with Google, GitHub, or email. Your Trading DNA, markets, profile photo and preferences all live under Profile after you get in.
         </p>
         <SignUpForm />
       </GlassCard>

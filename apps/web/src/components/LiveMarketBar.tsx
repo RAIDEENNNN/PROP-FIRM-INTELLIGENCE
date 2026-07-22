@@ -34,7 +34,7 @@ export function LiveMarketBar() {
 
   const hasMarketQuotes = markets.some((market) => market.source === "Live" || market.source === "Reference");
   const sourceLabel = (source: MarketSnapshot["source"]) => {
-    if (source === "Reference") return "proxy";
+    if (source === "Reference") return "reference";
     if (source === "Unavailable") return "checking";
     return "live";
   };

@@ -32,15 +32,15 @@ export function MarketReferenceGrid() {
   const marketCount = markets.filter((market) => market.source === "Live" || market.source === "Reference").length;
   const sourceLabel = (source: MarketSnapshot["source"]) => {
     if (source === "Live") return "Live";
-    if (source === "Reference") return "Proxy";
+    if (source === "Reference") return "Reference";
     return "Checking";
   };
 
   const detailLabel = (market: MarketSnapshot) => {
     if (market.change) return market.change;
-    if (market.source === "Live") return "Live quote";
-    if (market.source === "Reference") return "Market proxy";
-    return "Feed checking";
+    if (market.source === "Live") return "Provider-backed";
+    if (market.source === "Reference") return "Provider reference";
+    return "Provider feed required";
   };
 
   return (

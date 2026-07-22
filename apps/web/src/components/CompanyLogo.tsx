@@ -30,10 +30,6 @@ export function CompanyLogo({
     const urls = [
       primaryUrl,
       `https://logo.clearbit.com/${cleanDomain}?size=256`,
-      `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${cleanDomain}&size=256`,
-      `https://www.google.com/s2/favicons?domain_url=https://${cleanDomain}&sz=256`,
-      `https://www.google.com/s2/favicons?domain=${cleanDomain}&sz=256`,
-      `https://icons.duckduckgo.com/ip3/${cleanDomain}.ico`,
       `https://icon.horse/icon/${cleanDomain}`
     ];
 

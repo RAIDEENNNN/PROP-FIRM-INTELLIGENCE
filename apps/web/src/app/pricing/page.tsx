@@ -47,11 +47,11 @@ const plans = [
   {
     name: "Pro",
     price: "$19",
-    badge: "Planned",
+    badge: "Subscribe",
     audience: "For active traders who want FundedScope in their daily routine.",
     promise: "Become better every month — not just better informed.",
-    cta: "Join Pro waitlist",
-    href: "/sign-up?interest=pro",
+    cta: "Create account to subscribe",
+    href: "/sign-up?plan=pro",
     features: [
       "Expanded AI assistant usage",
       "Trade Readiness checks",
@@ -63,15 +63,15 @@ const plans = [
       "Morning Brief, Afternoon Brief and Weekend Outlook",
       "Performance analytics and payout progress"
     ],
-    limits: ["Join the waitlist while checkout is prepared", "Feature access opens after UAT", "No monthly PDF report yet", "No AI trade replay yet"]
+    limits: ["Secure Stripe checkout", "Premium access is tied to your FundedScope account", "Cancel from billing once subscription management is enabled", "No AI trade replay yet"]
   },
   {
     name: "Elite",
     price: "$49.99",
     audience: "For serious traders who want a personal AI coach and long-term trading memory.",
     promise: "Make cancelling feel like losing your trading operating system.",
-    cta: "Join Elite waitlist",
-    href: "/sign-up?interest=elite",
+    cta: "Create account to subscribe",
+    href: "/sign-up?plan=elite",
     features: [
       "Everything in Pro",
       "Trader DNA habits, psychology, mistakes and strengths",
@@ -82,7 +82,7 @@ const plans = [
       "Long-term performance graphing and goals",
       "Priority research and alert rules"
     ],
-    limits: ["Join the waitlist while checkout is prepared", "Feature access opens after UAT", "Business/API access available separately"]
+    limits: ["Secure Stripe checkout", "Premium access is tied to your FundedScope account", "Business/API access available separately"]
   }
 ];
 

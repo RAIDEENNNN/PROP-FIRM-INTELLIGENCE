@@ -33,6 +33,17 @@ type YahooQuoteResponse = {
   };
 };
 
+type YahooChartResponse = {
+  chart?: {
+    result?: Array<{
+      meta?: {
+        regularMarketPrice?: number;
+        chartPreviousClose?: number;
+      };
+    }>;
+  };
+};
+
 type FrankfurterResponse = {
   rates?: Record<string, number>;
 };
@@ -102,13 +113,6 @@ const finnhubSymbols: Record<string, string> = {
   MSFT: "MSFT"
 };
 
-const referenceProxySymbols: Record<string, { providerSymbol: string; note: string }> = {
-  NAS100: { providerSymbol: "QQQ", note: "NASDAQ 100 ETF reference" },
-  SPX500: { providerSymbol: "SPY", note: "S&P 500 ETF reference" },
-  US30: { providerSymbol: "DIA", note: "Dow 30 ETF reference" },
-  DXY: { providerSymbol: "UUP", note: "US Dollar ETF reference" }
-};
-
 const zeroDecimalSymbols = new Set(["BTCUSD", "ETHUSD", "NAS100", "SPX500", "US30"]);
 const providerTimeoutMs = 4_500;
 
@@ -131,20 +135,8 @@ const plausiblePriceRanges: Record<string, { min: number; max: number }> = {
   DXY: { min: 50, max: 200 }
 };
 
-const referencePriceRanges: Record<string, { min: number; max: number }> = {
-  NAS100: { min: 1, max: 5_000 },
-  SPX500: { min: 1, max: 5_000 },
-  US30: { min: 1, max: 5_000 },
-  DXY: { min: 1, max: 5_000 }
-};
-
 function isPlausiblePrice(symbol: string, price: number) {
   const range = plausiblePriceRanges[symbol];
-  return Number.isFinite(price) && price > 0 && (!range || (price >= range.min && price <= range.max));
-}
-
-function isPlausibleReferencePrice(symbol: string, price: number) {
-  const range = referencePriceRanges[symbol] ?? plausiblePriceRanges[symbol];
   return Number.isFinite(price) && price > 0 && (!range || (price >= range.min && price <= range.max));
 }
 
@@ -212,6 +204,26 @@ function applyYahooQuote(markets: MarketSnapshot[], symbol: string, quote: Yahoo
   );
 }
 
+function applyYahooChartQuote(markets: MarketSnapshot[], symbol: string, quote: YahooChartResponse): MarketSnapshot[] {
+  const meta = quote.chart?.result?.[0]?.meta;
+  const rawPrice = Number(meta?.regularMarketPrice);
+  const previousClose = Number(meta?.chartPreviousClose);
+  const rawChange = Number.isFinite(rawPrice) && Number.isFinite(previousClose) && previousClose > 0 ? ((rawPrice - previousClose) / previousClose) * 100 : Number.NaN;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
+
+  return markets.map((market) =>
+    market.symbol === symbol
+      ? {
+          ...market,
+          price: formatPrice(symbol, rawPrice),
+          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
+          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
+          source: "Live" as const
+        }
+      : market
+  );
+}
+
 function applySimplePrice(markets: MarketSnapshot[], symbol: string, price: number): MarketSnapshot[] {
   if (!isPlausiblePrice(symbol, price)) return markets;
 
@@ -244,31 +256,11 @@ function applyFinnhubQuote(markets: MarketSnapshot[], symbol: string, quote: Fin
   );
 }
 
-function applyReferenceQuote(markets: MarketSnapshot[], symbol: string, quote: FinnhubQuote | YahooQuote): MarketSnapshot[] {
-  const isFinnhubQuote = Object.prototype.hasOwnProperty.call(quote, "c") || Object.prototype.hasOwnProperty.call(quote, "dp");
-  const rawPrice = isFinnhubQuote ? Number((quote as FinnhubQuote).c) : Number((quote as YahooQuote).regularMarketPrice);
-  const rawChange = isFinnhubQuote ? Number((quote as FinnhubQuote).dp) : Number((quote as YahooQuote).regularMarketChangePercent);
-  if (!isPlausibleReferencePrice(symbol, rawPrice)) return markets;
-
-  return markets.map((market) =>
-    market.symbol === symbol
-      ? {
-          ...market,
-          price: formatPrice(symbol, rawPrice),
-          change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
-          tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
-          source: "Reference" as const
-        }
-      : market
-  );
-}
-
-function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote: AlphaVantageGlobalQuote, source: "Live" | "Reference" = "Live"): MarketSnapshot[] {
+function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote: AlphaVantageGlobalQuote): MarketSnapshot[] {
   const globalQuote = quote["Global Quote"];
   const rawPrice = Number(globalQuote?.["05. price"]);
   const rawChange = Number(globalQuote?.["10. change percent"]?.replace("%", ""));
-  const isPlausible = source === "Reference" ? isPlausibleReferencePrice(symbol, rawPrice) : isPlausiblePrice(symbol, rawPrice);
-  if (!isPlausible) return markets;
+  if (!isPlausiblePrice(symbol, rawPrice)) return markets;
 
   return markets.map((market) =>
     market.symbol === symbol
@@ -277,7 +269,7 @@ function applyAlphaVantageQuote(markets: MarketSnapshot[], symbol: string, quote
           price: formatPrice(symbol, rawPrice),
           change: Number.isFinite(rawChange) ? `${rawChange >= 0 ? "+" : ""}${rawChange.toFixed(2)}%` : market.change,
           tone: Number.isFinite(rawChange) ? (rawChange > 0 ? "up" : rawChange < 0 ? "down" : "flat") : market.tone,
-          source
+          source: "Live" as const
         }
       : market
   );
@@ -463,52 +455,32 @@ export async function GET() {
     }
   }
 
-  const missingReferenceSymbols = markets
-    .filter((market) => market.source === "Unavailable" && referenceProxySymbols[market.symbol])
+  const missingYahooChartSymbols = markets
+    .filter((market) => market.source !== "Live" && yahooSymbols[market.symbol])
     .map((market) => market.symbol);
 
-  if (finnhubKey && missingReferenceSymbols.length) {
-    const referenceQuotes = await Promise.allSettled(
-      missingReferenceSymbols.map(async (symbol) => {
-        const url = new URL("https://finnhub.io/api/v1/quote");
-        url.searchParams.set("symbol", referenceProxySymbols[symbol]!.providerSymbol);
-        url.searchParams.set("token", finnhubKey);
-        const quote = await fetchJson<FinnhubQuote>(url, {
-          headers: { accept: "application/json" },
-          next: { revalidate: 60 }
-        });
-        if (!quote) return null;
-        return { symbol, quote };
+  if (missingYahooChartSymbols.length) {
+    const chartQuotes = await Promise.allSettled(
+      missingYahooChartSymbols.map(async (symbol) => {
+        const providerSymbol = yahooSymbols[symbol]!;
+        const payload = await fetchJson<YahooChartResponse>(
+          `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(providerSymbol)}?range=1d&interval=1m`,
+          {
+            headers: {
+              accept: "application/json",
+              "user-agent": "FundedScope market reference/1.0"
+            },
+            next: { revalidate: 30 }
+          }
+        );
+        if (!payload) return null;
+        return { symbol, payload };
       })
     );
 
-    for (const result of referenceQuotes) {
+    for (const result of chartQuotes) {
       if (result.status === "fulfilled" && result.value) {
-        markets = applyReferenceQuote(markets, result.value.symbol, result.value.quote);
-      }
-    }
-  }
-
-  if (alphaVantageKey) {
-    const stillMissingReferenceSymbols = markets
-      .filter((market) => market.source === "Unavailable" && referenceProxySymbols[market.symbol])
-      .map((market) => market.symbol);
-
-    const alphaReferenceQuotes = await Promise.allSettled(
-      stillMissingReferenceSymbols.map(async (symbol) => {
-        const url = new URL("https://www.alphavantage.co/query");
-        url.searchParams.set("function", "GLOBAL_QUOTE");
-        url.searchParams.set("symbol", referenceProxySymbols[symbol]!.providerSymbol);
-        url.searchParams.set("apikey", alphaVantageKey);
-        const quote = await fetchJson<AlphaVantageGlobalQuote>(url, { next: { revalidate: 60 } });
-        if (!quote) return null;
-        return { symbol, quote };
-      })
-    );
-
-    for (const result of alphaReferenceQuotes) {
-      if (result.status === "fulfilled" && result.value) {
-        markets = applyAlphaVantageQuote(markets, result.value.symbol, result.value.quote, "Reference");
+        markets = applyYahooChartQuote(markets, result.value.symbol, result.value.payload);
       }
     }
   }
@@ -564,14 +536,13 @@ export async function GET() {
   }
 
   const liveCount = markets.filter((market) => market.source === "Live").length;
-  const referenceCount = markets.filter((market) => market.source === "Reference").length;
 
   return Response.json({
     ok: true,
     markets,
     liveCount,
-    referenceCount,
-    message: liveCount || referenceCount
+    referenceCount: 0,
+    message: liveCount
       ? "Market quotes attached where available. Always verify executable prices inside your trading platform."
       : "Market data is temporarily unavailable. Verify executable prices inside your broker or trading platform."
   });

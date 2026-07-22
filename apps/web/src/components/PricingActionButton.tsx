@@ -6,8 +6,8 @@ import { getSupabaseBrowserClient, isSupabaseBrowserConfigured } from "../lib/su
 
 export function PricingActionButton({ planName, guestHref, guestLabel }: { planName: string; guestHref: string; guestLabel: string }) {
   const [signedIn, setSignedIn] = useState(false);
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [accessToken, setAccessToken] = useState("");
+  const [status, setStatus] = useState<"idle" | "opening" | "error">("idle");
 
   useEffect(() => {
     let active = true;
@@ -17,7 +17,7 @@ export function PricingActionButton({ planName, guestHref, guestLabel }: { planN
     supabase.auth.getSession().then(({ data }) => {
       if (active) {
         setSignedIn(Boolean(data.session));
-        setEmail(data.session?.user.email ?? "");
+        setAccessToken(data.session?.access_token ?? "");
       }
     });
 
@@ -25,7 +25,7 @@ export function PricingActionButton({ planName, guestHref, guestLabel }: { planN
       data: { subscription }
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSignedIn(Boolean(session));
-      setEmail(session?.user.email ?? "");
+      setAccessToken(session?.access_token ?? "");
     });
 
     return () => {
@@ -34,23 +34,25 @@ export function PricingActionButton({ planName, guestHref, guestLabel }: { planN
     };
   }, []);
 
-  async function saveInterest() {
+  async function startCheckout() {
     if (planName === "Free") return;
-    setStatus("saving");
+    setStatus("opening");
 
     try {
-      const response = await fetch("/api/waitlist", {
+      const response = await fetch("/api/billing/checkout", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        },
         body: JSON.stringify({
-          email,
-          plan: planName.toLowerCase(),
-          source: "/pricing",
-          consent: true
+          plan: planName.toLowerCase()
         })
       });
 
-      setStatus(response.ok ? "saved" : "error");
+      const payload = (await response.json().catch(() => ({}))) as { checkoutUrl?: string };
+      if (!response.ok || !payload.checkoutUrl) throw new Error("checkout_unavailable");
+      window.location.href = payload.checkoutUrl;
     } catch {
       setStatus("error");
     }
@@ -61,15 +63,13 @@ export function PricingActionButton({ planName, guestHref, guestLabel }: { planN
       <div className="mt-8">
         <button
           type="button"
-          onClick={saveInterest}
-          disabled={status === "saving"}
+          onClick={startCheckout}
+          disabled={status === "opening" || !accessToken}
           className="block w-full rounded-2xl bg-white px-4 py-3 text-center font-bold text-void transition hover:scale-[1.01] disabled:cursor-wait disabled:opacity-70"
         >
-          {status === "saving" ? "Saving..." : status === "saved" ? "You’re on the list" : "Notify me when ready"}
+          {status === "opening" ? "Opening secure checkout..." : `Subscribe to ${planName}`}
         </button>
-        <p className={`mt-3 text-center text-xs ${status === "error" ? "text-danger" : "text-slate-500"}`}>
-          {status === "saved" ? `${planName} interest saved for your account.` : status === "error" ? "Could not save that yet. Please try again." : "No need to create another account."}
-        </p>
+        {status === "error" ? <p className="mt-3 text-center text-xs text-danger">Checkout is unavailable. Please try again.</p> : null}
       </div>
     );
   }

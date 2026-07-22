@@ -29,16 +29,24 @@ export const liveSources: LiveSource[] = [
     category: "Stocks",
     status: "Provider-backed",
     envKeys: ["FINNHUB_API_KEY"],
-    description: "Equity, crypto and ETF quote provider for stock cards and index-reference proxies.",
-    launchUse: "Feeds AAPL, TSLA, NVDA, MSFT and index ETF references when configured."
+    description: "Equity and crypto quote provider for stock cards and digital asset backup quotes.",
+    launchUse: "Feeds AAPL, TSLA, NVDA, MSFT and crypto backups when configured."
   },
   {
     name: "Alpha Vantage",
     category: "Stocks",
     status: "Provider-backed",
     envKeys: ["ALPHA_VANTAGE_API_KEY"],
-    description: "Backup equity and ETF quote provider for stock cards and index-reference proxies.",
-    launchUse: "Backs up AAPL, TSLA, NVDA, MSFT, NASDAQ, S&P 500, US30 and DXY references."
+    description: "Backup equity quote provider for stock cards.",
+    launchUse: "Backs up AAPL, TSLA, NVDA and MSFT when configured."
+  },
+  {
+    name: "Yahoo Finance public chart",
+    category: "Indices",
+    status: "Connected",
+    envKeys: [],
+    description: "Public chart data fallback for major index futures and DXY where available.",
+    launchUse: "Keeps NASDAQ, S&P 500, US30 and DXY market references from showing fake proxy values."
   },
   {
     name: "Coinbase public market data",

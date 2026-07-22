@@ -5,83 +5,29 @@ import { useState } from "react";
 import { friendlyAuthMessage } from "../lib/auth-errors";
 import { getSupabaseBrowserClient } from "../lib/supabase/client";
 
-const maxAvatarPreviewBytes = 750_000;
 const oauthProviders = [
   { id: "google", label: "Continue with Google" },
   { id: "github", label: "Continue with GitHub" }
 ];
 
-function initialsFromName(name: string, email: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
-  if (parts[0]) return parts[0].slice(0, 2).toUpperCase();
-  return email.slice(0, 2).toUpperCase();
-}
+const minimumPasswordLength = 8;
 
 export function SignUpForm() {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState("");
-  const [timezone, setTimezone] = useState(() => {
-    try {
-      return Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch {
-      return "";
-    }
-  });
-  const [traderType, setTraderType] = useState("");
-  const [experienceLevel, setExperienceLevel] = useState("");
-  const [preferredMarkets, setPreferredMarkets] = useState<string[]>([]);
-  const [riskTolerance, setRiskTolerance] = useState("");
   const [status, setStatus] = useState("");
   const [statusTone, setStatusTone] = useState<"success" | "error" | "info">("info");
-  const [avatarPreview, setAvatarPreview] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const marketOptions = ["Forex", "Metals", "Crypto", "Indices", "Stocks", "Futures", "Commodities"];
-
-  function toggleMarket(market: string) {
-    setPreferredMarkets((current) => (current.includes(market) ? current.filter((item) => item !== market) : [...current, market]));
-  }
 
   function savePendingSignup() {
     window.localStorage.setItem(
       "fundedscope_pending_signup",
       JSON.stringify({
-        name,
-        username,
         email,
-        avatarPreview,
         createdAt: new Date().toISOString()
       })
     );
-  }
-
-  function handleAvatarChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) {
-      setAvatarPreview("");
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-      setStatusTone("error");
-      setStatus("Choose an image file for your profile picture.");
-      return;
-    }
-
-    if (file.size > maxAvatarPreviewBytes) {
-      setStatusTone("error");
-      setStatus("Choose an image under 750KB for now. You can upload a larger profile picture later.");
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => setAvatarPreview(typeof reader.result === "string" ? reader.result : "");
-    reader.readAsDataURL(file);
   }
 
   async function signUpWithProvider(provider: string) {
@@ -117,17 +63,7 @@ export function SignUpForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/profile`,
-          data: {
-            full_name: name,
-            username,
-            country,
-            timezone,
-            trader_type: traderType,
-            experience_level: experienceLevel,
-            markets: preferredMarkets,
-            risk_tolerance: riskTolerance
-          }
+          emailRedirectTo: `${window.location.origin}/profile`
         }
       });
       if (error) throw error;
@@ -151,7 +87,7 @@ export function SignUpForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mt-6 grid gap-3 sm:grid-cols-2">
+    <form onSubmit={submit} className="mt-6 space-y-3">
       <div className="sm:col-span-2 grid gap-3 sm:grid-cols-2">
         {oauthProviders.map((provider) => (
           <button
@@ -165,102 +101,36 @@ export function SignUpForm() {
           </button>
         ))}
       </div>
-      <div className="sm:col-span-2 flex items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+      <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
         <span className="h-px flex-1 bg-white/10" />
         <span>Email sign up</span>
         <span className="h-px flex-1 bg-white/10" />
       </div>
-      <div className="sm:col-span-2 rounded-3xl border border-electric/20 bg-electric/10 p-4">
-        <p className="text-sm font-black text-electric">Start blank</p>
-        <p className="mt-2 text-sm leading-6 text-slate-300">
-          A new trader can create an account with only email and password. Everything else is optional and can be added later inside Trading DNA.
-        </p>
-      </div>
-      <div className="sm:col-span-2 flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:flex-row sm:items-center">
-        <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-3xl border border-electric/20 bg-electric/10 text-xl font-black text-electric">
-          {avatarPreview ? <img src={avatarPreview} alt="" className="h-full w-full object-cover" /> : initialsFromName(name, email || "FS")}
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-black text-white">Profile picture <span className="text-slate-600">(optional)</span></p>
-          <p className="mt-1 text-sm leading-6 text-slate-400">Upload one now or skip it. If you skip, FundedScope will use your initials.</p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <label className="cursor-pointer rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-200 transition hover:border-electric/30 hover:text-white">
-              Upload image
-              <input type="file" accept="image/*" onChange={handleAvatarChange} className="sr-only" />
-            </label>
-            <button type="button" onClick={() => setAvatarPreview("")} className="rounded-2xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-400 transition hover:border-white/20 hover:text-white">
-              Skip for now
-            </button>
-          </div>
-        </div>
-      </div>
-      <label className="text-sm text-slate-400">
-        Full name <span className="text-slate-600">(optional)</span>
-        <input value={name} onChange={(event) => setName(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Add later" />
-      </label>
-      <label className="text-sm text-slate-400">
-        Username <span className="text-slate-600">(optional)</span>
-        <input value={username} onChange={(event) => setUsername(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Choose later" />
-      </label>
       <label className="text-sm text-slate-400">
         Email
         <input value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="you@example.com" type="email" required />
       </label>
       <label className="text-sm text-slate-400">
         Password
-        <input value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Minimum 10 characters" type="password" required minLength={10} />
+        <input
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white"
+          placeholder="At least 8 characters"
+          type="password"
+          required
+          minLength={minimumPasswordLength}
+        />
       </label>
-      <label className="text-sm text-slate-400">
-        Country <span className="text-slate-600">(optional)</span>
-        <input value={country} onChange={(event) => setCountry(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Add later" />
-      </label>
-      <label className="text-sm text-slate-400">
-        Timezone
-        <input value={timezone} onChange={(event) => setTimezone(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white" placeholder="Africa/Lagos" />
-      </label>
-      <label className="text-sm text-slate-400">
-        Trader type <span className="text-slate-600">(optional)</span>
-        <select value={traderType} onChange={(event) => setTraderType(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
-          <option value="">Choose later</option>
-          <option>Prop Trader</option>
-          <option>Live Trader</option>
-          <option>Both</option>
-        </select>
-      </label>
-      <label className="text-sm text-slate-400">
-        Experience <span className="text-slate-600">(optional)</span>
-        <select value={experienceLevel} onChange={(event) => setExperienceLevel(event.target.value)} className="mt-2 w-full rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
-          <option value="">Choose later</option>
-          <option>Beginner</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
-          <option>Professional</option>
-        </select>
-      </label>
-      <div className="sm:col-span-2 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-        <p className="text-sm font-bold text-white">Markets you trade <span className="text-slate-600">(optional)</span></p>
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-          {marketOptions.map((market) => (
-            <label key={market} className="flex items-center gap-2 rounded-2xl border border-white/10 bg-void/70 p-3 text-sm text-slate-300">
-              <input checked={preferredMarkets.includes(market)} onChange={() => toggleMarket(market)} type="checkbox" />
-              {market}
-            </label>
-          ))}
-        </div>
-      </div>
-      <select value={riskTolerance} onChange={(event) => setRiskTolerance(event.target.value)} className="sm:col-span-2 rounded-2xl border border-white/10 bg-void px-4 py-3 text-white">
-        <option value="">Choose risk tolerance later</option>
-        <option value="LOW">Low risk tolerance</option>
-        <option value="MEDIUM">Medium risk tolerance</option>
-        <option value="HIGH">High risk tolerance</option>
-        <option value="EXTREME">Extreme risk tolerance</option>
-      </select>
-      <button disabled={loading} className="sm:col-span-2 mt-3 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void disabled:opacity-60">
+      <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-xs font-bold leading-5 text-slate-400">
+        Use at least 8 characters. A mix of letters, numbers, or symbols is stronger. You can add your name, photo, country, markets and Trading DNA after signup under Profile.
+      </p>
+      <button disabled={loading} className="mt-3 w-full rounded-2xl bg-electric px-4 py-3 font-bold text-void disabled:opacity-60">
         {loading ? "Creating account..." : "Create account"}
       </button>
       {status ? (
         <p
-          className={`sm:col-span-2 rounded-2xl border p-3 text-sm font-bold ${
+          className={`rounded-2xl border p-3 text-sm font-bold ${
             statusTone === "success"
               ? "border-success/30 bg-success/10 text-success"
               : statusTone === "error"
